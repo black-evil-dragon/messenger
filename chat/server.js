@@ -13,7 +13,7 @@ const io = socket(server, {
     }
 })
 
-console.log(chalk.green('Server started successfully\n'));
+console.log(chalk.green('Server started successfully!\n'));
 
 app.get('/', function (req, res) {
     res.send('Hello world')
