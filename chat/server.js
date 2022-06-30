@@ -9,7 +9,7 @@ const app = express()
 const server = http.createServer(app)
 const io = socket(server, {
     cors: {
-        origin: 'http://localhost:3000'
+        origin: '*'
     }
 })
 
@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html')
+    res.sendFile(__dirname + '/server.html')
 })
 
 
@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
             text
         }
         chat.get(ID).get('messages').push(object)
-        socket.broadcast.to(ID).emit('CHAT:ADD_MESSAGES', object)
+        socket.broadcast.to(ID).emit('CHAT:NEW_MESSAGE', object)
 
     })
 
@@ -94,4 +94,3 @@ server.listen(port, (error) => {
     console.log(`App listening on port: ${chalk.underline(port)}\n\n${chalk.bold('  URL:    ')}http://localhost:${port}\n`);
     console.log('Users socket ID:');
 })
-

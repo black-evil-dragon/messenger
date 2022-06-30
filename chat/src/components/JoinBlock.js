@@ -9,7 +9,7 @@ export default function JoinBlock({ onLogin }) {
     const [isLoading, setLoading] = React.useState(false)
 
     const onEnter = async () => {
-        if(!ID || !userName){
+        if (!ID || !userName) {
             return console.log('Error:ghost')
         }
         setLoading(true);
@@ -21,12 +21,20 @@ export default function JoinBlock({ onLogin }) {
         onLogin(object)
     }
     return (
-        <div>
-            <input type="text" name="" id="" value={ID} onChange={(e) => { setID(e.target.value) }} /><br></br>
-            <input type="text" name="" id="" value={userName} onChange={(e) => { setUsername(e.target.value) }} /><br></br>
-            <button onClick={onEnter} disabled={isLoading}>
-                {isLoading ? 'Вход' : 'Войти'}
-            </button>
+        <div className='join-block'>
+            <div className='join-panel'>
+                <p>Welcome!</p>
+                <div className="join-input">
+                    <input placeholder='Chat ID' type="text" name="" id="" value={ID} onChange={(e) => { setID(e.target.value) }} /><br></br>
+                    <input placeholder='Your name' type="text" name="" id="" value={userName} onChange={(e) => { setUsername(e.target.value) }} />
+                </div>
+
+                <div className="btn-join">
+                    <button onClick={onEnter} disabled={isLoading}>
+                        {isLoading ? 'Вход' : 'Войти'}
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

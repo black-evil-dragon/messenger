@@ -3,6 +3,7 @@ import React from 'react';
 import JoinBlock from './components/JoinBlock';
 import Chat from './components/Chat';
 
+import './assets/styles/css/index.min.css'
 
 import reducer from './reducer';
 import socket from './socket';
@@ -27,7 +28,11 @@ function App() {
         socket.emit('CHAT:JOIN', object)
 
         const { data } = await axios.get(`/chat/${object.ID}`)
-        setUsers(data.users)
+        // setUsers(data.users)
+        dispatch({
+            type: 'SET_DATA',
+            payload: data
+        })
     }
 
     const setUsers = (users) => {
@@ -46,14 +51,14 @@ function App() {
 
     React.useEffect(() => {
         socket.on('CHAT:SET_USERS', setUsers)
-        socket.on('CHAT:ADD_MESSAGES', addMessage)
+        socket.on('CHAT:NEW_MESSAGE', addMessage)
     }, [])
 
     window.socket = socket
 
     return (
-        <div className=''>
-            {!state.isJoin ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} onAddMessage={addMessage}/>}
+        <div className='app'>
+            {!state.isJoin ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} onAddMessage={addMessage} />}
         </div>
     );
 }

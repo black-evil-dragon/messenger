@@ -13,6 +13,12 @@ export default (state, action) => {
                 ...state,
                 users: action.payload,
             }
+        case 'SET_DATA':
+            return {
+                ...state,
+                users: action.payload.users,
+                messages: action.payload.messages
+            }
         case 'SET_MESSAGES':
             return {
                 ...state,

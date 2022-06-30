@@ -14,7 +14,8 @@ export default function Chat({ users, messages, userName, ID, onAddMessage }) {
         })
         setMessage('')
         onAddMessage({
-            userName, text: messageValue
+            userName,
+            text: messageValue
         })
     }
 
@@ -35,7 +36,7 @@ export default function Chat({ users, messages, userName, ID, onAddMessage }) {
             {messages.map(
                 (message, index) => (
                     <div key={index}>
-                        <p><span>{message.userName} - </span>{message.text}</p>
+                        <p key={index}><span key={index}>{message.userName} - </span>{message.text}</p>
                     </div>
                 )
             )}
