@@ -7,42 +7,53 @@ export default function Chat({ users, messages, userName, ID, onAddMessage }) {
     //const messagesRef = React.useRef(null)
 
     const onSendMessage = () => {
-        socket.emit('CHAT:NEW_MESSAGE', {
-            ID,
-            userName,
-            text: messageValue
-        })
-        setMessage('')
-        onAddMessage({
-            userName,
-            text: messageValue
-        })
+        if (messageValue !== '') {
+            socket.emit('CHAT:NEW_MESSAGE', {
+                ID,
+                userName,
+                text: messageValue
+            })
+            setMessage('')
+            onAddMessage({
+                userName,
+                text: messageValue
+            })
+        }
     }
 
     /*React.useEffect(() => {
         messagesRef.current.scrollTo(0, 99999);
       }, [messages])*/
     return (
-        <div>
-            <p>Онлайн: {users.length}</p>
-            <ul>
-                {users.map((name, index) =>
-                (
-                    <li key={name + index}>{name}</li>
-                )
-                )}
-            </ul>
-
-            {messages.map(
-                (message, index) => (
-                    <div key={index}>
-                        <p key={index}><span key={index}>{message.userName} - </span>{message.text}</p>
+        <div className='chat-block'>
+            <div className="chat-panel">
+                <div className="chat-users">
+                    <p>Online: {users.length}</p>
+                    <div className="users-online">
+                        {users.map((name, index) => (
+                            <p key={name + index}>{name}</p>
+                        ))}
                     </div>
-                )
-            )}
-
-            <textarea value={messageValue} name="" id="" cols="30" rows="10" onChange={(e) => { setMessage(e.target.value) }}></textarea>
-            <button type='button' onClick={onSendMessage}>Отправить</button>
+                </div>
+                <div className="chat">
+                    <div className="chat-messages">
+                        {messages.map(
+                            (message, index) => (
+                                <div className="message">
+                                    <div className="user-message">
+                                        <p>{message.text}</p>
+                                    </div>
+                                    <span>{message.userName}</span>
+                                </div>
+                            )
+                        )}
+                    </div>
+                    <div className="chat-input">
+                        <textarea value={messageValue} rows="3" onChange={(e) => { setMessage(e.target.value) }}></textarea>
+                        <button type='button' onClick={onSendMessage}><p>Send</p></button>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

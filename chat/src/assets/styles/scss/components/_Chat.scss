@@ -1,0 +1,104 @@
+div.chat-block {
+    color: #fff;
+    display: flex;
+    justify-content: center;
+
+    background-color: $black;
+
+    div.chat-panel {
+        width: 100%;
+
+        div.chat-users {
+            display: inline-block;
+            vertical-align: top;
+
+            background-color: $grey;
+
+            width: 25%;
+            height: 100%;
+        }
+
+        div.chat {
+            display: inline-block;
+            width: 75%;
+            height: 100%;
+
+            div.chat-messages {
+                overflow: auto;
+                height: 78%;
+
+                margin: 1rem 2.5rem 0;
+
+                div.message {
+                    width: 45%;
+
+                    margin: 2rem 0;
+
+                    div.user-message {
+                        width: max-content;
+                        /*min-width: 20%;*/
+                        background-color: $dark-grey;
+                        padding: 0.5rem 0.8rem;
+                        border-radius: 0.5rem;
+                        -webkit-border-radius: 0.5rem;
+                        -moz-border-radius: 0.5rem;
+                        -ms-border-radius: 0.5rem;
+                        -o-border-radius: 0.5rem;
+}
+                    span {
+                        font-size: .65rem;
+                        margin-left: 0.4rem;
+                        color: rgb(156, 156, 156);
+                    }
+                    p {
+                        margin: 0;
+                    }
+                }
+            }
+
+            div.chat-input {
+                width: 100%;
+
+                text-align: center;
+
+                textarea,
+                textarea:focus-visible {
+                    width: 75%;
+                    background-color: $black;
+                    color: #fff;
+                    border-color: #fff;
+                    border-radius: .75rem;
+                    outline: none;
+                    padding: .5rem;
+                    -webkit-border-radius: .75rem;
+                    -moz-border-radius: .75rem;
+                    -ms-border-radius: .75rem;
+                    -o-border-radius: .75rem;
+                }
+
+                button {
+                    background-color: $grey;
+                    vertical-align: top;
+                    margin: 0 0.7rem;
+                    border: none;
+                    border-radius: .75rem;
+                    -webkit-border-radius: .75rem;
+                    -moz-border-radius: .75rem;
+                    -ms-border-radius: .75rem;
+                    -o-border-radius: .75rem;
+
+                    p {
+                        color: #fff;
+                        font-size: .7rem;
+                        margin: .5rem;
+                    }
+                }
+
+                button:hover {
+                    background-color: $dark-grey;
+                }
+
+            }
+        }
+    }
+}

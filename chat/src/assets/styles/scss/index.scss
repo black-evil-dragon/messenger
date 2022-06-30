@@ -3,19 +3,24 @@
 @import './components/Chat';
 @import './components/JoinBlock';
 
-body, html {
+body,
+html {
     margin: 0;
     font-size: 20px;
 
     height: 100%;
     width: 100%;
 }
+
 * {
     font-family: 'Montserrat', sans-serif;
     font-style: normal;
     font-weight: 400;
 }
 
-div#root, div.app {
+div#root,
+div.app,
+div.join-block,
+div.chat-block {
     height: 100%;
 }
