@@ -57,12 +57,26 @@ export default function App() {
                 type: 'LOGIN',
                 payload: object
             })
-            navigator()
         }
     }, [])
     return (
         <div>
-            {!state.isLogin ?
+            <Navigation />
+            <br></br>
+            <Routes>
+                <Route path="/" element={<div></div>} />
+                <Route path="/login" element={<Login onLogin={onLogin} />} />
+                <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
+                <Route path="/profile" element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
+            </Routes>
+        </div>
+    );
+}
+
+
+/* draft
+
+{!state.isLogin ?
                 <div>
                     <Navigation />
                     <br></br>
@@ -75,15 +89,14 @@ export default function App() {
                 </div>
                 :
                 <div>
+                    <Navigation />
                     <Profile {...state} deleteCookie={deleteCookie} />
                 </div>
             }
-        </div>
-    );
-}
 
 
-/* draft
+
+
 
 <Route path="/" element={<Navigation />} />
 
