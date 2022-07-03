@@ -49,7 +49,6 @@ const addUser = () => {
 }
 
 const DB = require('./db/db.json')
-console.log(DB)
 
 /*   Server     */
 

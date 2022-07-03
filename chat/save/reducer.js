@@ -8,13 +8,6 @@ export default (state, action) => {
                 userName: action.payload.userName,
                 ID: action.payload.ID,
             }
-        case 'LOGIN':
-            return {
-                ...state,
-                isLogin: true,
-                userName: action.payload.userName,
-                userLogin: action.payload.userLogin,
-            }
         case 'SET_USERS':
             return {
                 ...state,

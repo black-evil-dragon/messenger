@@ -1,66 +1,94 @@
-import React from 'react';
-
-import JoinBlock from './components/JoinBlock';
-import Chat from './components/Chat';
-
-import './assets/styles/css/index.min.css'
-import './assets/styles/css/media.min.css'
+import React, { Component } from 'react'
 
 import reducer from './reducer';
 import socket from './socket';
 import axios from 'axios';
+import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 
-function App() {
+import './assets/styles/css/index.min.css'
+import './assets/styles/css/media.min.css'
 
+import Login from './components/Login';
+import SignUp from '././components/SignUp'
+import Navigation from './components/Nav'
+import JoinBlock from './components/JoinBlock';
+import Chat from './components/Chat';
+import Profile from './components/Profile'
+
+
+
+const cookie_key = 'userAuth';
+
+export default function App() {
     const [state, dispatch] = React.useReducer(reducer, {
-        isJoin: false,
+        isLogin: false,
+        userLogin: null,
         userName: null,
-        ID: null,
-        users: [],
-        messages: [],
+        chats: [],
     })
 
     const onLogin = async (object) => {
+        bake_cookie(cookie_key, object);
+
         dispatch({
-            type: 'JOINED',
+            type: 'LOGIN',
             payload: object
         })
-        socket.emit('CHAT:JOIN', object)
-
-        const { data } = await axios.get(`/chat/${object.ID}`)
-        dispatch({
-            type: 'SET_DATA',
-            payload: data
-        })
     }
 
-    const setUsers = (users) => {
-        dispatch({
-            type: 'SET_USERS',
-            payload: users
-        })
-    }
-
-    const addMessage = (message) => {
-        dispatch({
-            type: 'SET_MESSAGES',
-            payload: message
-        })
+    const deleteCookie = () => {
+        delete_cookie(cookie_key)
     }
 
     React.useEffect(() => {
-        socket.on('CHAT:SET_USERS', setUsers)
-        socket.on('CHAT:NEW_MESSAGE', addMessage)
+        if (read_cookie(cookie_key).userLogin) {
+            const object = {
+                userLogin: read_cookie(cookie_key).userLogin,
+                userName: read_cookie(cookie_key).userName
+            }
+            dispatch({
+                type: 'LOGIN',
+                payload: object
+            })
+        }
     }, [])
-
-    window.socket = socket
-
     return (
-        <div className='app'>
-            {!state.isJoin ? <JoinBlock onLogin={onLogin} /> : <Chat {...state} onAddMessage={addMessage} />}
+        <div>
+            {!state.isLogin ?
+                <div>
+                    <Navigation />
+                    <br></br>
+                    <Routes>
+                        <Route path="/" element={<div></div>} />
+                        <Route path="/login" element={<Login onLogin={onLogin} />} />
+                        <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
+                    </Routes>
+                </div>
+                :
+                <div>
+                    <Profile {...state} deleteCookie={deleteCookie} />
+                </div>
+            }
         </div>
     );
 }
 
-export default App;
+
+/* draft
+
+<Route path="/" element={<Navigation />} />
+
+onSignUp={onSignUp}
+
+const onSignUp = async (object) => {
+        dispatch({
+            type: 'SIGNUP',
+            payload: object
+        })
+        socket.emit('USER:SIGNUP', object)
+    }
+
+
+*/
