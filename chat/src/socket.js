@@ -1,4 +1,6 @@
 import io from 'socket.io-client';
-const socket = io('http://192.168.0.10:8000');
+import proxy from './../package.json'
+
+const socket = io(proxy.proxy);
 
 export default socket

@@ -4,6 +4,7 @@ import JoinBlock from './components/JoinBlock';
 import Chat from './components/Chat';
 
 import './assets/styles/css/index.min.css'
+import './assets/styles/css/media.min.css'
 
 import reducer from './reducer';
 import socket from './socket';
@@ -28,7 +29,6 @@ function App() {
         socket.emit('CHAT:JOIN', object)
 
         const { data } = await axios.get(`/chat/${object.ID}`)
-        // setUsers(data.users)
         dispatch({
             type: 'SET_DATA',
             payload: data

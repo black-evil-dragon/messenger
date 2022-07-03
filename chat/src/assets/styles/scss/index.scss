@@ -3,13 +3,15 @@
 @import './components/Chat';
 @import './components/JoinBlock';
 
+
 body,
 html {
     margin: 0;
-    font-size: 20px;
 
     height: 100%;
     width: 100%;
+
+    overflow: hidden;
 }
 
 * {
