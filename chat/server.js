@@ -3,7 +3,7 @@ console.clear();
 /*   Modules    */
 
 
-
+const version = require('./package.json');
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 
@@ -132,6 +132,6 @@ server.listen(port, (error) => {
     if (error) {
         throw Error(error)
     }
-    console.log(`App listening on port: ${chalk.underline(port)}\n\n${chalk.bold('  URL:    ')}http://localhost:${port}\n`);
+    console.log(`App listening on port: ${chalk.underline(port)}, version: ${version.version}\n\n${chalk.bold('  URL:    ')}http://localhost:${port}\n`);
     console.log('Users socket ID:');
 })
