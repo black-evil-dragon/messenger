@@ -31,7 +31,7 @@ export default function SignUp({ onLogin }) {
             setLoading(true);
             setError('')
             onLogin(object)
-            navigate('/')
+            navigate('/profile')
 
         } else {
             setError('Error')

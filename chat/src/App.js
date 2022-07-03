@@ -20,8 +20,12 @@ import Profile from './components/Profile'
 
 
 const cookie_key = 'userAuth';
+console.log(read_cookie(cookie_key));
+
 
 export default function App() {
+    let navigate = useNavigate()
+
     const [state, dispatch] = React.useReducer(reducer, {
         isLogin: false,
         userLogin: null,
@@ -40,10 +44,11 @@ export default function App() {
 
     const deleteCookie = () => {
         delete_cookie(cookie_key)
+        navigate('/')
     }
 
     React.useEffect(() => {
-        if (read_cookie(cookie_key).userLogin) {
+        if (read_cookie(cookie_key).length !== 0) {
             const object = {
                 userLogin: read_cookie(cookie_key).userLogin,
                 userName: read_cookie(cookie_key).userName
@@ -52,6 +57,7 @@ export default function App() {
                 type: 'LOGIN',
                 payload: object
             })
+            navigator()
         }
     }, [])
     return (
@@ -64,6 +70,7 @@ export default function App() {
                         <Route path="/" element={<div></div>} />
                         <Route path="/login" element={<Login onLogin={onLogin} />} />
                         <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
+                        <Route path="/profile" element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />}/>
                     </Routes>
                 </div>
                 :

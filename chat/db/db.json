@@ -7,6 +7,22 @@
       "userPassword": "fmjg2211s",
       "status": true,
       "chats": []
+    },
+    {
+      "ID": "1bzbbr8s8l55r23s0",
+      "userLogin": "blackevildragon1",
+      "userName": "semyon",
+      "userPassword": "1234",
+      "status": true,
+      "chats": []
+    },
+    {
+      "ID": "1bzbbr9nwl55r3z3w",
+      "userLogin": "ausua",
+      "userName": "sa",
+      "userPassword": "s",
+      "status": true,
+      "chats": []
     }
   ]
 }
