@@ -10,7 +10,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import './assets/styles/css/index.min.css'
 import './assets/styles/css/media.min.css'
 
-import Login from './components/Login';
+import SignIn from './components/SignIn';
 import SignUp from '././components/SignUp'
 import Navigation from './components/Nav'
 import JoinBlock from './components/JoinBlock';
@@ -65,7 +65,7 @@ export default function App() {
             <br></br>
             <Routes>
                 <Route path="/" element={<div></div>} />
-                <Route path="/login" element={<Login onLogin={onLogin} />} />
+                <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
                 <Route path="/profile" element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
             </Routes>
