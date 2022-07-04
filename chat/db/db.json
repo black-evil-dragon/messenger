@@ -1,51 +1,21 @@
 {
   "users": [
     {
-      "ID": "1bzbbr4pkl55qs65f",
-      "userLogin": "blackevildragon",
-      "userName": "Семён",
-      "userPassword": "fmjg2211s",
-      "status": true,
-      "chats": []
-    },
-    {
-      "ID": "1bzbbr8s8l55r23s0",
-      "userLogin": "blackevildragon1",
-      "userName": "semyon",
+      "ID": "1bzbbrabcl56r8vxy",
+      "userLogin": "user1",
+      "userName": "Mike",
       "userPassword": "1234",
       "status": true,
+      "url": "profile/user1",
       "chats": []
     },
     {
-      "ID": "1bzbbr9nwl55r3z3w",
-      "userLogin": "ausua",
-      "userName": "sa",
-      "userPassword": "s",
+      "ID": "1bzbbr66sl56rt2fv",
+      "userLogin": "blackevildragon",
+      "userName": "semyon",
+      "userPassword": "fmjg2211s",
       "status": true,
-      "chats": []
-    },
-    {
-      "ID": "1bzbbr9swl55r8jt7",
-      "userLogin": "loginn",
-      "userName": "ss",
-      "userPassword": "s",
-      "status": true,
-      "chats": []
-    },
-    {
-      "ID": "1bzbbr2skl55r9w49",
-      "userLogin": "sss",
-      "userName": "s",
-      "userPassword": "s",
-      "status": true,
-      "chats": []
-    },
-    {
-      "ID": "1bzbbr8ewl56nb6st",
-      "userLogin": "user213",
-      "userName": "as",
-      "userPassword": "sa",
-      "status": true,
+      "url": "profile/blackevildragon",
       "chats": []
     }
   ]

@@ -55,11 +55,24 @@ app.get('/users', function (req, res) {
     res.json(DB)
 })
 
+app.post('/user', function (req, res) {
+    const { userLogin } = req.body
+    const getUserByLogin = db.get('users').find({userLogin: userLogin}).value()
+
+    const user_data = {
+        userLogin: getUserByLogin.userLogin,
+        userName: getUserByLogin.userName,
+        url: getUserByLogin.url
+    }
+
+    res.send(user_data)
+})
 
 app.post('/signup', function (req, res) {
     const { userLogin, userName, userPassword } = req.body
+    const getUserByLogin = db.get('users').find({useLogin: userLogin}).value()
 
-    if(db.get('users').find({ userLogin: userLogin }).value()) {
+    if(getUserByLogin) {
         const result = 'USER_ALREADY_CREATED'
         res.send(result)
     } else {
@@ -69,10 +82,25 @@ app.post('/signup', function (req, res) {
             userName: userName,
             userPassword: userPassword,
             status: true,
+            url: `profile/${userLogin}`,
             chats: []
         }).write()
         res.send()
     }
+})
+app.post('/signin', function (req, res) {
+    const { userLogin, userPassword } = req.body
+    const getUserByLogin = db.get('users').find({userLogin: userLogin}).value()
+    let result = ''
+
+    if(getUserByLogin && (getUserByLogin.userPassword === userPassword)){
+        result = ''
+    } else {
+        result = 'ERROR'
+    }
+
+    res.send(result)
+
 })
 
 io.on('connection', (socket) => {

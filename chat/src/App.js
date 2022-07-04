@@ -7,8 +7,8 @@ import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 
-import './assets/styles/css/index.min.css'
-import './assets/styles/css/media.min.css'
+//import './assets/styles/css/index.min.css'
+//import './assets/styles/css/media.min.css'
 
 import SignIn from './components/SignIn';
 import SignUp from '././components/SignUp'
@@ -20,7 +20,6 @@ import Profile from './components/Profile'
 
 
 const cookie_key = 'userAuth';
-console.log(read_cookie(cookie_key));
 
 
 export default function App() {
@@ -31,43 +30,61 @@ export default function App() {
         userLogin: null,
         userName: null,
         chats: [],
+        url: 'profile'
     })
 
     const onLogin = async (object) => {
-        bake_cookie(cookie_key, object);
+        if (!object.userName) {
+            const user_data = await axios.post('/user', object)
 
-        dispatch({
-            type: 'LOGIN',
-            payload: object
-        })
+            object = {
+                userLogin: user_data.data.userLogin,
+                userName: user_data.data.userName,
+                url: user_data.data.url
+            }
+            bake_cookie(cookie_key, object);
+            dispatch({
+                type: 'LOGIN',
+                payload: object
+            })
+            navigate("/" + object.url)
+        }
     }
-
     const deleteCookie = () => {
         delete_cookie(cookie_key)
+        dispatch({
+            type: 'lOGOUT',
+            payload: 'profile'
+        })
         navigate('/')
+        window.location.reload();
+
     }
 
     React.useEffect(() => {
         if (read_cookie(cookie_key).length !== 0) {
             const object = {
                 userLogin: read_cookie(cookie_key).userLogin,
-                userName: read_cookie(cookie_key).userName
+                userName: read_cookie(cookie_key).userName,
+                url: read_cookie(cookie_key).url
             }
             dispatch({
                 type: 'LOGIN',
-                payload: object
+                payload: object,
             })
         }
     }, [])
+
+
     return (
         <div>
-            <Navigation />
+            <Navigation url={state.url} />
             <br></br>
             <Routes>
                 <Route path="/" element={<div></div>} />
-                <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
+                <Route path="/signin" element={<SignIn onLogin={onLogin} navigate={navigate} />} />
                 <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
-                <Route path="/profile" element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
+                <Route path={"/" + state.url} element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
             </Routes>
         </div>
     );

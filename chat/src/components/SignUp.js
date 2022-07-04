@@ -30,8 +30,8 @@ export default function SignUp({ onLogin }) {
         if (!result.data) {
             setLoading(true);
             setError('')
-            onLogin(object)
-            navigate('/profile')
+            //onLogin(object)
+            //navigate('/profile')
 
         } else {
             setError('Error')

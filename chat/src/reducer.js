@@ -1,35 +1,19 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
-        case 'JOINED':
-            return {
-                ...state,
-                isJoin: true,
-                userName: action.payload.userName,
-                ID: action.payload.ID,
-            }
         case 'LOGIN':
             return {
                 ...state,
                 isLogin: true,
                 userName: action.payload.userName,
                 userLogin: action.payload.userLogin,
+                url: action.payload.url
             }
-        case 'SET_USERS':
+        case 'LOGOUT':
             return {
                 ...state,
-                users: action.payload,
-            }
-        case 'SET_DATA':
-            return {
-                ...state,
-                users: action.payload.users,
-                messages: action.payload.messages
-            }
-        case 'SET_MESSAGES':
-            return {
-                ...state,
-                messages: [...state.messages, action.payload]
+                isLogin: false,
+                url: action.payload.url
             }
         default:
             return state;
