@@ -9,7 +9,6 @@ const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 
 const adapter = new FileSync('./db/db.json')
-const db = low(adapter)
 
 
 const chalk = require('chalk');
@@ -32,14 +31,13 @@ app.use(express.urlencoded({ extended: true }))
 
 
 /*  DataBase    */
+const db_init = low(adapter)
 
-db.defaults(
+db_init.defaults(
     {
         users: []
     }
 ).write()
-
-const DB = require('./db/db.json')
 
 
 /*   Server     */
@@ -47,6 +45,7 @@ const DB = require('./db/db.json')
 console.log(chalk.green('Server started successfully!\n'));
 
 const getUserByLogin = (login) => {
+    const db = low(adapter)
     const result = db.get('users').find({userLogin: login}).value()
     return result
 }
@@ -57,11 +56,16 @@ app.get('/', function (req, res) {
 })
 
 app.get('/users', function (req, res) {
+    const db = low(adapter)
+    let DB = db.get('users').value()
+
     res.json(DB)
 })
 
 
 app.post('/getcontact', function (req, res) {
+    const db = low(adapter)
+
     const { contactLogin, userLogin } = req.body
     let result = ''
     if(getUserByLogin(contactLogin)){
@@ -78,6 +82,8 @@ app.post('/getcontact', function (req, res) {
 })
 
 app.post('/user', function (req, res) {
+    const db = low(adapter)
+
     const { userLogin } = req.body
     const getUserByLogin = db.get('users').find({userLogin: userLogin}).value()
     const contacts = db.get('users').find({userLogin: userLogin}).get('contacts').value()
@@ -93,6 +99,8 @@ app.post('/user', function (req, res) {
 })
 
 app.post('/signup', function (req, res) {
+    const db = low(adapter)
+
     const { userLogin, userName, userPassword } = req.body
 
     if(getUserByLogin(userLogin)) {
@@ -113,6 +121,8 @@ app.post('/signup', function (req, res) {
     }
 })
 app.post('/signin', function (req, res) {
+    const db = low(adapter)
+
     const { userLogin, userPassword } = req.body
     const getUserByLogin = db.get('users').find({userLogin: userLogin}).value() // const values = getUserByLogin(userLogin) надо посмотреть, почему не работает
     let result = ''

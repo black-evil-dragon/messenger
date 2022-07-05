@@ -96,7 +96,7 @@ export default function App() {
 
     return (
         <div>
-            <Navigation url={state.url} />
+            <Navigation url={state.url} isLogin={state.isLogin}/>
             <br></br>
             <Routes>
                 <Route path="/" element={<div></div>} />
@@ -111,40 +111,6 @@ export default function App() {
 
 
 /* draft
-
-{!state.isLogin ?
-                <div>
-                    <Navigation />
-                    <br></br>
-                    <Routes>
-                        <Route path="/" element={<div></div>} />
-                        <Route path="/login" element={<Login onLogin={onLogin} />} />
-                        <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
-                        <Route path="/profile" element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />}/>
-                    </Routes>
-                </div>
-                :
-                <div>
-                    <Navigation />
-                    <Profile {...state} deleteCookie={deleteCookie} />
-                </div>
-            }
-
-
-
-
-
-<Route path="/" element={<Navigation />} />
-
-onSignUp={onSignUp}
-
-const onSignUp = async (object) => {
-        dispatch({
-            type: 'SIGNUP',
-            payload: object
-        })
-        socket.emit('USER:SIGNUP', object)
-    }
 
 
 */
