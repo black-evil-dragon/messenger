@@ -16,6 +16,7 @@ import Navigation from './components/Nav'
 import JoinBlock from './components/JoinBlock';
 import Chat from './components/Chat';
 import Profile from './components/Profile'
+import Contacts from './components/Contacts';
 
 
 
@@ -48,11 +49,14 @@ export default function App() {
             type: 'LOGIN',
             payload: object
         })
+        setData(object)
+        navigate(object.url)
+    }
+    const setData = (object) => {
         dispatch({
             type: 'SET_DATA',
-            payload: object.contacts
+            payload: object
         })
-        navigate("/" + object.url)
     }
     const deleteCookie = () => {
         delete_cookie(cookie_key)
@@ -86,6 +90,7 @@ export default function App() {
                 payload: element
             })
         });
+        setData({contacts: contacts})
     }
 
 
@@ -97,7 +102,8 @@ export default function App() {
                 <Route path="/" element={<div></div>} />
                 <Route path="/signin" element={<SignIn onLogin={onLogin} navigate={navigate} />} />
                 <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
-                <Route path={"/" + state.url} element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} giveContacts={giveContacts} />} />
+                <Route path={"/" + state.url} element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
+                <Route path="contacts" element={<Contacts  giveContacts={giveContacts} userLogin={read_cookie(cookie_key).userLogin}/>} />
             </Routes>
         </div>
     );

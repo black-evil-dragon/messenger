@@ -23,7 +23,7 @@ export default (state, action) => {
         case 'SET_DATA':
             return {
                 ...state,
-                contacts: action.payload
+                contacts: action.payload.contacts
             }
         default:
             return state;

@@ -1,26 +1,14 @@
 import React from 'react'
+
 import axios from 'axios'
+import { Routes, Route } from 'react-router'
+import { Link } from 'react-router-dom'
+
+import Contacts from './Contacts'
 
 
 export default function Profile({ userLogin, userName, deleteCookie, giveContacts, contacts }) {
-    const [contactLogin, setContact] = React.useState('')
-    const [notice, setNotice] = React.useState('')
 
-    const addContact = async () => {
-        const object = {
-            contactLogin: contactLogin,
-            userLogin: userLogin
-        }
-        const result = await axios.post('/getcontact', object)
-        if (!result.data) {
-            giveContacts(object)
-            setNotice('Success!')
-
-        } else {
-            setNotice(result.data)
-        }
-        setContact('')
-    }
 
     return (
         <div>
@@ -42,11 +30,6 @@ export default function Profile({ userLogin, userName, deleteCookie, giveContact
             </div>
             <br></br>
             <br></br>
-            <div>
-                <input type="text" value={contactLogin} onChange={(e) => setContact(e.target.value)} />
-                <button onClick={addContact}>Добавить контакт</button>
-            </div>
-            <div>{notice}</div>
         </div>
     )
 }

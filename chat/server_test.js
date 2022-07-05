@@ -105,7 +105,7 @@ app.post('/signup', function (req, res) {
             userName: userName,
             userPassword: userPassword,
             status: true,
-            url: `profile/${userLogin}`,
+            url: `/${userLogin}`,
             contacts: [],
             chats: []
         }).write()
