@@ -46,6 +46,11 @@ const DB = require('./db/db.json')
 
 console.log(chalk.green('Server started successfully!\n'));
 
+const getUserByLogin = (login) => {
+    const result = db.get('users').find({userLogin: login}).value()
+    return result
+}
+
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/server.html')
@@ -55,14 +60,33 @@ app.get('/users', function (req, res) {
     res.json(DB)
 })
 
+
+app.post('/getcontact', function (req, res) {
+    const { contactLogin, userLogin } = req.body
+    let result = ''
+    if(getUserByLogin(contactLogin)){
+        if(!db.get('users').find({userLogin: contactLogin}).get('contacts').find({userLogin: userLogin}).value()){
+            db.get('users').find({userLogin: contactLogin}).get('contacts').push({userLogin: userLogin, friend:false}).write()
+        }
+        if(!db.get('users').find({userLogin: userLogin}).get('contacts').find({userLogin: contactLogin}).value()){
+            db.get('users').find({userLogin: userLogin}).get('contacts').push({userLogin: contactLogin, friend:false}).write()
+        } else { result='Пользователь уже добавлен в контакты' }
+    } else {
+        result = 'NOT_FOUND'
+    }
+    res.send(result)
+})
+
 app.post('/user', function (req, res) {
     const { userLogin } = req.body
     const getUserByLogin = db.get('users').find({userLogin: userLogin}).value()
+    const contacts = db.get('users').find({userLogin: userLogin}).get('contacts').value()
 
     const user_data = {
         userLogin: getUserByLogin.userLogin,
         userName: getUserByLogin.userName,
-        url: getUserByLogin.url
+        url: getUserByLogin.url,
+        contacts: contacts
     }
 
     res.send(user_data)
@@ -70,9 +94,8 @@ app.post('/user', function (req, res) {
 
 app.post('/signup', function (req, res) {
     const { userLogin, userName, userPassword } = req.body
-    const getUserByLogin = db.get('users').find({useLogin: userLogin}).value()
 
-    if(getUserByLogin) {
+    if(getUserByLogin(userLogin)) {
         const result = 'USER_ALREADY_CREATED'
         res.send(result)
     } else {
@@ -83,6 +106,7 @@ app.post('/signup', function (req, res) {
             userPassword: userPassword,
             status: true,
             url: `profile/${userLogin}`,
+            contacts: [],
             chats: []
         }).write()
         res.send()
@@ -90,7 +114,7 @@ app.post('/signup', function (req, res) {
 })
 app.post('/signin', function (req, res) {
     const { userLogin, userPassword } = req.body
-    const getUserByLogin = db.get('users').find({userLogin: userLogin}).value()
+    const getUserByLogin = db.get('users').find({userLogin: userLogin}).value() // const values = getUserByLogin(userLogin) надо посмотреть, почему не работает
     let result = ''
 
     if(getUserByLogin && (getUserByLogin.userPassword === userPassword)){

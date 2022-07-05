@@ -19,7 +19,7 @@ import Profile from './components/Profile'
 
 
 
-const cookie_key = 'userAuth';
+const cookie_key = 'sessionID';
 
 
 export default function App() {
@@ -30,25 +30,29 @@ export default function App() {
         userLogin: null,
         userName: null,
         chats: [],
-        url: 'profile'
+        url: 'profile',
+        contacts: []
     })
 
     const onLogin = async (object) => {
-        if (!object.userName) {
-            const user_data = await axios.post('/user', object)
+        const user_data = await axios.post('/user', object)
 
-            object = {
-                userLogin: user_data.data.userLogin,
-                userName: user_data.data.userName,
-                url: user_data.data.url
-            }
-            bake_cookie(cookie_key, object);
-            dispatch({
-                type: 'LOGIN',
-                payload: object
-            })
-            navigate("/" + object.url)
+        object = {
+            userLogin: user_data.data.userLogin,
+            userName: user_data.data.userName,
+            url: user_data.data.url,
+            contacts: user_data.data.contacts
         }
+        bake_cookie(cookie_key, object);
+        dispatch({
+            type: 'LOGIN',
+            payload: object
+        })
+        dispatch({
+            type: 'SET_DATA',
+            payload: object.contacts
+        })
+        navigate("/" + object.url)
     }
     const deleteCookie = () => {
         delete_cookie(cookie_key)
@@ -68,12 +72,21 @@ export default function App() {
                 userName: read_cookie(cookie_key).userName,
                 url: read_cookie(cookie_key).url
             }
-            dispatch({
-                type: 'LOGIN',
-                payload: object,
-            })
+            onLogin(object)
         }
     }, [])
+
+    const giveContacts = async (object) => {
+        const user_data = await axios.post('/user', object)
+        const contacts = user_data.data.contacts
+
+        contacts.forEach(element => {
+            dispatch({
+                type: 'SET_CONTACTS',
+                payload: element
+            })
+        });
+    }
 
 
     return (
@@ -84,7 +97,7 @@ export default function App() {
                 <Route path="/" element={<div></div>} />
                 <Route path="/signin" element={<SignIn onLogin={onLogin} navigate={navigate} />} />
                 <Route path="/signup" element={<SignUp onLogin={onLogin} />} />
-                <Route path={"/" + state.url} element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} />} />
+                <Route path={"/" + state.url} element={!state.isLogin ? <div>Not user</div> : <Profile {...state} deleteCookie={deleteCookie} giveContacts={giveContacts} />} />
             </Routes>
         </div>
     );

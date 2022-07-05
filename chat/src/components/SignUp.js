@@ -11,7 +11,7 @@ export default function SignUp({ onLogin }) {
     const [userName, setName] = React.useState('')
     const [userPassword, setPassword] = React.useState('')
     const [isLoading, setLoading] = React.useState(false)
-    const [error, setError] = React.useState('')
+    const [notice, setNotice] = React.useState('')
 
     let navigate = useNavigate()
 
@@ -29,12 +29,10 @@ export default function SignUp({ onLogin }) {
 
         if (!result.data) {
             setLoading(true);
-            setError('')
-            //onLogin(object)
-            //navigate('/profile')
+            setNotice('')
 
         } else {
-            setError('Error')
+            setNotice('Error')
         }
     }
 
@@ -42,17 +40,24 @@ export default function SignUp({ onLogin }) {
         <div>
             Register
 
-            <div>
-                <input placeholder='Ваш login' type="text" value={userLogin} onChange={(e) => { setLogin(e.target.value) }} /><br></br>
-                <input placeholder='Ваше имя' type="text" value={userName} onChange={(e) => { setName(e.target.value) }} /><br></br>
-                <input placeholder='Пароль' type="password" value={userPassword} onChange={(e) => { setPassword(e.target.value) }} />
-            </div>
+            {!isLoading
+                ?
+                <div>
+                    <div>
+                        <input placeholder='Ваш login' type="text" value={userLogin} onChange={(e) => { setLogin(e.target.value) }} /><br></br>
+                        <input placeholder='Ваше имя' type="text" value={userName} onChange={(e) => { setName(e.target.value) }} /><br></br>
+                        <input placeholder='Пароль' type="password" value={userPassword} onChange={(e) => { setPassword(e.target.value) }} />
+                    </div>
 
-            <div>
-                <button onClick={onSignUp} disabled={isLoading}>Зарегестрироваться</button>
-            </div>
+                    <div>
+                        <button onClick={onSignUp} disabled={isLoading}>Зарегестрироваться</button>
+                    </div>
+                </div>
+                :
+                <div>Success!</div>
+            }
 
-            <div>{error}</div>
+            <div>{notice}</div>
         </div>
     )
 }

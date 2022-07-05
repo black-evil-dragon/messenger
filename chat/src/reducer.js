@@ -15,6 +15,16 @@ export default (state, action) => {
                 isLogin: false,
                 url: action.payload.url
             }
+        case 'SET_CONTACTS':
+            return {
+                ...state,
+                contacts: [...state.contacts, action.payload]
+            }
+        case 'SET_DATA':
+            return {
+                ...state,
+                contacts: action.payload
+            }
         default:
             return state;
     }
