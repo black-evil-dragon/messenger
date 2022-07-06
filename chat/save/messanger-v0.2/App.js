@@ -11,7 +11,7 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 //import './assets/styles/css/media.min.css'
 
 import SignIn from './components/SignIn';
-import SignUp from './components/SignUp'
+import SignUp from '././components/SignUp'
 import Navigation from './components/Nav'
 import JoinBlock from './components/JoinBlock';
 import Chat from './components/Chat';
