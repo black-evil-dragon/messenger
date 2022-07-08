@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "server",
+  "main": "server.js",
+  "proxy": "http://localhost:8000/",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js",
+    "server-test": "nodemon server_test.js"
+  },
+  "author": "Golgan Semyon",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "express": "^4.18.1",
+    "lowdb": "^1.0.0",
+    "nodemon": "^2.0.19",
+    "socket.io": "^4.5.1",
+    "uniqid": "^5.4.0"
+  }
+}

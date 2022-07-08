@@ -9,7 +9,7 @@ const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 
-const jwt = require('./node_modules/jsonwebtoken')
+const jwt = require('../chat/node_modules/jsonwebtoken')
 
 const chalk = require('chalk');
 const uniqid = require('uniqid')
