@@ -10,9 +10,13 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 
 const jwt = require('../chat/node_modules/jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const chalk = require('chalk');
 const uniqid = require('uniqid')
+const nanoid = require('nanoid').customAlphabet('1234567890', 10);
+
+
 
 const express = require('express')
 const socket = require('socket.io')
@@ -45,6 +49,7 @@ db_init.defaults(
 
 const accessTokenSecret = 'AccessToken';
 const refreshTokenSecret = 'RefreshToken';
+const saltRounds = 10;
 
 let refreshTokens = []
 
@@ -84,12 +89,16 @@ app.post('/getcontact', function (req, res) {
     const db = low(adapter)
 
     const { contactLogin, userLogin } = req.body
+
+    const getContactsByTarget = db.get('users').find({ userLogin: contactLogin }).get('contacts').find({ userLogin: userLogin }).value()
+    const getContactsByUser = db.get('users').find({ userLogin: userLogin }).get('contacts').find({ userLogin: contactLogin }).value()
+
     let result = ''
     if (getUserByLogin(contactLogin)) {
-        if (!db.get('users').find({ userLogin: contactLogin }).get('contacts').find({ userLogin: userLogin }).value()) {
+        if (!getContactsByTarget) {
             db.get('users').find({ userLogin: contactLogin }).get('contacts').push({ userLogin: userLogin, friend: false }).write()
         }
-        if (!db.get('users').find({ userLogin: userLogin }).get('contacts').find({ userLogin: contactLogin }).value()) {
+        if (!getContactsByUser) {
             db.get('users').find({ userLogin: userLogin }).get('contacts').push({ userLogin: contactLogin, friend: false }).write()
         } else { result = 'Пользователь уже добавлен в контакты' }
     } else {
@@ -139,6 +148,7 @@ app.post('/user', function (req, res) {
 
 app.post('/signup', function (req, res) {
     const db = low(adapter)
+    const id = nanoid()
 
     const { userLogin, userName, userPassword } = req.body
 
@@ -146,16 +156,18 @@ app.post('/signup', function (req, res) {
         const result = 'USER_ALREADY_CREATED'
         res.send(result)
     } else {
-        db.get('users').push({
-            ID: uniqid(),
-            userLogin: userLogin,
-            userName: userName,
-            userPassword: userPassword,
-            status: false,
-            url: `/${userLogin}`,
-            contacts: [],
-            chats: []
-        }).write()
+        bcrypt.hash(userPassword, saltRounds, function(err, hash) {
+            db.get('users').push({
+                ID: id,
+                userLogin: userLogin,
+                userName: userName,
+                userPassword: hash,
+                status: false,
+                url: `/${userLogin}`,
+                contacts: [],
+                chats: []
+            }).write()
+        });
         res.send()
     }
 })
@@ -170,8 +182,11 @@ app.post('/signin', function (req, res) { // Думаю надо переиме�
     const getUserByLogin = db.get('users').find({ userLogin: userLogin }).value() // const values = getUserByLogin(userLogin) надо посмотреть, почему не работает
     let result = ''
 
-    if (getUserByLogin && (getUserByLogin.userPassword === userPassword)) {
-        result = ''
+    if (getUserByLogin) {
+        const checkPassword = bcrypt.compare(userPassword, getUserByLogin.userPassword)
+        if(checkPassword) {
+            result = ''
+        }
 
     } else {
         result = 'ERROR'
@@ -200,6 +215,6 @@ server.listen(port, (error) => {
     if (error) {
         throw Error(error)
     }
-    console.log(`App listening on port: ${chalk.underline(port)}, version: ${version}\n\n${chalk.bold('  URL:    ')}${proxy}\n`);
+    console.log(`App listening on port: ${chalk.underline(port)}\nVersion: ${version}\n\n${chalk.bold('  URL:    ')}${proxy}\n`);
     console.log('Users socket ID:');
 })

@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.0.1",
+  "version": "0.0.3.5",
   "description": "server",
   "main": "server.js",
   "proxy": "http://localhost:8000/",
@@ -12,9 +12,11 @@
   "author": "Golgan Semyon",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "chalk": "^4.1.2",
     "express": "^4.18.1",
     "lowdb": "^1.0.0",
+    "nanoid": "^3.1.20",
     "nodemon": "^2.0.19",
     "socket.io": "^4.5.1",
     "uniqid": "^5.4.0"

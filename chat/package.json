@@ -1,6 +1,6 @@
 {
   "name": "messenger",
-  "version": "0.0.3.4",
+  "version": "0.0.3.5",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
