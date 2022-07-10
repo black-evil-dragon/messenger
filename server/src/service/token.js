@@ -8,8 +8,8 @@ const adapter = new FileSync('./db/db.json')
 
 
 const generateTokens = (payload) => {
-    const accessToken = jwt.sign(payload, access_secret, { expiresIn: '2m' })
-    const refreshToken = jwt.sign(payload, refresh_secret, { expiresIn: '5m' })
+    const accessToken = jwt.sign(payload, access_secret, { expiresIn: '1h' })
+    const refreshToken = jwt.sign(payload, refresh_secret, { expiresIn: '24h' })
 
     return {
         accessToken,
@@ -38,16 +38,47 @@ const removeToken = (userLogin, refreshToken) => {
     }
 }
 
+
 const validateAccessToken = (token) => {
-    
+    try {
+        const tokenData = jwt.verify(token, access_secret)
+        return tokenData
+    } catch (error) {
+        return null
+    }
 }
 
 const validateRefreshToken = (token) => {
-    
+    try {
+        const tokenData = jwt.verify(token, refresh_secret)
+        return tokenData
+    } catch (error) {
+        return null
+    }
+}
+
+const refreshThisToken = (refreshToken) => {
+    const db = low(adapter)
+    if(!refreshToken) {
+        return 401
+    }
+
+    const tokenData = validateRefreshToken(refreshToken)
+    const getToken = db.get('users').find({ refreshToken: refreshToken }).value()
+
+    if(!tokenData || !getToken){
+        return 401
+    } else {
+        return getToken
+    }
+
 }
 
 module.exports = {
     saveToken,
     generateTokens,
-    removeToken
+    removeToken,
+    refreshThisToken,
+    validateAccessToken,
+    validateRefreshToken
 }

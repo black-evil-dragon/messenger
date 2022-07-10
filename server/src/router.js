@@ -7,7 +7,8 @@ const adapter = new FileSync('./db/db.json')
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
-const { generateTokens, saveToken, removeToken } = require('./service/token');
+const { generateTokens, saveToken, removeToken, refreshThisToken } = require('./service/token');
+const { authMiddleware } = require('./middleware/auth');
 const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
 const getUserByLogin = (login) => {
@@ -17,17 +18,22 @@ const getUserByLogin = (login) => {
 }
 
 
+
 /* Router */
 
 const homePage = (req, res) => {
     res.sendFile(__dirname + '/server.html')
 }
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
     const db = low(adapter)
-    let DB = db.get('users').value()
 
+    const result = authMiddleware(req, res) // Я пробовал запихнуть его как middleware, но почему-то происходит бесконечная попытка отправить запрос, посмотрю позже
+    if (result === 401) { return res.sendStatus(401) }
+
+    let DB = db.get('users').value()
     res.json(DB)
+
     return
 }
 
@@ -171,11 +177,39 @@ const logout = (req, res) => {
 
 const refresh = (req, res) => {
     const { refreshToken } = req.cookies
-    const tokens = generateTokens(user_data)
-    saveToken(userLogin, tokens.refreshToken)
 
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({ tokens, user_data })
-    return
+    const result = refreshThisToken(refreshToken)
+    if (result === 401) {
+        res.sendStatus(401)
+    } else {
+        const user_data = getUserData(refreshToken, 'token')
+
+        const tokens = generateTokens(user_data)
+        saveToken(user_data.userLogin, tokens.refreshToken)
+
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({ tokens, user_data }).send()
+        return
+
+    }
+    res.send()
+}
+
+
+/* Other func-s */
+
+const getUserData = (target, type) => {
+    const db = low(adapter)
+
+    if (type === 'token') {
+        const user = db.get('users').find({ refreshToken: target }).value()
+
+        return {
+            userLogin: user.userLogin,
+            userName: user.userData.userName,
+            url: user.userData.url,
+            contacts: user.userData.contacts
+        }
+    }
 }
 
 

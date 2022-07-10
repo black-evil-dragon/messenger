@@ -2,22 +2,16 @@ console.clear();
 
 /*   Modules    */
 
-
-const { version, proxy } = require('../chat/package.json');
 const router = require('./src/router');
+const { version, proxy } = require('../chat/package.json');
+const { authMiddleware } = require('./src/middleware/auth')
 
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
-
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
-
 const chalk = require('chalk');
-const uniqid = require('uniqid')
-const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
-
+const cors = require('cors');
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const socket = require('socket.io')
@@ -25,15 +19,24 @@ const http = require('http')
 const port = 8000
 const app = express()
 const server = http.createServer(app)
-const io = socket(server, {
+const io = socket(server)
+
+/*
+, {
     cors: {
-        origin: '*'
+        origin: '*',
+        Credential: true
     }
-})
+}
+*/
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use(cors({
+    credential: true,
+    origin: proxy
+}))
 
 
 
