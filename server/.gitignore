@@ -3,6 +3,8 @@
 
 /db
 
+/config.json
+
 # dependencies
 /node_modules
 /.pnp

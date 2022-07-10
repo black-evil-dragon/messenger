@@ -20,7 +20,7 @@ export default function SignIn({onLogin, navigate}) {
         }
         const result = await axios.post('/signin', object)
 
-        if (result.data !== 'ERROR') {
+        if (result.status !== 401) {
             const user = {
                 userLogin: userLogin,
             }

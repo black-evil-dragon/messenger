@@ -27,7 +27,7 @@ export default function SignUp({ onLogin }) {
         }
         const result = await axios.post('/signup', object)
 
-        if (!result.data) {
+        if (result.data !== 'USER_ALREADY_CREATED') {
             setLoading(true);
             setNotice('')
 
