@@ -6,13 +6,10 @@ import api from '../../http/axios'
 
 export default function Profile({userLogin, userMail, userName, navigate, setLogout}) {
 
-    const logout = async () => {
-        const response = await axios.post('/api/logout', { userLogin })
-        setLogout()
-    }
     const test = async () => {
         const response = await api.get('/users')
-        if(response){
+
+        if(response.status === 200){
             console.log(response.data);
         }
     }
@@ -25,7 +22,7 @@ export default function Profile({userLogin, userMail, userName, navigate, setLog
             <div>{userLogin}</div>
             <div>{userName}</div>
             <hr></hr>
-            <button onClick={logout}>Выйти</button>
+            <button onClick={setLogout}>Выйти</button>
             <button onClick={test}>get users</button>
         </div>
     )

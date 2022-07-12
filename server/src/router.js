@@ -7,7 +7,7 @@ const adapter = new FileSync('./db/db.json')
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
-const { generateTokens, saveToken, removeToken, refreshThisToken } = require('./service/token');
+const { generateTokens, saveToken, removeToken, refreshThisToken, validateAccessToken, validateRefreshToken } = require('./service/token');
 const { authMiddleware } = require('./middleware/auth');
 const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
@@ -43,59 +43,6 @@ const getUsers = (req, res, next) => {
     res.json(DB)
 
     return
-}
-
-const getContacts = (req, res) => {
-    const db = low(adapter)
-
-    const { contactLogin, userLogin } = req.body
-
-    const getContactsByTarget = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts').find({ userLogin: userLogin }).value()
-    const getContactsByUser = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').find({ userLogin: contactLogin }).value()
-
-    let result
-    if (getUserByLogin(contactLogin)) {
-        if (!getContactsByTarget) {
-            db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts').push({ userLogin: userLogin, friend: false }).write()
-        }
-        if (!getContactsByUser) {
-            db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').push({ userLogin: contactLogin, friend: false }).write()
-        } else { result = 'Пользователь уже добавлен в контакты' }
-    } else {
-        result = 'NOT_FOUND'
-    }
-    res.send(result)
-}
-
-const removeContacts = (req, res) => {
-    const db = low(adapter)
-
-    const { contactLogin, userLogin } = req.body
-    let result
-
-    if (getUserByLogin(contactLogin)) {
-        db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts').remove({ userLogin: userLogin }).write()
-        db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').remove({ userLogin: contactLogin }).write()
-    } else { result = 'Error' }
-    res.send(result)
-}
-
-const postUserData = (req, res) => {
-    const db = low(adapter)
-
-    const { userLogin } = req.body
-    const getUserByLogin = db.get('users').find({ userLogin: userLogin }).value()
-    const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').value()
-
-    const user_data = {
-        userMail: getUserByLogin.userMail,
-        userLogin: getUserByLogin.userLogin,
-        userName: getUserByLogin.userData.userName,
-        url: getUserByLogin.userData.url,
-        contacts: contacts
-    }
-    res.send(user_data)
-    return user_data
 }
 
 
@@ -156,12 +103,29 @@ const SignIn = (req, res) => { // Думаю надо переименовать
     }
 
     const tokens = generateTokens(user_data)
-    response = true
     saveToken(user_data.userLogin, tokens.refreshToken)
 
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({tokens, user_data, response})
+    response = true
+    const result = {
+        response: response,
+        userData: user_data,
+        token: tokens.accessToken
+    }
+
+    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).send(result)
     return
 
+}
+
+
+const authUser = (req, res) => {
+    const result = authMiddleware(req, res)
+    if (result === 401) { return res.sendStatus(401) }
+
+    const { refreshToken } = req.cookies
+    const userData = validateRefreshToken(refreshToken)
+    res.send(userData)
+    return
 }
 
 const logout = (req, res) => {
@@ -180,11 +144,10 @@ const refresh = (req, res) => {
     const result = refreshThisToken(refreshToken)
 
     if (result === 401) {
-        res.sendStatus(401)
+        res.send('401C') // custom error
     } else {
-        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json(result).send()
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 1 }).send(result.accessToken)
         return
-
     }
     res.send()
 }
@@ -223,12 +186,10 @@ const getUserData = (target, type) => {
 module.exports = {
     homePage,
     getUsers,
-    getContacts,
-    removeContacts,
-    postUserData,
     SignUp,
     SignIn,
     logout,
-    refresh
+    refresh,
+    authUser
 }
 

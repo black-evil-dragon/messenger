@@ -36,9 +36,10 @@ export default function SignIn({ onLogin }) {
 
     const authUser = async (user) => {
         const response = await axios.post('/api/signin', user)
+
         if(response.data.response){
-            onLogin(response.data.user_data)
-            localStorage.setItem('token', response.data.tokens.accessToken)
+            onLogin(response.data.userData)
+            localStorage.setItem('token', response.data.token)
             homePage()
         }
     }

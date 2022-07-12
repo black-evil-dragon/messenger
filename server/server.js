@@ -54,13 +54,11 @@ app.get('/', router.homePage)
     .get('/users', router.getUsers)
 
 /*  Post    */
-app.post('/api/getcontact', router.getContacts)
-    .post('/api/removecontact', router.removeContacts)
-    .post('/api/user', router.postUserData)
-    .post('/api/signup', router.SignUp)
+app.post('/api/signup', router.SignUp)
     .post('/api/signin', router.SignIn)
     .post('/api/logout', router.logout)
     .post('/api/refresh', router.refresh)
+    .post('/api/auth', router.authUser)
 
 
 io.on('connection', (socket) => {

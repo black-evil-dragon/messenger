@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 
 
@@ -17,15 +18,59 @@ api.interceptors.response.use((config) => {
     const originalRequest = error.config
 
     if (error.response.status === 401) {
-        try {
-            const response = await api.post('/api/refresh', {withCredentials: true})
+        const response = await api.post('/api/refresh', { withCredentials: true })
+        console.log(response);
+        if (response.data !== '401C') {
+            originalRequest.headers.Authorization = `Bearer ${response.data}`
 
             localStorage.setItem('token', response.data.accessToken)
             return api.request(originalRequest)
-        } catch (error) {
-            console.error(error)
+        } else {
+            return '401C'
         }
     }
 })
 
+
+
 export default api
+
+/*
+
+const axios = require('axios');
+
+const MAX_RETRY = 10;
+let currentRetry = 0;
+
+function successHandler() {
+  console.log('Data is Ready');
+}
+
+function errorHandler() {
+  if (currentRetry < MAX_RETRY) {
+    currentRetry++;
+    console.log('Retrying...');
+    sendWithRetry();
+  } else {
+    console.log('Retried several times but still failed');
+  }
+}
+
+function sendWithRetry() {
+  axios.get('http://example.com')
+    .then(successHandler).catch(errorHandler);
+}
+
+axios.interceptors.response.use(function (response) {
+  if (response.data.metrics.length) {
+    throw new axios.Cancel('Operation canceled by the user.');
+  } else {
+    return response;
+  }
+}, function (error) {
+  return Promise.reject(error);
+});
+
+sendWithRetry();
+
+*/
