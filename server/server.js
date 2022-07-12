@@ -19,24 +19,16 @@ const http = require('http')
 const port = 8000
 const app = express()
 const server = http.createServer(app)
-const io = socket(server)
-
-/*
-, {
+const io = socket(server, {
     cors: {
         origin: '*',
-        Credential: true
+        credential: true
     }
-}
-*/
+})
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
-app.use(cors({
-    credential: true,
-    origin: proxy
-}))
 
 
 
@@ -62,13 +54,13 @@ app.get('/', router.homePage)
     .get('/users', router.getUsers)
 
 /*  Post    */
-app.post('/getcontact', router.getContacts)
-    .post('/removecontact', router.removeContacts)
-    .post('/user', router.postUserData)
-    .post('/signup', router.SignUp)
-    .post('/signin', router.SignIn)
-    .post('/logout', router.logout)
-    .post('/refresh', router.refresh)
+app.post('/api/getcontact', router.getContacts)
+    .post('/api/removecontact', router.removeContacts)
+    .post('/api/user', router.postUserData)
+    .post('/api/signup', router.SignUp)
+    .post('/api/signin', router.SignIn)
+    .post('/api/logout', router.logout)
+    .post('/api/refresh', router.refresh)
 
 
 io.on('connection', (socket) => {

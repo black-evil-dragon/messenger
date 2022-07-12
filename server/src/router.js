@@ -17,6 +17,13 @@ const getUserByLogin = (login) => {
     return result
 }
 
+const getUserByMail = (mail) => {
+    const db = low(adapter)
+    const result = db.get('users').find({ userMail: mail }).value()
+    return result
+}
+
+
 
 
 /* Router */
@@ -29,6 +36,7 @@ const getUsers = (req, res, next) => {
     const db = low(adapter)
 
     const result = authMiddleware(req, res) // Я пробовал запихнуть его как middleware, но почему-то происходит бесконечная попытка отправить запрос, посмотрю позже
+
     if (result === 401) { return res.sendStatus(401) }
 
     let DB = db.get('users').value()
@@ -80,6 +88,7 @@ const postUserData = (req, res) => {
     const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').value()
 
     const user_data = {
+        userMail: getUserByLogin.userMail,
         userLogin: getUserByLogin.userLogin,
         userName: getUserByLogin.userData.userName,
         url: getUserByLogin.userData.url,
@@ -92,10 +101,10 @@ const postUserData = (req, res) => {
 
 const SignUp = (req, res) => {
     const db = low(adapter)
-    const { userLogin, userName, userPassword } = req.body
+    const { userMail, userLogin, userName, userPassword } = req.body
 
-    if (getUserByLogin(userLogin)) {
-        const result = 'USER_ALREADY_CREATED'
+    if (getUserByLogin(userLogin) || getUserByMail(userMail)) {
+        const result = false
         res.send(result)
     } else {
         const id = nanoid()
@@ -103,6 +112,7 @@ const SignUp = (req, res) => {
 
         db.get('users').push({
             ID: id,
+            userMail: userMail,
             userLogin: userLogin,
             userPassword: hashPassword,
             userData: {
@@ -114,20 +124,12 @@ const SignUp = (req, res) => {
             }
         }).write()
 
-        const getUserByLogin = db.get('users').find({ userLogin: userLogin }).value()
-        const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').value()
-
-        const user_data = {
-            userLogin: getUserByLogin.userLogin,
-            userName: getUserByLogin.userData.userName,
-            url: getUserByLogin.userData.url,
-            contacts: contacts
-        }
+        const user_data = getUserData(userMail, 'mail')
 
         const tokens = generateTokens(user_data)
         saveToken(userLogin, tokens.refreshToken)
 
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({ tokens, user_data })
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).sendStatus(200)
         return
     }
 }
@@ -135,32 +137,29 @@ const SignUp = (req, res) => {
 const SignIn = (req, res) => { // Думаю надо переименовать в /login
     const db = low(adapter)
 
-    const { userLogin, userPassword } = req.body
-    const getUserByLogin = db.get('users').find({ userLogin: userLogin }).value()
-    const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').value()
+    const { userMail, userPassword } = req.body
+    const getUserByMail = db.get('users').find({ userMail: userMail }).value()
+    const contacts = db.get('users').find({ userMail: userMail }).get('userData').get('contacts').value()
 
-    const user_data = {
-        userLogin: getUserByLogin.userLogin,
-        userName: getUserByLogin.userData.userName,
-        url: getUserByLogin.userData.url,
-        contacts: contacts
-    }
-    let result = 'Авторизация прошла успешно'
+    const user_data = getUserData(userMail, 'mail')
 
-    if (getUserByLogin) {
-        const checkPassword = bcrypt.compareSync(userPassword, getUserByLogin.userPassword, function (res) { return res })
+    let response
+
+    if (getUserByMail) {
+        const checkPassword = bcrypt.compareSync(userPassword, getUserByMail.userPassword, function (res) { return res })
 
         if (!checkPassword) {
-            result = 'Неправильный логин или пароль'
+            response = false
         }
     } else {
-        result = 'Неправильный логин или пароль'
+        response = false
     }
 
     const tokens = generateTokens(user_data)
-    saveToken(userLogin, tokens.refreshToken)
+    response = true
+    saveToken(user_data.userLogin, tokens.refreshToken)
 
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({ tokens, user_data })
+    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({tokens, user_data, response})
     return
 
 }
@@ -179,15 +178,11 @@ const refresh = (req, res) => {
     const { refreshToken } = req.cookies
 
     const result = refreshThisToken(refreshToken)
+
     if (result === 401) {
         res.sendStatus(401)
     } else {
-        const user_data = getUserData(refreshToken, 'token')
-
-        const tokens = generateTokens(user_data)
-        saveToken(user_data.userLogin, tokens.refreshToken)
-
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json({ tokens, user_data }).send()
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).json(result).send()
         return
 
     }
@@ -204,6 +199,18 @@ const getUserData = (target, type) => {
         const user = db.get('users').find({ refreshToken: target }).value()
 
         return {
+            userMail: user.userMail,
+            userLogin: user.userLogin,
+            userName: user.userData.userName,
+            url: user.userData.url,
+            contacts: user.userData.contacts
+        }
+    }
+    if (type === 'mail'){
+        const user = db.get('users').find({ userMail: target }).value()
+
+        return {
+            userMail: user.userMail,
             userLogin: user.userLogin,
             userName: user.userData.userName,
             url: user.userData.url,

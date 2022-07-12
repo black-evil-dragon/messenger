@@ -5,15 +5,18 @@ export default (state, action) => {
             return {
                 ...state,
                 isLogin: true,
-                userName: action.payload.userName,
+                userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
-                url: action.payload.url
+                userName: action.payload.userName,
+                //chats: action.payload.userChatts,
+                url: action.payload.url,
+                contacts: action.payload.contacts
             }
         case 'LOGOUT':
             return {
                 ...state,
                 isLogin: false,
-                url: action.payload.url
+                url: ''
             }
         case 'SET_CONTACTS':
             return {
