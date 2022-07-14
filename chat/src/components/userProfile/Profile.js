@@ -6,14 +6,6 @@ import api from '../../http/axios'
 
 export default function Profile({userLogin, userMail, userName, navigate, setLogout}) {
 
-    const test = async () => {
-        const response = await api.get('/users')
-
-        if(response.status === 200){
-            console.log(response.data);
-        }
-    }
-
     return (
         <div>
             <div>Информация</div>
@@ -23,7 +15,6 @@ export default function Profile({userLogin, userMail, userName, navigate, setLog
             <div>{userName}</div>
             <hr></hr>
             <button onClick={setLogout}>Выйти</button>
-            <button onClick={test}>get users</button>
         </div>
     )
 }

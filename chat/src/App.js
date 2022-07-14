@@ -14,7 +14,7 @@ import Navigation from './components/Navigation';
 import Profile from './components/userProfile/Profile'
 
 function App() {
-    const [isLoading, setLoading] = React.useState()
+    const [ show, setShowing ] = React.useState(false)
     const [state, dispatch] = React.useReducer(reducer, {
         isLogin: false,
         userMail: null,
@@ -27,17 +27,17 @@ function App() {
 
     let navigate = useNavigate()
 
-    const onLogin = async (user) => {
+    const onLogin = async (user, nav) => {
         await dispatch({ // await еще как влияет, спасибо vsc
             type: 'LOGIN',
             payload: user
         })
-        navigate(user.url)
+        nav && navigate(user.url)
     }
 
     const setLogout = async () => {
-        setLoading(false)
         localStorage.removeItem('token')
+        await axios.post('/api/logout', state.userLogin)
         await dispatch({
             type: 'LOGOUT'
         })
@@ -46,34 +46,36 @@ function App() {
 
 
     const checkAuth = async (token) => {
-        setLoading(true)
+        setShowing(false)
         const response = await api.post('/api/refresh')
 
         if (response.data !== '401C') {
             const response = await api.post('/api/auth')
-            onLogin(response.data)
+            onLogin(response.data, false)
+            setShowing(true)
         } else {
-            setLoading(false)
             const userLogin = state.userLogin
             await axios.post('/api/logout', { userLogin })
             setLogout()
+            setShowing(true)
         }
     }
 
+
     React.useEffect(() => {
-        if (localStorage.getItem('token')) checkAuth(localStorage.getItem('token'))
+        localStorage.getItem('token') ? checkAuth(localStorage.getItem('token')) : setShowing(true)
         if (state.url === '') navigate('/')
     }, [])
+
+    console.log(show);
 
     return (
         <div>
             <br></br>
             <Routes>
-                <Route path="/" element={!isLoading ?
-                    <Home navigate={navigate} {...state} />
-                    :
-                    <div>Loading...</div>
-                } />
+                <Route path="/" element={
+                    <Home navigate={navigate} {...state} show={show}/>
+                }/>
                 <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path={"/" + state.url} element={<Profile {...state} navigate={navigate} setLogout={setLogout} />} />

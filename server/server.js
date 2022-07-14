@@ -37,7 +37,8 @@ const db_init = low(adapter)
 
 db_init.defaults(
     {
-        users: []
+        users: [],
+        chats: []
     }
 ).write()
 

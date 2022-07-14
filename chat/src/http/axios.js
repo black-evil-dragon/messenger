@@ -19,7 +19,6 @@ api.interceptors.response.use((config) => {
 
     if (error.response.status === 401) {
         const response = await api.post('/api/refresh', { withCredentials: true })
-        console.log(response);
         if (response.data !== '401C') {
             originalRequest.headers.Authorization = `Bearer ${response.data}`
 

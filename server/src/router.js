@@ -129,7 +129,7 @@ const authUser = (req, res) => {
 }
 
 const logout = (req, res) => {
-    const { userLogin } = req.body
+    const userLogin = req.body
     const { refreshToken } = req.cookies
 
     removeToken(userLogin, refreshToken)
@@ -146,7 +146,7 @@ const refresh = (req, res) => {
     if (result === 401) {
         res.send('401C') // custom error
     } else {
-        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 1 }).send(result.accessToken)
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(result.accessToken)
         return
     }
     res.send()

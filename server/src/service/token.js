@@ -8,8 +8,8 @@ const adapter = new FileSync('./db/db.json')
 
 
 const generateTokens = (payload) => {
-    const accessToken = jwt.sign(payload, access_secret, { expiresIn: '30s' })
-    const refreshToken = jwt.sign(payload, refresh_secret, { expiresIn: '1m' })
+    const accessToken = jwt.sign(payload, access_secret, { expiresIn: '24h' })
+    const refreshToken = jwt.sign(payload, refresh_secret, { expiresIn: '7d' })
 
     return {
         accessToken,
