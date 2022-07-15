@@ -7,14 +7,19 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 import api from './http/axios';
 
 
+import './assets/styles/css/index.min.css'
+
+
 import Home from './components/Home'
 import SignIn from './components/loginForm/SignIn'
 import SignUp from './components/loginForm/SignUp'
 import Navigation from './components/Navigation';
 import Profile from './components/userProfile/Profile'
+import Notice from './components/Notice';
+import Contacts from './components/Contacts';
 
 function App() {
-    const [ show, setShowing ] = React.useState(false)
+    const [show, setShowing] = React.useState(false)
     const [state, dispatch] = React.useReducer(reducer, {
         isLogin: false,
         userMail: null,
@@ -67,15 +72,16 @@ function App() {
         if (state.url === '') navigate('/')
     }, [])
 
-    console.log(show);
 
     return (
-        <div>
-            <br></br>
+        <div className='app-page'>
+            {state.isLogin && <Navigation url={state.url}/>}
             <Routes>
                 <Route path="/" element={
-                    <Home navigate={navigate} {...state} show={show}/>
-                }/>
+                    <Home navigate={navigate} {...state} show={show} />
+                } />
+                <Route path='/notice' element={<Notice />}/>
+                <Route path='/contacts' element={<Contacts />}/>
                 <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path={"/" + state.url} element={<Profile {...state} navigate={navigate} setLogout={setLogout} />} />

@@ -1,0 +1,69 @@
+div.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    div.login-form {
+        width: 40%;
+        div.login-input {
+            input {
+                width: 100%;
+                border-radius: .65rem;
+                -webkit-border-radius: .65rem;
+                -moz-border-radius: .65rem;
+                -ms-border-radius: .65rem;
+                -o-border-radius: .65rem;
+                outline: none;
+                padding: .35rem .2rem;
+                margin: .3rem 0;
+
+                border: solid .1rem $grey;
+            }
+            input.error-mail, input.error-password, input.error-mail[type='text'], input.error-password[type='text'] {
+                border: solid .1rem $danger;
+                color: $danger;
+            }
+        }
+        div.btn-submit {
+            button {
+                width: 100%;
+                text-decoration: none;
+                color: $black;
+                border: solid .15rem $blue;
+                background-color: $white;
+                border-radius: .65rem;
+                -webkit-border-radius: .65rem;
+                -moz-border-radius: .65rem;
+                -ms-border-radius: .65rem;
+                -o-border-radius: .65rem;
+
+                padding: .5rem .2rem;
+                margin: .3rem 0;
+            }
+            button:hover {
+                color: $white;
+                background-color: $blue;
+            }
+            button:disabled {
+                background-color: $blue-hover;
+                border: solid .15rem $blue-hover;
+            }
+        }
+
+        div.notice {
+            span {
+                font-size: .75rem;
+            }
+        }
+
+    }
+}
+
+@media screen and (max-width: 428px) {
+    div.login-page {
+        div.login-form {
+            width: 70%;
+        }
+    }
+}

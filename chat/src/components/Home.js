@@ -10,21 +10,20 @@ export default function Home({ isLogin, url, userLogin, show }) {
     const signupPage = () => navigate('/signup')
 
 
-    const loginForm = <div>
-        <button onClick={signinPage}>Войти</button>
-        <button onClick={signupPage}>Зарегестрироваться</button>
+    const loginButtons = <div className='login-btn'>
+        <h3>Добро пожаловать!</h3>
+        <button onClick={signinPage} id='signin'>Войти</button><br></br>
+        <button onClick={signupPage} id='signup'>Зарегестрироваться</button>
     </div>
     const mainPage = <div>
-        <div>Главная страница</div>
-        <Link to={`${url}`}>{userLogin}</Link>
     </div>
     const loadingPage = <div>
         Загрузка
     </div>
     return (
-        <div>
+        <div className={'main-page ' + isLogin}>
             {show ?
-                !isLogin ? loginForm : mainPage
+                !isLogin ? loginButtons : mainPage
             : loadingPage
             }
         </div>

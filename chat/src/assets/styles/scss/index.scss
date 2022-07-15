@@ -1,8 +1,6 @@
 @import './settings/var';
 @import './settings/font';
-@import './components/Chat';
-@import './components/JoinBlock';
-
+@import './components/index';
 
 body,
 html {
@@ -12,17 +10,20 @@ html {
     width: 100%;
 
     overflow: hidden;
+    font-size: 20px;
 }
 
 * {
+    box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
     font-style: normal;
     font-weight: 400;
 }
 
 div#root,
-div.app,
-div.join-block,
-div.chat-block {
+div.app-page,
+div.main-page,
+div.login-page,
+div.profile-page {
     height: 100%;
 }

@@ -1,0 +1,17 @@
+@import './homePage';
+@import './loginPage';
+@import './registerPage';
+@import './profilePage';
+@import './navigation';
+
+
+div.main-page.true,
+div.contact-page,
+div.notice-page {
+    display: inline-block;
+    width: 75%;
+}
+
+div.contact-list, div.notice-list, div.profile-info {
+    margin: 2rem 1rem;
+}

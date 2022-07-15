@@ -1,0 +1,46 @@
+div.profile-page {
+    display: inline-block;
+    width: 75%;
+
+    div.profile-info {
+        div.profile-user {
+            h3 {
+                width: 100%;
+                margin: 0;
+            }
+            p {
+                display: inline;
+                width: max-content;
+
+                font-size: .7rem;
+                margin: 1rem 0;
+
+                span {
+                    color: $grey;
+                }
+            }
+        }
+    }
+
+    button {
+        border: solid .1rem $danger;
+        background-color: $white;
+        color: $black;
+        padding: .3rem .5rem;
+        margin: 1rem 0;
+        border-radius: .65rem;
+        -webkit-border-radius: .65rem;
+        -moz-border-radius: .65rem;
+        -ms-border-radius: .65rem;
+        -o-border-radius: .65rem;
+        transition: all .25s;
+        -webkit-transition: all .25s;
+        -moz-transition: all .25s;
+        -ms-transition: all .25s;
+        -o-transition: all .25s;
+}
+    button:hover {
+        background-color: $danger;
+        color: $white;
+    }
+}
