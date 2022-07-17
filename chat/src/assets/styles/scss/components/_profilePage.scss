@@ -9,11 +9,9 @@ div.profile-page {
                 margin: 0;
             }
             p {
-                display: inline;
+                display: inline-block;
                 width: max-content;
-
-                font-size: .7rem;
-                margin: 1rem 0;
+                margin: .5rem 0;
 
                 span {
                     color: $grey;

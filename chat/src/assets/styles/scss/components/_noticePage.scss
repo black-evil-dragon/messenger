@@ -1,0 +1,104 @@
+div.notice-page {
+    div.notice-list {
+        div.other-notice {
+            div.notice {
+                p {
+                    display: inline-block;
+                    width: max-content;
+
+                    span {
+                        font-size: .95rem;
+                    }
+                }
+
+                button {
+                    margin: .6rem 0;
+                    padding: .3rem .5rem;
+
+                    border-radius: .65rem;
+                    -webkit-border-radius: .65rem;
+                    -moz-border-radius: .65rem;
+                    -ms-border-radius: .65rem;
+                    -o-border-radius: .65rem;
+
+                    transition: all .2s;
+                    -webkit-transition: all .2s;
+                    -moz-transition: all .2s;
+                    -ms-transition: all .2s;
+                    -o-transition: all .2s;
+                }
+                button:hover {
+                    color: $white;
+                }
+
+                button.accept {
+                    border: solid .1rem $blue;
+                    background-color: $white;
+
+                    margin-left: .9rem;
+                }
+
+                button.accept:hover {
+                    border: solid .1rem $blue;
+                    background-color: $blue;
+                }
+            }
+        }
+        div.invites {
+            p.title-notice {
+                font-size: .95rem;
+            }
+            div.invite {
+                p {
+                    margin-bottom: .2rem;
+                }
+
+                button {
+                    margin: .6rem 0;
+                    padding: .3rem .5rem;
+
+                    border-radius: .65rem;
+                    -webkit-border-radius: .65rem;
+                    -moz-border-radius: .65rem;
+                    -ms-border-radius: .65rem;
+                    -o-border-radius: .65rem;
+
+                    transition: all .2s;
+                    -webkit-transition: all .2s;
+                    -moz-transition: all .2s;
+                    -ms-transition: all .2s;
+                    -o-transition: all .2s;
+                }
+                button:hover {
+                    color: $white;
+                }
+                button.success {
+                    border: solid .1rem $green-success;
+                    background-color: $white;
+
+                    margin-right: 2rem;
+                }
+
+                button.success:hover {
+                    border: solid .1rem $green-success;
+                    background-color: $green-success;
+                }
+                button.warning {
+                    border: solid .1rem $danger;
+                    background-color: $white;
+                }
+
+                button.warning:hover {
+                    border: solid .1rem $danger;
+                    background-color: $danger;
+                }
+            }
+        }
+    }
+}
+
+p.lone-wolf {
+    span {
+        color: $grey;
+    }
+}

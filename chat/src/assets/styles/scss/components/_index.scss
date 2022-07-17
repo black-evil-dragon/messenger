@@ -3,6 +3,8 @@
 @import './registerPage';
 @import './profilePage';
 @import './navigation';
+@import './contactsPage';
+@import './noticePage';
 
 
 div.main-page.true,
@@ -14,4 +16,20 @@ div.notice-page {
 
 div.contact-list, div.notice-list, div.profile-info {
     margin: 2rem 1rem;
+}
+
+input.danger {
+    border-color: $danger !important;
+    color: $danger;
+}
+input.warning {
+    border-color: $warning !important;
+    color: $warning;
+}
+
+p.warning {
+    color: $warning;
+}
+p.danger {
+    color: $danger;
 }

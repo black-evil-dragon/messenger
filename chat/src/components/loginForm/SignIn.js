@@ -36,7 +36,7 @@ export default function SignIn({ onLogin }) {
 
         }
     }
-    console.log(notice);
+
     const authUser = async (user) => {
         const response = await axios.post('/api/signin', user)
 

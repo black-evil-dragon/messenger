@@ -43,6 +43,7 @@ db_init.defaults(
 ).write()
 
 
+
 /*   Server     */
 
 
@@ -53,6 +54,7 @@ console.log(chalk.green('Server started successfully!\n'));
 
 app.get('/', router.homePage)
     .get('/users', router.getUsers)
+    .get('/api/invite', router.inviteUser)
 
 /*  Post    */
 app.post('/api/signup', router.SignUp)
@@ -60,6 +62,10 @@ app.post('/api/signup', router.SignUp)
     .post('/api/logout', router.logout)
     .post('/api/refresh', router.refresh)
     .post('/api/auth', router.authUser)
+    .post('/api/update/data', router.updateData)
+    .post('/api/acceptInvite', router.acceptInvite)
+    .post('/api/delete/notice', router.deleteNotice)
+    .post('/api/delete/contact', router.deleteContact)
 
 
 io.on('connection', (socket) => {

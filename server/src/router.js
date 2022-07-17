@@ -1,15 +1,18 @@
 const { version, proxy } = require('../package.json');
-const { slt } = require('./config/config').config
 
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
+const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
+
 const { generateTokens, saveToken, removeToken, refreshThisToken, validateAccessToken, validateRefreshToken } = require('./service/token');
 const { authMiddleware } = require('./middleware/auth');
-const nanoid = require('nanoid').customAlphabet('1234567890', 10);
+const { slt } = require('./config/config').config
+const { getUserData } = require('./service/userData');
+
 
 const getUserByLogin = (login) => {
     const db = low(adapter)
@@ -46,6 +49,128 @@ const getUsers = (req, res, next) => {
 }
 
 
+const inviteUser = (req, res) => {
+    const db = low(adapter)
+    const { contactLogin, userLogin } = req.query
+
+    const result = authMiddleware(req, res)
+    if (result === 401) { return res.sendStatus(401) }
+
+    const user = db.get('users').find({ userLogin: contactLogin }).value()
+    const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
+    const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice').get('invites')
+
+    if (!contactNotice.find({ userLogin: userLogin }).value()) {
+        if (!contacts.find({ userLogin: contactLogin }).value()) {
+            if (user) {
+                contactNotice.push({ userLogin: userLogin }).write()
+                res.send('Ok')
+            } else {
+                res.send('404C')
+            }
+        } else {
+            res.send('200C')
+        }
+
+    } else {
+        res.send('200C')
+    }
+}
+
+const acceptInvite = (req, res) => {
+    const db = low(adapter)
+    const { contactLogin, userLogin, type } = req.body
+
+    const result = authMiddleware(req, res)
+    if (result === 401) { return res.sendStatus(401) }
+
+    const userContacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
+    const contactContacts = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts') // contactContacts lol
+    const userNotice = db.get('users').find({ userLogin: userLogin }).get('userData').get('notice').get('invites')
+    const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice')
+
+
+    if (type === 'accept') {
+        if (userNotice.find({ userLogin: contactLogin }).value()) {
+            userNotice.remove({ userLogin: contactLogin }).write()
+            contactNotice.get('other').push({ userLogin: userLogin, type: 'acceptInvite' }).write()
+
+            const contact_data = getUserData(contactLogin, 'login')
+            const user_data = getUserData(userLogin, 'login')
+
+            const contactData = {
+                userLogin: contact_data.userLogin,
+                userName: contact_data.userName
+            }
+            const userData = {
+                userLogin: user_data.userLogin,
+                userName: user_data.userName
+            }
+            contactContacts.push(userData).write()
+            userContacts.push(contactData).write()
+
+            res.send(contactData)
+        } else {
+            res.send('200C')
+        }
+    }
+    if (type === 'decline') {
+        if (userNotice.find({ userLogin: contactLogin }).value()) {
+            userNotice.remove({ userLogin: contactLogin }).write()
+            contactNotice.get('other').push({ userLogin: userLogin, type: 'declineInvite' }).write()
+            res.send()
+        } else {
+            res.send('200C')
+        }
+    }
+}
+
+const deleteNotice = (req, res) => {
+    const db = low(adapter)
+    const { userLogin, contactLogin } = req.body
+
+    const result = authMiddleware(req, res)
+    if (result === 401) {
+        return res.sendStatus(401)
+    } else {
+        const userNotice = db.get('users').find({ userLogin: userLogin }).get('userData').get('notice').get('other')
+        if (userNotice.find({ userLogin: contactLogin }).value()) {
+            userNotice.remove({ userLogin: contactLogin }).write()
+            res.send()
+        } else {
+            res.send('200C')
+        }
+    }
+}
+
+const deleteContact = (req, res) => {
+    const db = low(adapter)
+    const { userLogin, contactLogin } = req.body
+
+    const result = authMiddleware(req, res)
+
+    const userContact = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
+    const friendContact = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts')
+    const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice')
+
+    if(result !== 401) {
+        if(userContact.find({ userLogin: contactLogin }).value()){
+            userContact.remove({ userLogin: contactLogin }).write()
+            if(friendContact.find({ userLogin: userLogin }).value()){
+                friendContact.remove({ userLogin: userLogin }).write()
+            }
+            contactNotice.get('other').push({ userLogin: userLogin, type: 'deleteContact' }).write()
+            res.send()
+        } else {
+            console.log(contactLogin);
+            res.send('404C')
+        }
+    } else {
+        res.send('200C')
+    }
+}
+
+
 const SignUp = (req, res) => {
     const db = low(adapter)
     const { userMail, userLogin, userName, userPassword } = req.body
@@ -66,6 +191,10 @@ const SignUp = (req, res) => {
                 userName: userName,
                 status: false,
                 url: `/${userLogin}`,
+                notice: {
+                    invites: [],
+                    other: []
+                },
                 contacts: [],
                 chats: []
             }
@@ -81,7 +210,7 @@ const SignUp = (req, res) => {
     }
 }
 
-const SignIn = (req, res) => { // Думаю надо переименовать в /login
+const SignIn = (req, res) => {
     const db = low(adapter)
 
     const { userMail, userPassword } = req.body
@@ -112,20 +241,38 @@ const SignIn = (req, res) => { // Думаю надо переименовать
         token: tokens.accessToken
     }
 
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).send(result)
+    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(result)
     return
 
 }
 
 
 const authUser = (req, res) => {
-    const result = authMiddleware(req, res)
-    if (result === 401) { return res.sendStatus(401) }
+    const result = authMiddleware(req)
 
-    const { refreshToken } = req.cookies
-    const userData = validateRefreshToken(refreshToken)
-    res.send(userData)
-    return
+    if (result === 401) {
+        return res.sendStatus(401)
+    } else {
+        const { refreshToken } = req.cookies
+        const userData = validateRefreshToken(refreshToken)
+
+        res.send(userData)
+        return
+    }
+}
+
+const updateData = (req, res) => {
+    const result = authMiddleware(req)
+
+    if (result === 401) {
+        return res.sendStatus(401)
+    } else {
+        const { refreshToken } = req.cookies
+        const userData = getUserData(refreshToken, 'token')
+
+        res.send(userData)
+        return
+    }
 }
 
 const logout = (req, res) => {
@@ -153,35 +300,6 @@ const refresh = (req, res) => {
 }
 
 
-/* Other func-s */
-
-const getUserData = (target, type) => {
-    const db = low(adapter)
-
-    if (type === 'token') {
-        const user = db.get('users').find({ refreshToken: target }).value()
-
-        return {
-            userMail: user.userMail,
-            userLogin: user.userLogin,
-            userName: user.userData.userName,
-            url: user.userData.url,
-            contacts: user.userData.contacts
-        }
-    }
-    if (type === 'mail'){
-        const user = db.get('users').find({ userMail: target }).value()
-
-        return {
-            userMail: user.userMail,
-            userLogin: user.userLogin,
-            userName: user.userData.userName,
-            url: user.userData.url,
-            contacts: user.userData.contacts
-        }
-    }
-}
-
 
 module.exports = {
     homePage,
@@ -190,6 +308,11 @@ module.exports = {
     SignIn,
     logout,
     refresh,
-    authUser
+    authUser,
+    inviteUser,
+    updateData,
+    acceptInvite,
+    deleteNotice,
+    deleteContact
 }
 

@@ -3,7 +3,7 @@ const { access_secret, refresh_secret, tokens } = require('../config/config').co
 const { validateAccessToken } = require('../service/token')
 
 
-const authMiddleware = (req, res) => {
+const authMiddleware = (req) => {
 
     const authHeader = req.headers.authorization
     if (!authHeader) { return 401 }

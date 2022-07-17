@@ -33,7 +33,8 @@ export default function App() {
         userName: null,
         chats: [],
         url: 'profile',
-        contacts: []
+        contacts: [],
+        notice: []
     })
 
     const onLogin = async (object, nav) => {

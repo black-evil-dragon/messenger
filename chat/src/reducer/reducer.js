@@ -10,23 +10,19 @@ export default (state, action) => {
                 userName: action.payload.userName,
                 //chats: action.payload.userChatts,
                 url: action.payload.url,
-                contacts: action.payload.contacts
-            }
-        case 'LOGOUT':
-            return {
-                ...state,
-                isLogin: false,
-                url: ''
-            }
-        case 'SET_CONTACTS':
-            return {
-                ...state,
-                contacts: [...state.contacts, action.payload]
+                contacts: action.payload.contacts,
+                notice: action.payload.notice
             }
         case 'SET_DATA':
             return {
                 ...state,
-                contacts: action.payload.contacts
+                contacts: action.payload.contacts,
+                notice: action.payload.notice
+            }
+        case 'ADD_CONTACT':
+            return {
+                ...state,
+                contacts: [...state.contacts, action.payload]
             }
         default:
             return state;

@@ -25,6 +25,10 @@ function App() {
         userMail: null,
         userLogin: null,
         userName: null,
+        notice: {
+            invites: [],
+            other: []
+        },
         chats: [],
         url: '',
         contacts: []
@@ -47,15 +51,15 @@ function App() {
             type: 'LOGOUT'
         })
         navigate('/')
+        document.location.reload()
     }
 
 
-    const checkAuth = async (token) => {
+    const checkAuth = async () => {
         setShowing(false)
-        const response = await api.post('/api/refresh')
+        const response = await api.post('/api/auth')
 
-        if (response.data !== '401C') {
-            const response = await api.post('/api/auth')
+        if (response !== '401C') {
             onLogin(response.data, false)
             setShowing(true)
         } else {
@@ -64,24 +68,47 @@ function App() {
             setLogout()
             setShowing(true)
         }
+
     }
 
+    const setData = async (data) => {
+        dispatch({
+            type: 'SET_DATA',
+            payload: data
+        })
+    }
+
+    const addContact = async (data) => {
+        await dispatch({
+            type: 'ADD_CONTACT',
+            payload: data
+        })
+    }
+
+    const checkData = async () => {
+        const response = await api.post('/api/update/data')
+        if (response.data === '401C') {
+            checkAuth()
+        } else {
+            setData(response.data)
+        }
+    }
 
     React.useEffect(() => {
-        localStorage.getItem('token') ? checkAuth(localStorage.getItem('token')) : setShowing(true)
-        if (state.url === '') navigate('/')
+        localStorage.getItem('token') ? checkAuth() : setShowing(true)
+        if (state.url === '' && !state.isLogin) navigate('/')
     }, [])
 
 
     return (
         <div className='app-page'>
-            {state.isLogin && <Navigation url={state.url}/>}
+            {state.isLogin && <Navigation url={state.url} />}
             <Routes>
                 <Route path="/" element={
                     <Home navigate={navigate} {...state} show={show} />
                 } />
-                <Route path='/notice' element={<Notice />}/>
-                <Route path='/contacts' element={<Contacts />}/>
+                <Route path='/notice' element={<Notice {...state} setData={setData} checkAuth={checkAuth} addContact={addContact} checkData={checkData}/>} />
+                <Route path='/contacts' element={<Contacts {...state} checkAuth={checkAuth} checkData={checkData} />} />
                 <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path={"/" + state.url} element={<Profile {...state} navigate={navigate} setLogout={setLogout} />} />
@@ -91,3 +118,9 @@ function App() {
 }
 
 export default App
+
+/*
+
+
+
+*/
