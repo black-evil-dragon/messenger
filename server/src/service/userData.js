@@ -7,6 +7,7 @@ const getUserData = (target, type) => {
 
     if (type === 'token') {
         const user = db.get('users').find({ refreshToken: target }).value()
+        const users = db.get('users').value()
 
         return {
             userMail: user.userMail,
@@ -14,11 +15,13 @@ const getUserData = (target, type) => {
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
-            notice: user.userData.notice
+            notice: user.userData.notice,
+            users
         }
     }
     if (type === 'mail'){
         const user = db.get('users').find({ userMail: target }).value()
+        const users = db.get('users').value()
 
         return {
             userMail: user.userMail,
@@ -26,11 +29,13 @@ const getUserData = (target, type) => {
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
-            notice: user.userData.notice
+            notice: user.userData.notice,
+            users
         }
     }
     if (type === 'login'){
         const user = db.get('users').find({ userLogin: target }).value()
+        const users = db.get('users').value()
 
         return {
             userMail: user.userMail,
@@ -38,7 +43,8 @@ const getUserData = (target, type) => {
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
-            notice: user.userData.notice
+            notice: user.userData.notice,
+            users
         }
     }
 }

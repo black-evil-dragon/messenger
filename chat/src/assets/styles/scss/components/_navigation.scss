@@ -1,33 +1,50 @@
 div.navigation-bar {
+    position: absolute;
+    top: 0;
     display: inline-block;
-    vertical-align: top;
     height: 100%;
     text-align: center;
+    max-width: 0;
+    overflow: hidden;
+    background-color: $grey-light2;
 
+    z-index:9999999;
 
-    width: 25%;
+    transition: max-width .5s ease-out;
+    -webkit-transition: max-width .5s ease-out;
+    -moz-transition: max-width .5s ease-out;
+    -ms-transition: max-width .5s ease-out;
+    -o-transition: max-width .5s ease-out;
 
-    button {
-        font-size: .75rem;
-        background: none;
-        border: solid .1rem $white;
-        width: 85%;
-        border-radius: .65rem;
-        -webkit-border-radius: .65rem;
-        -moz-border-radius: .65rem;
-        -ms-border-radius: .65rem;
-        -o-border-radius: .65rem;
+    div.btn-nav {
+        width: 10rem;
+        padding: 0 .2rem;
+        button {
+            font-size: .75rem;
+            background: $grey-light2;
+            color: $black;
+            border: solid .1rem $grey-light2;
+            width: 85%;
+            border-radius: .65rem;
+            -webkit-border-radius: .65rem;
+            -moz-border-radius: .65rem;
+            -ms-border-radius: .65rem;
+            -o-border-radius: .65rem;
 
-        padding: .3rem .2rem;
-        margin: .3rem 0;
-    }
-    button:hover {
-        border: solid .1rem $grey;
-    }
-    button:active {
-        border: solid .1rem $blue;
-    }
-    button:first-child {
-        margin-top: 2rem
+            padding: .3rem .2rem;
+            margin: .3rem 0;
+        }
+
+        button:hover {
+            border: solid .1rem $grey;
+        }
+
+        button:active {
+            border: solid .1rem $blue;
+        }
+
+        button:first-child {
+            margin-top: 2.5rem
+        }
     }
 }

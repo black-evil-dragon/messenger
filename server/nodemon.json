@@ -2,6 +2,7 @@
     "ignore": [
         "db/db.json",
         "db/token.json",
+        "package.json",
         "README"
     ]
 }

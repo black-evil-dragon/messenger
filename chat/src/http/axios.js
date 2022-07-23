@@ -1,6 +1,4 @@
 import axios from 'axios'
-import axiosRetry from 'axios-retry'
-
 
 
 const api = axios.create({

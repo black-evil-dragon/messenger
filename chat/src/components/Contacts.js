@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import api from '../http/axios'
 import axios from 'axios'
@@ -6,7 +6,7 @@ import axios from 'axios'
 export default function Contacts({ contacts, userLogin, checkAuth, checkData }) {
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
-
+    const [count, setCount ] = React.useState(0)
 
     const sendInvite = async () => {
         if (contactLogin) {
@@ -46,6 +46,17 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
         checkData()
     }
 
+    const confirm = (target) => {
+        setCount(count + 1)
+        if(count >= 1) { // проблемный код, сделаю нормально позже
+            setCount(0)
+            deleteContact(target)
+        } else {
+            console.log('No');
+        }
+    }
+    console.log(count);
+
     React.useEffect(() => {
         checkData()
     }, [])
@@ -70,7 +81,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
                             return (
                                 <div className='contact' key={idx}>
                                     <p>{d.userName} <span>{d.userLogin}</span></p>
-                                    <button className='warning' onClick={() => { deleteContact(d.userLogin)}}>Удалить</button>
+                                    <button className='btn-delete' onClick={() => { confirm(d.userLogin)}}><div className="deleteModal" title="Удалить из друзей"></div></button>
                                 </div>
                             )
                         })
@@ -82,3 +93,9 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
         </div>
     )
 }
+
+/*
+
+
+
+*/

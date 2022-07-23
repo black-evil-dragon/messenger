@@ -4,14 +4,13 @@ console.clear();
 
 const router = require('./src/router');
 const { version, proxy } = require('../chat/package.json');
-const { authMiddleware } = require('./src/middleware/auth')
+const { newNotice } = require('./src/socket/socket');
 
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 const chalk = require('chalk');
 
-const cors = require('cors');
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const socket = require('socket.io')
@@ -34,6 +33,7 @@ app.use(cookieParser())
 
 /*  DataBase    */
 const db_init = low(adapter)
+const db_package = low(new FileSync('./package.json'))
 
 db_init.defaults(
     {
@@ -41,6 +41,8 @@ db_init.defaults(
         chats: []
     }
 ).write()
+
+db_package.set('version', version).write()
 
 
 
@@ -69,7 +71,16 @@ app.post('/api/signup', router.SignUp)
 
 
 io.on('connection', (socket) => {
-    console.log(`${socket.id} connected`);
+    console.log(`${socket.id} connected`)
+
+    socket.on('user:login', () => {
+        socket.emit('user:set:notice', 'hello')
+    })
+
+
+    socket.on("disconnect", () => {
+        console.log(`${socket.id} disconnected`);
+    });
 });
 
 server.listen(port, (error) => {

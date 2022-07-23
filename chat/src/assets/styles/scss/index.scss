@@ -1,5 +1,6 @@
 @import './settings/var';
 @import './settings/font';
+@import './settings/ui';
 @import './components/index';
 
 body,
@@ -26,4 +27,13 @@ div.main-page,
 div.login-page,
 div.profile-page {
     height: 100%;
+}
+
+div.app-page {
+    div.app-header {
+        button {
+            background: none;
+            border: none;
+        }
+    }
 }

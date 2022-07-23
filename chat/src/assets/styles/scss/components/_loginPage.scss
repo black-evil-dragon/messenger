@@ -5,7 +5,6 @@ div.login-page {
     text-align: center;
 
     div.login-form {
-        width: 40%;
         div.login-input {
             input {
                 width: 100%;
@@ -57,6 +56,30 @@ div.login-page {
             }
         }
 
+    }
+}
+
+@media screen and (max-width: 1920px) {
+    div.login-page {
+        div.login-form {
+            width: 25%;
+        }
+    }
+}
+
+@media screen and (max-width: 1440px) {
+    div.login-page {
+        div.login-form {
+            width: 30%;
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    div.login-page {
+        div.login-form {
+            width: 35%;
+        }
     }
 }
 

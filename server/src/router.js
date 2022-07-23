@@ -1,14 +1,11 @@
-const { version, proxy } = require('../package.json');
-
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 
-const { generateTokens, saveToken, removeToken, refreshThisToken, validateAccessToken, validateRefreshToken } = require('./service/token');
+const { generateTokens, saveToken, removeToken, refreshThisToken, validateRefreshToken } = require('./service/token');
 const { authMiddleware } = require('./middleware/auth');
 const { slt } = require('./config/config').config
 const { getUserData } = require('./service/userData');
@@ -31,7 +28,7 @@ const getUserByMail = (mail) => {
 
 /* Router */
 
-const homePage = (req, res) => {
+const homePage = (req, res, socket) => {
     res.sendFile(__dirname + '/server.html')
 }
 

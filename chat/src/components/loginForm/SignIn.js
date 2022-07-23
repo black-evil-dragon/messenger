@@ -13,7 +13,6 @@ export default function SignIn({ onLogin }) {
     let navigate = useNavigate()
     const homePage = () => navigate('/')
 
-
     const onAuth = () => {
         if (!userMail) {
             setNotice({ text: 'Упс, похоже вы не ввели свою почту!', mail: 'error-mail' })

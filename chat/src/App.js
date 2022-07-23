@@ -6,9 +6,7 @@ import socket from './socket/socket'
 import { Routes, Route, useNavigate } from "react-router-dom";
 import api from './http/axios';
 
-
 import './assets/styles/css/index.min.css'
-
 
 import Home from './components/Home'
 import SignIn from './components/loginForm/SignIn'
@@ -17,6 +15,8 @@ import Navigation from './components/Navigation';
 import Profile from './components/userProfile/Profile'
 import Notice from './components/Notice';
 import Contacts from './components/Contacts';
+import Header from './components/Header';
+
 
 function App() {
     const [show, setShowing] = React.useState(false)
@@ -31,12 +31,21 @@ function App() {
         },
         chats: [],
         url: '',
-        contacts: []
+        contacts: [],
+
+        currentPage: '/'
     })
 
     let navigate = useNavigate()
 
     const onLogin = async (user, nav) => {
+        const socketID = await socket.id
+
+        socket.emit('user:login', {
+            userLogin: user.userLogin,
+            userName: user.userName,
+            socketID: socketID
+        })
         await dispatch({ // await еще как влияет, спасибо vsc
             type: 'LOGIN',
             payload: user
@@ -97,17 +106,33 @@ function App() {
     React.useEffect(() => {
         localStorage.getItem('token') ? checkAuth() : setShowing(true)
         if (state.url === '' && !state.isLogin) navigate('/')
+        socket.on('user:set:notice', (response) => {
+            console.log(response)
+        })
     }, [])
+
+    const openMenu = () => {
+        const panel = document.querySelector('.navigation-bar')
+        panel.classList.toggle('open')
+
+        if (panel.style.maxWidth) {
+            panel.style.maxWidth = null
+        } else {
+            panel.style.width = '100%'
+            panel.style.maxWidth = `${panel.scrollWidth}px`
+        }
+    }
 
 
     return (
         <div className='app-page'>
-            {state.isLogin && <Navigation url={state.url} />}
+            {state.isLogin && <Header openMenu={openMenu}/>}
+            {state.isLogin && <Navigation url={state.url} showMenu={openMenu}/>}
             <Routes>
                 <Route path="/" element={
                     <Home navigate={navigate} {...state} show={show} />
                 } />
-                <Route path='/notice' element={<Notice {...state} setData={setData} checkAuth={checkAuth} addContact={addContact} checkData={checkData}/>} />
+                <Route path='/notice' element={<Notice {...state} setData={setData} checkAuth={checkAuth} addContact={addContact} checkData={checkData} />} />
                 <Route path='/contacts' element={<Contacts {...state} checkAuth={checkAuth} checkData={checkData} />} />
                 <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp />} />

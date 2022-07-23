@@ -5,13 +5,13 @@
 @import './navigation';
 @import './contactsPage';
 @import './noticePage';
+@import './header';
 
 
 div.main-page.true,
 div.contact-page,
 div.notice-page {
     display: inline-block;
-    width: 75%;
 }
 
 div.contact-list, div.notice-list, div.profile-info {

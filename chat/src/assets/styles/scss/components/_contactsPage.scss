@@ -55,6 +55,9 @@ div.contact-page {
                 }
             }
             div.contact {
+                position: relative;
+                width: max-content;
+
                 p {
                     display: inline-block;
                     width: max-content;
@@ -65,7 +68,7 @@ div.contact-page {
                     }
                 }
 
-                button {
+                button.warning {
                     border-radius: .65rem;
                     -webkit-border-radius: .65rem;
                     -moz-border-radius: .65rem;

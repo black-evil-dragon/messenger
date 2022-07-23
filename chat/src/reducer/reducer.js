@@ -24,6 +24,11 @@ export default (state, action) => {
                 ...state,
                 contacts: [...state.contacts, action.payload]
             }
+        case 'CHANGE_URL':
+            return {
+                ...state,
+                currentPage: action.payload
+            }
         default:
             return state;
     }

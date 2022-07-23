@@ -1,9 +1,5 @@
 import React from 'react'
 
-import axios from 'axios'
-import api from '../../http/axios'
-
-
 export default function Profile({ userLogin, userMail, userName, navigate, setLogout }) {
 
     return (
