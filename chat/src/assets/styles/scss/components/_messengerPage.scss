@@ -1,7 +1,19 @@
-div.contact-page {
-    div.contact-list {
-        div.add-contact {
-            input {
+div.messenger-page {
+
+    display: flex;
+
+    div.messenger-contacts {
+        width: 60%;
+        flex-grow: 1;
+
+        div.create-chat {
+            h3 {
+                margin: 0;
+
+                margin-bottom: 1rem;
+            }
+
+            input[type='text'] {
                 border-radius: .65rem;
                 -webkit-border-radius: .65rem;
                 -moz-border-radius: .65rem;
@@ -13,6 +25,12 @@ div.contact-page {
 
                 border: solid .1rem $grey;
             }
+
+            input[type='radio'] {
+                margin-top: 1rem;
+                margin-right: .5rem;
+            }
+
             button {
                 text-decoration: none;
                 color: $black;
@@ -34,44 +52,27 @@ div.contact-page {
                 -ms-transition: all .2s;
                 -o-transition: all .2s;
             }
+
             button:hover {
                 background-color: $blue;
                 color: $white;
             }
+
             button:active {
                 background-color: $blue-light;
                 border-color: $blue-light;
             }
-            div.notice {
-                p {
-                    margin: .5rem 0;
-                }
-            }
-        }
-        div.contacts {
-            p.lone-wolf {
-                span {
-                    color: $grey;
-                }
-            }
-            div.contact {
-                position: relative;
-                width: max-content;
 
-                p {
-                    display: inline-block;
-                    width: max-content;
-                    font-size: .95rem;
-                    span {
-                        color: $grey;
-                        font-size: .8rem;
-                    }
-                }
-
-                button.info {
-                    margin-left: 1rem;
-                }
-            }
+            div.notice {}
         }
+
+        div.messenger-chats {}
+    }
+
+    div.chat-box {
+        width: 100%;
+        flex-grow: 1;
+
+        margin: 2rem 0;
     }
 }

@@ -1,24 +1,34 @@
 import React from 'react'
 
 import axios from 'axios'
+import { Routes, Route, useNavigate } from "react-router-dom";
+
 import reducer from './reducer/reducer'
 import socket from './socket/socket'
-import { Routes, Route, useNavigate } from "react-router-dom";
 import api from './http/axios';
+
 
 import './assets/styles/css/index.min.css'
 
-import Home from './components/Home'
+
 import SignIn from './components/loginForm/SignIn'
 import SignUp from './components/loginForm/SignUp'
-import Navigation from './components/Navigation';
+
 import Profile from './components/userProfile/Profile'
-import Notice from './components/Notice';
-import Contacts from './components/Contacts';
-import Header from './components/Header';
+
+import Header from './components/ui/Header';
+import Navigation from './components/ui/Navigation';
+
+import Home from './components/userSections/Home'
+import Contacts from './components/userSections/Contacts';
+import Notice from './components/userSections/Notice';
+import Messenger from './components/userSections/Messenger'
+import ProfileContact from './components/userSections/ProfileContact';
+
 
 
 function App() {
+    const navigate = useNavigate()
     const [show, setShowing] = React.useState(false)
     const [state, dispatch] = React.useReducer(reducer, {
         isLogin: false,
@@ -36,9 +46,7 @@ function App() {
         currentPage: '/'
     })
 
-    let navigate = useNavigate()
-
-    const onLogin = async (user, nav) => {
+    const onLogin = async (user, isNav) => {
         const socketID = await socket.id
 
         socket.emit('user:login', {
@@ -50,7 +58,7 @@ function App() {
             type: 'LOGIN',
             payload: user
         })
-        nav && navigate(user.url)
+        isNav && navigate(user.url)
     }
 
     const setLogout = async () => {
@@ -105,7 +113,7 @@ function App() {
 
     React.useEffect(() => {
         localStorage.getItem('token') ? checkAuth() : setShowing(true)
-        if (state.url === '' && !state.isLogin) navigate('/')
+
         socket.on('user:set:notice', (response) => {
             console.log(response)
         })
@@ -136,6 +144,8 @@ function App() {
                 <Route path='/contacts' element={<Contacts {...state} checkAuth={checkAuth} checkData={checkData} />} />
                 <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/messages" element={<Messenger {...state} />} />
+                <Route path={'/user/:login'} element={<ProfileContact userLogin={state.userLogin} checkData={checkData} checkAuth={checkAuth} contacts={state.contacts} />} />
                 <Route path={"/" + state.url} element={<Profile {...state} navigate={navigate} setLogout={setLogout} />} />
             </Routes>
         </div>

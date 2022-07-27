@@ -9,7 +9,7 @@ export default function Profile({ userLogin, userMail, userName, navigate, setLo
                     <h3>{userMail}</h3>
                     <p>{userLogin} <span>{userName}</span></p>
                 </div>
-                <button onClick={setLogout}>Выйти</button>
+                <button className='danger' onClick={setLogout}>Выйти</button>
             </div>
         </div>
     )

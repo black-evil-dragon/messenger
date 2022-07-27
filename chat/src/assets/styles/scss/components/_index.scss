@@ -6,6 +6,7 @@
 @import './contactsPage';
 @import './noticePage';
 @import './header';
+@import './messengerPage';
 
 
 div.main-page.true,
@@ -14,7 +15,7 @@ div.notice-page {
     display: inline-block;
 }
 
-div.contact-list, div.notice-list, div.profile-info {
+div.contact-list, div.notice-list, div.profile-info, div.messenger-contacts {
     margin: 2rem 1rem;
 }
 
@@ -32,4 +33,9 @@ p.warning {
 }
 p.danger {
     color: $danger;
+}
+
+a, a:visited {
+    color: $blue;
+    text-decoration: none;
 }

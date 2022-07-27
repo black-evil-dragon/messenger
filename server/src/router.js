@@ -228,7 +228,10 @@ const SignIn = (req, res) => {
         response = false
     }
 
-    const tokens = generateTokens(user_data)
+    const tokens = generateTokens({
+        userMail: user_data.userMail,
+        userLogin: user_data.userLogin,
+    })
     saveToken(user_data.userLogin, tokens.refreshToken)
 
     response = true
@@ -251,10 +254,14 @@ const authUser = (req, res) => {
         return res.sendStatus(401)
     } else {
         const { refreshToken } = req.cookies
-        const userData = validateRefreshToken(refreshToken)
+        const validateData = validateRefreshToken(refreshToken)
 
-        res.send(userData)
-        return
+        if(validateData) {
+            const userData = getUserData(refreshToken, 'token')
+            res.send(userData)
+        } else {
+            res.send('401C')
+        }
     }
 }
 
@@ -297,19 +304,31 @@ const refresh = (req, res) => {
 }
 
 
+const createChat = (req, res) => {
+    const { userLogin, contactLogin, type } = req.body
+
+    res.send()
+}
+
+
 
 module.exports = {
     homePage,
     getUsers,
+
     SignUp,
     SignIn,
     logout,
+
     refresh,
     authUser,
-    inviteUser,
     updateData,
+
+    inviteUser,
     acceptInvite,
     deleteNotice,
-    deleteContact
+    deleteContact,
+
+    createChat
 }
 

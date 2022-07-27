@@ -16,6 +16,11 @@ export default (state, action) => {
         case 'SET_DATA':
             return {
                 ...state,
+                userMail: action.payload.userMail,
+                userLogin: action.payload.userLogin,
+                userName: action.payload.userName,
+                //chats: action.payload.userChatts,
+                url: action.payload.url,
                 contacts: action.payload.contacts,
                 notice: action.payload.notice
             }

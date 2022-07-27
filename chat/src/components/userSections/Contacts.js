@@ -1,12 +1,13 @@
 import React, { useRef } from 'react'
 
-import api from '../http/axios'
+import api from '../../http/axios'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export default function Contacts({ contacts, userLogin, checkAuth, checkData }) {
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
-    const [count, setCount ] = React.useState(0)
+    const navigate = useNavigate()
 
     const sendInvite = async () => {
         if (contactLogin) {
@@ -41,21 +42,9 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
         }
     }
 
-    const deleteContact = async (contactLogin) => {
-        await api.post('/api/delete/contact', { userLogin, contactLogin})
-        checkData()
+    const nav = (target) => {
+        navigate(`/user/${target}`)
     }
-
-    const confirm = (target) => {
-        setCount(count + 1)
-        if(count >= 1) { // проблемный код, сделаю нормально позже
-            setCount(0)
-            deleteContact(target)
-        } else {
-            console.log('No');
-        }
-    }
-    console.log(count);
 
     React.useEffect(() => {
         checkData()
@@ -81,7 +70,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
                             return (
                                 <div className='contact' key={idx}>
                                     <p>{d.userName} <span>{d.userLogin}</span></p>
-                                    <button className='btn-delete' onClick={() => { confirm(d.userLogin)}}><div className="deleteModal" title="Удалить из друзей"></div></button>
+                                    <button className='info' onClick={() => nav(d.userLogin)}>Дополнительно</button>
                                 </div>
                             )
                         })
@@ -96,6 +85,6 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
 
 /*
 
-
+<button className='btn-delete' onClick={() => { deleteContact(d.userLogin)}}><div className="deleteModal" title="Удалить из друзей"></div></button>
 
 */

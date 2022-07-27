@@ -70,18 +70,11 @@ const refreshThisToken = (refreshToken) => {
         return 401
     }
     const user_data = {
-        userMail: getToken.userMail,
         userLogin: getToken.userLogin,
-        userName: getToken.userData.userName,
-        contacts: getToken.userData.contacts,
-        url: getToken.userData.url,
-        notice: getToken.userData.notice
     }
 
     const tokens = generateTokens(user_data)
     saveToken(user_data.userLogin, tokens.refreshToken)
-
-    return tokens
 }
 
 module.exports = {

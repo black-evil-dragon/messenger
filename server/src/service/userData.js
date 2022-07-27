@@ -16,7 +16,6 @@ const getUserData = (target, type) => {
             url: user.userData.url,
             contacts: user.userData.contacts,
             notice: user.userData.notice,
-            users
         }
     }
     if (type === 'mail'){
@@ -30,7 +29,6 @@ const getUserData = (target, type) => {
             url: user.userData.url,
             contacts: user.userData.contacts,
             notice: user.userData.notice,
-            users
         }
     }
     if (type === 'login'){
@@ -44,7 +42,6 @@ const getUserData = (target, type) => {
             url: user.userData.url,
             contacts: user.userData.contacts,
             notice: user.userData.notice,
-            users
         }
     }
 }

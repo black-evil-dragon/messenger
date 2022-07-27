@@ -1,5 +1,5 @@
 import React from 'react'
-import btn from '../assets/img/ui/btn-menu.png'
+import btn from '../../assets/img/ui/btn-menu.png'
 
 function Header({ openMenu }) {
     return (

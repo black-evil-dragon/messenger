@@ -1,6 +1,6 @@
 import React from 'react'
 
-import api from '../http/axios'
+import api from '../../http/axios'
 
 export default function Notice({ notice, setData, checkAuth, userLogin, addContact, checkData }) {
     const acceptInvite = async (contactLogin, type) => {

@@ -68,6 +68,7 @@ app.post('/api/signup', router.SignUp)
     .post('/api/acceptInvite', router.acceptInvite)
     .post('/api/delete/notice', router.deleteNotice)
     .post('/api/delete/contact', router.deleteContact)
+    .post('/api/chat/create', router.createChat)
 
 
 io.on('connection', (socket) => {
@@ -76,7 +77,6 @@ io.on('connection', (socket) => {
     socket.on('user:login', () => {
         socket.emit('user:set:notice', 'hello')
     })
-
 
     socket.on("disconnect", () => {
         console.log(`${socket.id} disconnected`);
