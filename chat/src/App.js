@@ -89,7 +89,7 @@ function App() {
     }
 
     const setData = async (data) => {
-        dispatch({
+        await dispatch({
             type: 'SET_DATA',
             payload: data
         })
@@ -114,10 +114,17 @@ function App() {
     React.useEffect(() => {
         localStorage.getItem('token') ? checkAuth() : setShowing(true)
 
-        socket.on('user:set:notice', (response) => {
+        socket.on('chat:created', (response) => {
+            console.log(`${response.socketID} conntected to this chat`);
+        })
+
+        socket.on('response:error', (response) => {
             console.log(response)
         })
+
     }, [])
+
+    window.socket = socket
 
     const openMenu = () => {
         const panel = document.querySelector('.navigation-bar')
@@ -134,19 +141,71 @@ function App() {
 
     return (
         <div className='app-page'>
-            {state.isLogin && <Header openMenu={openMenu}/>}
-            {state.isLogin && <Navigation url={state.url} showMenu={openMenu}/>}
+            {state.isLogin && <Header openMenu={openMenu} />}
+            {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
             <Routes>
                 <Route path="/" element={
-                    <Home navigate={navigate} {...state} show={show} />
+                    <Home
+                        navigate={navigate}
+                        {...state}
+                        show={show}
+                    />
                 } />
-                <Route path='/notice' element={<Notice {...state} setData={setData} checkAuth={checkAuth} addContact={addContact} checkData={checkData} />} />
-                <Route path='/contacts' element={<Contacts {...state} checkAuth={checkAuth} checkData={checkData} />} />
-                <Route path="/signin" element={<SignIn onLogin={onLogin} />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/messages" element={<Messenger {...state} />} />
-                <Route path={'/user/:login'} element={<ProfileContact userLogin={state.userLogin} checkData={checkData} checkAuth={checkAuth} contacts={state.contacts} />} />
-                <Route path={"/" + state.url} element={<Profile {...state} navigate={navigate} setLogout={setLogout} />} />
+                <Route path='/notice'
+                    element={<Notice
+                        {...state}
+                        setData={setData}
+                        checkAuth={checkAuth}
+                        addContact={addContact}
+                        checkData={checkData}
+                    />}
+                />
+                <Route path='/contacts'
+                    element={<Contacts
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
+                    />}
+                />
+                <Route path="/signin"
+                    element={<SignIn
+                        onLogin={onLogin}
+                    />}
+                />
+                <Route path="/signup"
+                    element={<SignUp />}
+                />
+
+                <Route path="/messages/chat_:ChatName/id:id"
+                    element={<Messenger
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
+                    />}
+                />
+                <Route path="/messages"
+                    element={<Messenger
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
+                    />}
+                />
+
+                <Route path={'/user/:login'}
+                    element={<ProfileContact
+                        userLogin={state.userLogin}
+                        checkData={checkData}
+                        checkAuth={checkAuth}
+                        contacts={state.contacts}
+                    />}
+                />
+                <Route path={"/" + state.url}
+                    element={<Profile
+                        {...state}
+                        navigate={navigate}
+                        setLogout={setLogout}
+                    />}
+                />
             </Routes>
         </div>
     )

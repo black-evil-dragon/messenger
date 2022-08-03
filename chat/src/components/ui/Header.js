@@ -1,5 +1,8 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import btn from '../../assets/img/ui/btn-menu.png'
+
+
 
 function Header({ openMenu }) {
     return (

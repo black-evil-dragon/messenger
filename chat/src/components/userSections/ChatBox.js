@@ -1,9 +1,13 @@
 import React from 'react'
 
-function ChatBox() {
+function ChatBox({ params }) {
     return (
         <div className='chat-box'>
-            ChatBox
+            {!params ?
+                <div></div>
+                :
+                <div>{params.ChatName}</div>
+            }
         </div>
     )
 }

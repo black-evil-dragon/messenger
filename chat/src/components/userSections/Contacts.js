@@ -13,7 +13,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
         if (contactLogin) {
             const response = await api.post('/api/auth')
             if (response.status === 401) {
-                checkAuth(localStorage.getItem('token'))
+                checkAuth(localStorage.getItem('token')) // че? я это писал?
             } else {
                 setNotice({})
 

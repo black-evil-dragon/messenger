@@ -14,7 +14,9 @@ const chalk = require('chalk');
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const socket = require('socket.io')
-const http = require('http')
+const http = require('http');
+const { getUserData } = require('./src/service/userData');
+const { checkID } = require('./src/service/chatData');
 const port = 8000
 const app = express()
 const server = http.createServer(app)
@@ -38,7 +40,8 @@ const db_package = low(new FileSync('./package.json'))
 db_init.defaults(
     {
         users: [],
-        chats: []
+        chats: [],
+        socket: []
     }
 ).write()
 
@@ -72,16 +75,38 @@ app.post('/api/signup', router.SignUp)
 
 
 io.on('connection', (socket) => {
-    console.log(`${socket.id} connected`)
+    console.log(`${chalk.bold(socket.id)} ${chalk.green('connected')}`)
 
-    socket.on('user:login', () => {
-        socket.emit('user:set:notice', 'hello')
-    })
+
+    socket.on('chat:create', (response) => {
+        const { userLogin, contactLogin, private } = response
+
+        const userData = getUserData(userLogin, 'login')
+        const contactData = getUserData(contactLogin, 'login')
+
+        const ChatID = checkID(userData.userID, contactData.userID)
+
+        if (ChatID) {
+            socket.join(ChatID)
+
+            const members = db_init.get('chats').find({ ChatID: ChatID }).get('members').value()
+
+            socket.broadcast.to(ChatID).emit('chat:created', {
+                members,
+                socketID: socket.id
+            })
+
+        } else {
+            socket.emit('response:error', 'e_chat/not-exist')
+        }
+
+    });
 
     socket.on("disconnect", () => {
-        console.log(`${socket.id} disconnected`);
+        console.log(`${chalk.bold(socket.id)} ${chalk.red('disconnected')}`);
     });
-});
+})
+
 
 server.listen(port, (error) => {
     if (error) {
@@ -90,3 +115,11 @@ server.listen(port, (error) => {
     console.log(`App listening on port: ${chalk.underline(port)}\nVersion: ${version}\n\n${chalk.bold('  URL:    ')}${proxy}\n`);
     console.log('Users socket ID:');
 })
+
+/*
+const chats = db_init.get('chats').value()
+        chats.forEach((value, ID) => {
+            if(value.get)
+        });
+
+*/

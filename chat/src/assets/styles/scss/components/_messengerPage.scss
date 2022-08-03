@@ -6,7 +6,10 @@ div.messenger-page {
         width: 60%;
         flex-grow: 1;
 
-        div.create-chat {
+        div.chat-list {
+            max-width: 100%;
+            overflow: hidden;
+
             h3 {
                 margin: 0;
 
@@ -66,7 +69,18 @@ div.messenger-page {
             div.notice {}
         }
 
-        div.messenger-chats {}
+
+        div.messenger-chats {
+            div.chat {
+                button {
+                    width: 100%;
+
+                    text-align: left;
+                    background: none;
+                    border: none;
+                }
+            }
+        }
     }
 
     div.chat-box {

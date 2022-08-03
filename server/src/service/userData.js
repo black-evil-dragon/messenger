@@ -10,11 +10,13 @@ const getUserData = (target, type) => {
         const users = db.get('users').value()
 
         return {
+            userID: user.ID,
             userMail: user.userMail,
             userLogin: user.userLogin,
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
+            chats: user.userData.chats,
             notice: user.userData.notice,
         }
     }
@@ -23,11 +25,13 @@ const getUserData = (target, type) => {
         const users = db.get('users').value()
 
         return {
+            userID: user.ID,
             userMail: user.userMail,
             userLogin: user.userLogin,
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
+            chats: user.userData.chats,
             notice: user.userData.notice,
         }
     }
@@ -36,11 +40,13 @@ const getUserData = (target, type) => {
         const users = db.get('users').value()
 
         return {
+            userID: user.ID,
             userMail: user.userMail,
             userLogin: user.userLogin,
             userName: user.userData.userName,
             url: user.userData.url,
             contacts: user.userData.contacts,
+            chats: user.userData.chats,
             notice: user.userData.notice,
         }
     }

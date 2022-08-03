@@ -5,7 +5,6 @@ import api from '../../http/axios'
 
 
 function ProfileContact({ userLogin, checkAuth }) {
-    let contacts
     const params = useParams()
     const contactLogin = params.login
 

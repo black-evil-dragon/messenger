@@ -75,6 +75,8 @@ const refreshThisToken = (refreshToken) => {
 
     const tokens = generateTokens(user_data)
     saveToken(user_data.userLogin, tokens.refreshToken)
+
+    return tokens
 }
 
 module.exports = {

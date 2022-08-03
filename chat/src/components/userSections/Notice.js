@@ -2,7 +2,7 @@ import React from 'react'
 
 import api from '../../http/axios'
 
-export default function Notice({ notice, setData, checkAuth, userLogin, addContact, checkData }) {
+export default function Notice({ notice, isLogin, checkAuth, userLogin, addContact, checkData }) {
     const acceptInvite = async (contactLogin, type) => {
         const response = await api.post('/api/acceptInvite', { contactLogin, userLogin, type })
 
@@ -19,7 +19,8 @@ export default function Notice({ notice, setData, checkAuth, userLogin, addConta
 
 
     React.useEffect(() => {
-        checkData()
+        !isLogin && checkAuth()
+        isLogin && checkData()
     }, [])
 
     return (

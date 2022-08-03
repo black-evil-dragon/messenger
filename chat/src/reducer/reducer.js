@@ -8,7 +8,7 @@ export default (state, action) => {
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
-                //chats: action.payload.userChatts,
+                chats: action.payload.chats,
                 url: action.payload.url,
                 contacts: action.payload.contacts,
                 notice: action.payload.notice
@@ -19,7 +19,7 @@ export default (state, action) => {
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
-                //chats: action.payload.userChatts,
+                chats: action.payload.chats,
                 url: action.payload.url,
                 contacts: action.payload.contacts,
                 notice: action.payload.notice

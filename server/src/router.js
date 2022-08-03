@@ -9,6 +9,7 @@ const { generateTokens, saveToken, removeToken, refreshThisToken, validateRefres
 const { authMiddleware } = require('./middleware/auth');
 const { slt } = require('./config/config').config
 const { getUserData } = require('./service/userData');
+const { checkID, setChats } = require('./service/chatData');
 
 
 const getUserByLogin = (login) => {
@@ -150,10 +151,10 @@ const deleteContact = (req, res) => {
     const friendContact = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts')
     const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice')
 
-    if(result !== 401) {
-        if(userContact.find({ userLogin: contactLogin }).value()){
+    if (result !== 401) {
+        if (userContact.find({ userLogin: contactLogin }).value()) {
             userContact.remove({ userLogin: contactLogin }).write()
-            if(friendContact.find({ userLogin: userLogin }).value()){
+            if (friendContact.find({ userLogin: userLogin }).value()) {
                 friendContact.remove({ userLogin: userLogin }).write()
             }
             contactNotice.get('other').push({ userLogin: userLogin, type: 'deleteContact' }).write()
@@ -193,7 +194,7 @@ const SignUp = (req, res) => {
                     other: []
                 },
                 contacts: [],
-                chats: []
+                chats: [],
             }
         }).write()
 
@@ -256,7 +257,7 @@ const authUser = (req, res) => {
         const { refreshToken } = req.cookies
         const validateData = validateRefreshToken(refreshToken)
 
-        if(validateData) {
+        if (validateData) {
             const userData = getUserData(refreshToken, 'token')
             res.send(userData)
         } else {
@@ -292,6 +293,8 @@ const logout = (req, res) => {
 const refresh = (req, res) => {
     const { refreshToken } = req.cookies
 
+    if(!refreshToken) res.send('401C')
+
     const result = refreshThisToken(refreshToken)
 
     if (result === 401) {
@@ -305,9 +308,67 @@ const refresh = (req, res) => {
 
 
 const createChat = (req, res) => {
-    const { userLogin, contactLogin, type } = req.body
+    const db = low(adapter)
+    const { userLogin, contactLogin, private } = req.body
+    const result = authMiddleware(req, res)
 
-    res.send()
+    const userData = getUserData(userLogin, 'login')
+    const contactData = getUserData(contactLogin, 'login')
+
+    const id = `${userData.userID}_${contactData.userID}`
+    const chatExist = db.get('chats').find({ ChatID: id }).value()
+
+
+    if (result !== 401 && userData && contactLogin) {
+        if (chatExist) {
+            const data = {
+                id,
+                userLogin,
+                contactLogin,
+                userData,
+                contactData,
+                members: chatExist.members
+            }
+            const result = setChats(data)
+            result ? res.send(result) : res.send()
+        } else {
+            db.get('chats').push({
+                ChatID: id,
+                settings: {
+                    private: private,
+                    chatName: contactData.userName
+                },
+
+                members: [
+                    {
+                        userLogin: userLogin,
+                        userName: userData.userName
+                    },
+                    {
+                        userLogin: contactLogin,
+                        userName: contactData.userName
+                    }
+                ],
+                messages: []
+            }).write()
+            const chat = db.get('chats').find({ ChatID: id }).value()
+            const data = {
+                id,
+                userLogin,
+                contactLogin,
+                userData,
+                contactData,
+                members: chat.members
+            }
+
+            setChats(data)
+
+            res.send()
+        }
+    } else {
+        res.send('401C')
+    }
+
 }
 
 
