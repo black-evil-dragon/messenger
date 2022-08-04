@@ -5,8 +5,9 @@ import api from '../../http/axios'
 import socket from '../../socket/socket'
 
 import ChatBox from './ChatBox'
+import Header from '../ui/Header'
 
-function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
+function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
 
     const params = useParams()
     const navigate = useNavigate()
@@ -14,6 +15,7 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
     const [checked, setChecked] = React.useState(true);
+    const [data, setData] = React.useState({})
 
 
     const setPrivate = (e) => {
@@ -36,7 +38,7 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
                     console.warn(response.data)
                 } else {
                     socket.emit('chat:create', data)
-                    checkData()
+                    setData(checkData())
                     setNotice({})
                     setLogin('')
                 }
@@ -49,6 +51,20 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
         }
     }
 
+    const setChatData = async (chats) => {
+        const chat = chats.find(chat => chat.chatID === params.id)
+        await setData(chat)
+        console.log(data, chats, params.id, chat)
+    }
+
+    const checkData = async () => {
+        const response = await api.post('/api/update/data')
+        if (response.data === '401C') {
+            checkAuth()
+        } else {
+            setChatData(response.data.chats)
+        }
+    }
 
     const test = () => {
         socket.emit('chat:create', {
@@ -59,8 +75,8 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
     }
 
     const selectChat = ({ chatName, chatID }) => {
-        const url = `/messages/chat_${chatName}/id${chatID}`
-        openMenu()
+        const url = `/chat_${chatName}/id${chatID}`
+        checkData()
 
         navigate(url)
     }
@@ -70,6 +86,7 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
         !isLogin && checkAuth()
     }, [])
 
+    /*
     const openMenu = () => {
         const panel = document.querySelector('.chat-list')
         panel.classList.toggle('open')
@@ -81,23 +98,27 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
             panel.style.maxWidth = `${panel.scrollWidth}px`
         }
     }
+    */
 
     return (
         <>
             {isLogin &&
                 <div className="messenger-page">
                     <div className="messenger-contacts">
-                        <div className={'chat-list'}>
-                            {!chats.length && <h3>Создайте новый чат!</h3>}
-                            <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
-                            <button onClick={createChat}>Добавить</button> <br></br>
+                        <Header openMenu={openMenu} />
+                        <div className={'create-chat'}>
+                            {!chats.length && <>
+                                <h3>Создайте новый чат!</h3>
+                                <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
+                                <button onClick={createChat}>Добавить</button> <br></br>
 
-                            <input type="radio" onClick={setPrivate} />
-                            <span title='Создать беседу'>Беседа</span>
+                                <input type="radio" onClick={setPrivate} />
+                                <span title='Создать беседу'>Беседа</span>
 
-                            <div className="notice">
-                                <p className={notice.type}>{notice.text}</p>
-                            </div>
+                                <div className="notice">
+                                    <p className={notice.type}>{notice.text}</p>
+                                </div>
+                            </>}
                         </div>
                         <div className="messenger-chats">
                             {chats.length ?
@@ -113,11 +134,12 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, checkData }) {
                             }
                         </div>
                     </div>
-                    <ChatBox params={params} />
+                    <ChatBox params={params} checkAuth={checkAuth} data={data}/>
                 </div>
             }
         </>
     )
 }
+
 
 export default Messenger

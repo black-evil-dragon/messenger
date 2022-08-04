@@ -1,8 +1,9 @@
 @import './settings/var';
 @import './settings/font';
 @import './settings/ui';
+@import './settings/media';
+
 @import './components/index';
-@import './ui';
 
 body,
 html {
@@ -26,9 +27,13 @@ div#root,
 div.app-page,
 div.main-page,
 div.login-page,
-div.profile-page {
+div.profile-page,
+div.notice-page,
+div.contact-page {
+    width: 100%;
     height: 100%;
 }
+
 
 div.app-page {
     div.app-header {

@@ -1,8 +1,10 @@
 div.app-header {
     display: flex;
     justify-content: flex-start;
-    background-color: $grey-light1;
 
+    width: 100%;
+
+    border-bottom: solid .05rem $grey;
     padding: 1rem 0;
 
     div.app-title,
@@ -19,13 +21,14 @@ div.app-header {
             -moz-transition: all .3s;
             -ms-transition: all .3s;
             -o-transition: all .3s;
-        }
-        button:hover {
-            transform: rotate(180deg);
-            -webkit-transform: rotate(180deg);
-            -moz-transform: rotate(180deg);
-            -ms-transform: rotate(180deg);
-            -o-transform: rotate(180deg);
+
+            &:hover {
+                transform: rotate(180deg);
+                -webkit-transform: rotate(180deg);
+                -moz-transform: rotate(180deg);
+                -ms-transform: rotate(180deg);
+                -o-transform: rotate(180deg);
+            }
         }
     }
 

@@ -1,14 +1,28 @@
 import React from 'react'
 
-function ChatBox({ params }) {
+import api from '../../http/axios'
+
+
+function ChatBox({ params, checkAuth, data }) {
+
+    const chatName = params.ChatName
     return (
-        <div className='chat-box'>
-            {!params ?
-                <div></div>
-                :
-                <div>{params.ChatName}</div>
-            }
-        </div>
+        <>
+            <div className='chat-box'>
+                {chatName &&
+                    <>
+                        <div className='chat-title'>
+                            <h3>{params.ChatName}</h3>
+                        </div>
+                        <div className="chat-messages">
+                        </div>
+                        <div className="chat-input">
+                            <textarea></textarea>
+                        </div>
+                    </>
+                }
+            </div>
+        </>
     )
 }
 

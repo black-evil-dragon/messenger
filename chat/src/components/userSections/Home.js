@@ -18,7 +18,7 @@ export default function Home({ isLogin, url, userLogin, show }) {
 
 
     const mainPage = <div className='home-page'>
-        <h3>Главная</h3>
+        <h3>Вы авторизованы</h3>
     </div>
 
 
@@ -26,13 +26,13 @@ export default function Home({ isLogin, url, userLogin, show }) {
         Загрузка
     </div>
 
+    React.useEffect(() => {
+        localStorage.getItem('token') && navigate('/')
+    }, [])
 
     return (
         <div className={'main-page ' + isLogin}>
-            {show ?
-                !isLogin ? loginButtons : mainPage
-            : loadingPage
-            }
+            {loginButtons}
         </div>
     )
 }

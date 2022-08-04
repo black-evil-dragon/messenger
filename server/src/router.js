@@ -35,10 +35,7 @@ const homePage = (req, res, socket) => {
 
 const getUsers = (req, res, next) => {
     const db = low(adapter)
-
-    const result = authMiddleware(req, res) // Я пробовал запихнуть его как middleware, но почему-то происходит бесконечная попытка отправить запрос, посмотрю позже
-
-    if (result === 401) { return res.sendStatus(401) }
+    if (authMiddleware(req, res) === 401) { return res.sendStatus(401) }
 
     let DB = db.get('users').value()
     res.json(DB)
@@ -51,8 +48,7 @@ const inviteUser = (req, res) => {
     const db = low(adapter)
     const { contactLogin, userLogin } = req.query
 
-    const result = authMiddleware(req, res)
-    if (result === 401) { return res.sendStatus(401) }
+    if (authMiddleware(req, res) === 401) { return res.sendStatus(401) }
 
     const user = db.get('users').find({ userLogin: contactLogin }).value()
     const contacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
@@ -79,8 +75,7 @@ const acceptInvite = (req, res) => {
     const db = low(adapter)
     const { contactLogin, userLogin, type } = req.body
 
-    const result = authMiddleware(req, res)
-    if (result === 401) { return res.sendStatus(401) }
+    if (authMiddleware(req, res) === 401) { return res.sendStatus(401) }
 
     const userContacts = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
     const contactContacts = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts') // contactContacts lol
@@ -127,8 +122,7 @@ const deleteNotice = (req, res) => {
     const db = low(adapter)
     const { userLogin, contactLogin } = req.body
 
-    const result = authMiddleware(req, res)
-    if (result === 401) {
+    if (authMiddleware(req, res) === 401) {
         return res.sendStatus(401)
     } else {
         const userNotice = db.get('users').find({ userLogin: userLogin }).get('userData').get('notice').get('other')
@@ -145,13 +139,11 @@ const deleteContact = (req, res) => {
     const db = low(adapter)
     const { userLogin, contactLogin } = req.body
 
-    const result = authMiddleware(req, res)
-
     const userContact = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
     const friendContact = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts')
     const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice')
 
-    if (result !== 401) {
+    if (authMiddleware(req, res) !== 401) {
         if (userContact.find({ userLogin: contactLogin }).value()) {
             userContact.remove({ userLogin: contactLogin }).write()
             if (friendContact.find({ userLogin: userLogin }).value()) {
@@ -249,9 +241,7 @@ const SignIn = (req, res) => {
 
 
 const authUser = (req, res) => {
-    const result = authMiddleware(req)
-
-    if (result === 401) {
+    if (authMiddleware(req) === 401) {
         return res.sendStatus(401)
     } else {
         const { refreshToken } = req.cookies
@@ -267,9 +257,7 @@ const authUser = (req, res) => {
 }
 
 const updateData = (req, res) => {
-    const result = authMiddleware(req)
-
-    if (result === 401) {
+    if (authMiddleware(req) === 401) {
         return res.sendStatus(401)
     } else {
         const { refreshToken } = req.cookies
@@ -310,7 +298,6 @@ const refresh = (req, res) => {
 const createChat = (req, res) => {
     const db = low(adapter)
     const { userLogin, contactLogin, private } = req.body
-    const result = authMiddleware(req, res)
 
     const userData = getUserData(userLogin, 'login')
     const contactData = getUserData(contactLogin, 'login')
@@ -319,7 +306,7 @@ const createChat = (req, res) => {
     const chatExist = db.get('chats').find({ ChatID: id }).value()
 
 
-    if (result !== 401 && userData && contactLogin) {
+    if (authMiddleware(req, res) !== 401 && userData && contactLogin) {
         if (chatExist) {
             const data = {
                 id,

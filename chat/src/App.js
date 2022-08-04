@@ -67,13 +67,13 @@ function App() {
         await dispatch({
             type: 'LOGOUT'
         })
-        navigate('/')
+        navigate('/auth')
+        setShowing(true)
         document.location.reload()
     }
 
 
     const checkAuth = async () => {
-        setShowing(false)
         const response = await api.post('/api/auth')
 
         if (response !== '401C') {
@@ -83,7 +83,6 @@ function App() {
             const userLogin = state.userLogin
             await axios.post('/api/logout', { userLogin })
             setLogout()
-            setShowing(true)
         }
 
     }
@@ -112,7 +111,11 @@ function App() {
     }
 
     React.useEffect(() => {
-        localStorage.getItem('token') ? checkAuth() : setShowing(true)
+        localStorage.getItem('token') ?
+            checkAuth()
+            :
+            setShowing(true)
+            navigate('/auth')
 
         socket.on('chat:created', (response) => {
             console.log(`${response.socketID} conntected to this chat`);
@@ -139,16 +142,33 @@ function App() {
     }
 
 
+
     return (
         <div className='app-page'>
-            {state.isLogin && <Header openMenu={openMenu} />}
             {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
             <Routes>
-                <Route path="/" element={
+                <Route path='/auth' element={
                     <Home
-                        navigate={navigate}
                         {...state}
                         show={show}
+                    />
+                } />
+                <Route path="/chat_:ChatName/id:id"
+                    element={<Messenger
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
+
+                        openMenu={openMenu}
+                    />}
+                />
+                <Route path="/" element={
+                    <Messenger
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
+
+                        openMenu={openMenu}
                     />
                 } />
                 <Route path='/notice'
@@ -158,6 +178,8 @@ function App() {
                         checkAuth={checkAuth}
                         addContact={addContact}
                         checkData={checkData}
+
+                        openMenu={openMenu}
                     />}
                 />
                 <Route path='/contacts'
@@ -165,6 +187,8 @@ function App() {
                         {...state}
                         checkAuth={checkAuth}
                         checkData={checkData}
+
+                        openMenu={openMenu}
                     />}
                 />
                 <Route path="/signin"
@@ -176,27 +200,14 @@ function App() {
                     element={<SignUp />}
                 />
 
-                <Route path="/messages/chat_:ChatName/id:id"
-                    element={<Messenger
-                        {...state}
-                        checkAuth={checkAuth}
-                        checkData={checkData}
-                    />}
-                />
-                <Route path="/messages"
-                    element={<Messenger
-                        {...state}
-                        checkAuth={checkAuth}
-                        checkData={checkData}
-                    />}
-                />
-
                 <Route path={'/user/:login'}
                     element={<ProfileContact
                         userLogin={state.userLogin}
                         checkData={checkData}
                         checkAuth={checkAuth}
                         contacts={state.contacts}
+
+                        openMenu={openMenu}
                     />}
                 />
                 <Route path={"/" + state.url}
@@ -204,6 +215,8 @@ function App() {
                         {...state}
                         navigate={navigate}
                         setLogout={setLogout}
+
+                        openMenu={openMenu}
                     />}
                 />
             </Routes>

@@ -1,13 +1,17 @@
-import React, { useRef } from 'react'
+import React from 'react'
 
 import api from '../../http/axios'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-export default function Contacts({ contacts, userLogin, checkAuth, checkData }) {
+import Header from '../ui/Header'
+
+export default function Contacts({ contacts, userLogin, checkAuth, checkData, openMenu }) {
+
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
+
     const navigate = useNavigate()
+
 
     const sendInvite = async () => {
         if (contactLogin) {
@@ -46,12 +50,15 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData }) 
         navigate(`/user/${target}`)
     }
 
+
     React.useEffect(() => {
         checkData()
     }, [])
 
+
     return (
         <div className='contact-page'>
+            <Header openMenu={openMenu}/>
             <div className="contact-list">
                 <h3>Найти друга</h3>
 

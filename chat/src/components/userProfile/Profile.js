@@ -1,9 +1,12 @@
 import React from 'react'
 
-export default function Profile({ userLogin, userMail, userName, navigate, setLogout }) {
+import Header from '../ui/Header'
+
+export default function Profile({ userLogin, userMail, userName, setLogout, openMenu }) {
 
     return (
         <div className='profile-page'>
+            <Header openMenu={openMenu} />
             <div className='profile-info'>
                 <div className='profile-user'>
                     <h3>{userMail}</h3>

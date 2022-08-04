@@ -11,6 +11,7 @@
     -moz-transition: all ease 0.5s;
     -ms-transition: all ease 0.5s;
     -o-transition: all ease 0.5s;
+
     &:hover {
         opacity: 1;
         transform: rotate(180deg);
@@ -18,7 +19,7 @@
         -moz-transform: rotate(180deg);
         -ms-transform: rotate(180deg);
         -o-transform: rotate(180deg);
-}
+    }
 }
 
 .closeModal::before,
@@ -61,6 +62,7 @@
     -moz-transition: all ease 0.5s;
     -ms-transition: all ease 0.5s;
     -o-transition: all ease 0.5s;
+
     &:hover {
         opacity: 1;
         transform: rotate(180deg);
@@ -68,7 +70,7 @@
         -moz-transform: rotate(180deg);
         -ms-transform: rotate(180deg);
         -o-transform: rotate(180deg);
-}
+    }
 }
 
 .deleteModal::before,
@@ -108,4 +110,72 @@
     height: 0;
     background: none;
     border: none;
+}
+
+
+button.info {
+    border: solid .1rem $blue;
+    background-color: $white;
+    color: $black;
+    padding: .3rem .5rem;
+    margin: 1rem 0;
+    border-radius: .65rem;
+    -webkit-border-radius: .65rem;
+    -moz-border-radius: .65rem;
+    -ms-border-radius: .65rem;
+    -o-border-radius: .65rem;
+    transition: all .25s;
+    -webkit-transition: all .25s;
+    -moz-transition: all .25s;
+    -ms-transition: all .25s;
+    -o-transition: all .25s;
+}
+
+
+button.info:hover {
+    background-color: $blue;
+    color: $white;
+}
+
+
+
+button {
+    border-radius: .65rem;
+    -webkit-border-radius: .65rem;
+    -moz-border-radius: .65rem;
+    -ms-border-radius: .65rem;
+    -o-border-radius: .65rem;
+
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    -moz-transition: all .2s;
+    -ms-transition: all .2s;
+    -o-transition: all .2s;
+
+    padding: .3rem .5rem;
+}
+
+button.danger {
+    border: solid .1rem $danger;
+    background-color: $white;
+}
+
+button.danger:hover {
+    border: solid .1rem $danger;
+    background-color: $danger;
+
+    color: white;
+}
+
+
+p.lone-wolf {
+    span {
+        color: $grey;
+    }
+}
+
+div.notice {
+    p {
+        margin: .5rem 0;
+    }
 }

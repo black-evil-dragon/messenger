@@ -25,7 +25,6 @@ export default function Navigation({ url, showMenu }) {
         <div className="navigation-bar">
             <div className="btn-nav">
                 <button onClick={() => nav('/')}>Главная</button>
-                <button onClick={() => nav('/messages')}>Мессенджер</button>
                 <button onClick={() => nav('/notice')}>Уведомление</button>
                 <button onClick={() => nav('/contacts')}>Друзья</button>
                 <button onClick={() => nav(url)}>Профиль</button>

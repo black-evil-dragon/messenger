@@ -1,8 +1,20 @@
 import React from 'react'
 
 import api from '../../http/axios'
+import Header from '../ui/Header'
 
-export default function Notice({ notice, isLogin, checkAuth, userLogin, addContact, checkData }) {
+export default function Notice(payload) {
+
+    const {
+        notice,
+        isLogin,
+        checkAuth,
+        userLogin,
+        addContact,
+        checkData,
+        openMenu
+    } = payload
+
     const acceptInvite = async (contactLogin, type) => {
         const response = await api.post('/api/acceptInvite', { contactLogin, userLogin, type })
 
@@ -25,6 +37,7 @@ export default function Notice({ notice, isLogin, checkAuth, userLogin, addConta
 
     return (
         <div className='notice-page'>
+            <Header openMenu={openMenu} />
             <div className="notice-list">
                 <h3>Уведомления</h3>
                 <div className="invites">
@@ -53,7 +66,7 @@ export default function Notice({ notice, isLogin, checkAuth, userLogin, addConta
                         })
                     }
                 </div>
-                { (!notice.invites.length && !notice.other.length) && <p className="lone-wolf"><span>У вас нет уведомлений</span></p> }
+                {(!notice.invites.length && !notice.other.length) && <p className="lone-wolf"><span>У вас нет уведомлений</span></p>}
             </div>
         </div>
     )
