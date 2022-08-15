@@ -43,7 +43,6 @@ const getUsers = (req, res, next) => {
     return
 }
 
-
 const inviteUser = (req, res) => {
     const db = low(adapter)
     const { contactLogin, userLogin } = req.query
@@ -160,7 +159,6 @@ const deleteContact = (req, res) => {
     }
 }
 
-
 const SignUp = (req, res) => {
     const db = low(adapter)
     const { userMail, userLogin, userName, userPassword } = req.body
@@ -239,7 +237,6 @@ const SignIn = (req, res) => {
 
 }
 
-
 const authUser = (req, res) => {
     if (authMiddleware(req) === 401) {
         return res.sendStatus(401)
@@ -293,7 +290,6 @@ const refresh = (req, res) => {
     }
     res.send()
 }
-
 
 const createChat = (req, res) => {
     const db = low(adapter)
@@ -357,7 +353,6 @@ const createChat = (req, res) => {
     }
 
 }
-
 
 
 module.exports = {

@@ -1,0 +1,36 @@
+.auth {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 100%;
+
+    &__menu {}
+
+    &__title {}
+
+    &__button {
+        width: 100%;
+
+        color: $black;
+
+        background-color: $white;
+        border-radius: .65rem;
+        border: solid .15rem $blue;
+
+        transition: all .2s;
+
+        padding: .5rem .2rem;
+        margin: .2rem;
+
+        &:hover {
+            color: $white;
+            background-color: $blue;
+            border: solid .15rem $blue;
+
+            transition: all .2s;
+        }
+    }
+}

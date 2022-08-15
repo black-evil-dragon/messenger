@@ -8,22 +8,21 @@ import socket from './socket/socket'
 import api from './http/axios';
 
 
-import './assets/styles/css/index.min.css'
+import './assets/styles/css/index.css'
 
 
-import SignIn from './components/loginForm/SignIn'
-import SignUp from './components/loginForm/SignUp'
+import SignIn from './components/loginForm/SignIn/SignIn'
+import SignUp from './components/loginForm/SignUp/SignUp'
 
-import Profile from './components/userProfile/Profile'
+import UserProfile from './components/ProfileSections/UserProfile/UserProfile';
+import ContactProfile from './components/ProfileSections/ContactProfile/ContactProfile'
 
-import Header from './components/ui/Header';
-import Navigation from './components/ui/Navigation';
+import Navigation from './components/ui/Navigation/Navigation';
 
-import Home from './components/userSections/Home'
-import Contacts from './components/userSections/Contacts';
-import Notice from './components/userSections/Notice';
-import Messenger from './components/userSections/Messenger'
-import ProfileContact from './components/userSections/ProfileContact';
+import Auth from './components/userSections/Auth/Auth'
+import Contacts from './components/userSections/Contacts/Contacts';
+import Notifications from './components/userSections/Notifications/Notifications';
+import Messenger from './components/userSections/Messenger/Messenger'
 
 
 
@@ -69,22 +68,19 @@ function App() {
         })
         navigate('/auth')
         setShowing(true)
-        document.location.reload()
     }
 
 
     const checkAuth = async () => {
-        const response = await api.post('/api/auth')
+        if (localStorage.getItem('token')) {
+            const response = await api.post('/api/auth')
 
-        if (response !== '401C') {
-            onLogin(response.data, false)
-            setShowing(true)
-        } else {
-            const userLogin = state.userLogin
-            await axios.post('/api/logout', { userLogin })
-            setLogout()
-        }
+            if (response !== '401C') {
+                onLogin(response.data, false)
+                setShowing(true)
+            } else setLogout()
 
+        } else navigate('/auth')
     }
 
     const setData = async (data) => {
@@ -111,11 +107,7 @@ function App() {
     }
 
     React.useEffect(() => {
-        localStorage.getItem('token') ?
-            checkAuth()
-            :
-            setShowing(true)
-            navigate('/auth')
+        window.onload = checkAuth()
 
         socket.on('chat:created', (response) => {
             console.log(`${response.socketID} conntected to this chat`);
@@ -130,7 +122,7 @@ function App() {
     window.socket = socket
 
     const openMenu = () => {
-        const panel = document.querySelector('.navigation-bar')
+        const panel = document.querySelector('.navigation')
         panel.classList.toggle('open')
 
         if (panel.style.maxWidth) {
@@ -144,24 +136,16 @@ function App() {
 
 
     return (
-        <div className='app-page'>
+        <div className='app'>
             {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
             <Routes>
                 <Route path='/auth' element={
-                    <Home
+                    <Auth
                         {...state}
                         show={show}
                     />
                 } />
-                <Route path="/chat_:ChatName/id:id"
-                    element={<Messenger
-                        {...state}
-                        checkAuth={checkAuth}
-                        checkData={checkData}
 
-                        openMenu={openMenu}
-                    />}
-                />
                 <Route path="/" element={
                     <Messenger
                         {...state}
@@ -172,7 +156,7 @@ function App() {
                     />
                 } />
                 <Route path='/notice'
-                    element={<Notice
+                    element={<Notifications
                         {...state}
                         setData={setData}
                         checkAuth={checkAuth}
@@ -201,7 +185,7 @@ function App() {
                 />
 
                 <Route path={'/user/:login'}
-                    element={<ProfileContact
+                    element={<ContactProfile
                         userLogin={state.userLogin}
                         checkData={checkData}
                         checkAuth={checkAuth}
@@ -211,7 +195,7 @@ function App() {
                     />}
                 />
                 <Route path={"/" + state.url}
-                    element={<Profile
+                    element={<UserProfile
                         {...state}
                         navigate={navigate}
                         setLogout={setLogout}
@@ -228,6 +212,14 @@ export default App
 
 /*
 
+<Route path="/chat_:ChatName/id:id"
+                    element={<Messenger
+                        {...state}
+                        checkAuth={checkAuth}
+                        checkData={checkData}
 
+                        openMenu={openMenu}
+                    />}
+                />
 
 */

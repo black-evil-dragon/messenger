@@ -1,0 +1,563 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+p {
+  font-size: 0.8rem;
+}
+
+button {
+  border-radius: 0.65rem;
+  transition: all 0.2s;
+  padding: 0.3rem 0.5rem;
+}
+button.info {
+  color: #000;
+  background-color: #fff;
+  border: solid 0.1rem #4D96FF;
+  border-radius: 0.65rem;
+  transition: all 0.25s;
+  padding: 0.3rem 0.5rem;
+  margin: 1rem 0;
+}
+button.info:hover {
+  background-color: #4D96FF;
+  color: #fff;
+}
+button.danger {
+  border: solid 0.1rem #ff4d4f;
+  background-color: #fff;
+}
+button.danger:hover {
+  border: solid 0.1rem #ff4d4f;
+  background-color: #ff4d4f;
+  color: white;
+}
+
+p.lone-wolf span {
+  color: rgb(180, 180, 180);
+}
+p.warning {
+  color: #f7ca01;
+}
+p.danger {
+  color: #ff4d4f;
+}
+
+div.notice p {
+  margin: 0.5rem 0;
+}
+
+input.danger {
+  border-color: #ff4d4f !important;
+  color: #ff4d4f;
+}
+input.warning {
+  border-color: #f7ca01 !important;
+  color: #f7ca01;
+}
+
+a {
+  color: #4D96FF;
+  text-decoration: none;
+}
+a:visited {
+  color: #4D96FF;
+  text-decoration: none;
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+.login__input input {
+  width: 100%;
+  border-radius: 0.65rem;
+  outline: none;
+  border: solid 0.1rem rgb(180, 180, 180);
+  padding: 0.35rem 0.2rem;
+  margin: 0.3rem 0;
+}
+.login__input input.error {
+  border: solid 0.1rem #ff4d4f;
+  color: #ff4d4f;
+}
+.login__btn-submit button {
+  width: 100%;
+  text-decoration: none;
+  color: #000;
+  border: solid 0.15rem #4D96FF;
+  background-color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.2rem;
+  margin: 0.3rem 0;
+}
+.login__btn-submit button:hover {
+  color: #fff;
+  background-color: #4D96FF;
+}
+.login__btn-submit button:disabled {
+  background-color: #8fbdff;
+  border: solid 0.15rem #8fbdff;
+}
+.login__notice span {
+  font-size: 0.75rem;
+}
+@media screen and (max-width: 1920px) {
+  .login__form {
+    width: 20%;
+  }
+}
+@media screen and (max-width: 1440px) {
+  .login__form {
+    width: 25%;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .login__form {
+    width: 35%;
+  }
+}
+@media screen and (max-width: 428px) {
+  .login__form {
+    width: 70%;
+  }
+}
+
+.register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+.register__form {
+  width: 45%;
+}
+.register__input input {
+  width: 100%;
+  border: solid 0.1rem rgb(180, 180, 180);
+  border-radius: 0.65rem;
+  outline: none;
+  padding: 0.35rem 0.2rem;
+  margin: 0.3rem 0;
+}
+.register__input input.error {
+  border: solid 0.1rem #ff4d4f;
+  color: #ff4d4f;
+}
+.register__btn-submit button {
+  width: 100%;
+  text-decoration: none;
+  color: #000;
+  border: solid 0.15rem #23a946;
+  background-color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.2rem;
+  margin: 0.3rem 0;
+}
+.register__btn-submit button:hover {
+  color: #fff;
+  background-color: #23a946;
+}
+.register__notice span {
+  font-size: 0.75rem;
+}
+@media screen and (max-width: 1920px) {
+  .register__form {
+    width: 20%;
+  }
+}
+@media screen and (max-width: 1440px) {
+  .register__form {
+    width: 25%;
+  }
+}
+@media screen and (max-width: 428px) {
+  .register__form {
+    width: 70%;
+  }
+}
+
+.profile {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+.profile__content {
+  width: 100%;
+  height: 100%;
+  margin: 2rem 1rem;
+}
+.profile__user h3 {
+  width: 100%;
+  margin: 0;
+}
+.profile__user p {
+  display: inline-block;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  margin: 0.5rem 0;
+}
+.profile__user p span {
+  color: rgb(180, 180, 180);
+}
+.profile__button {
+  margin: 1rem 0;
+}
+.profile__button.info {
+  margin-right: 1rem;
+}
+.navigation {
+  position: absolute;
+  top: 0;
+  display: inline-block;
+  max-width: 0;
+  height: 100%;
+  text-align: center;
+  overflow: hidden;
+  background-color: #495464;
+  z-index: 9999999;
+  transition: max-width 0.5s ease-out;
+}
+.navigation__content {
+  width: 10rem;
+  padding: 0 0.2rem;
+}
+.navigation__button {
+  font-size: 0.75rem;
+  width: 85%;
+  background: #495464;
+  color: #fff;
+  border: solid 0.1rem #495464;
+  border-radius: 0.65rem;
+  padding: 0.3rem 0.2rem;
+  margin: 0.3rem 0;
+}
+.navigation__button:hover {
+  border: solid 0.1rem rgb(180, 180, 180);
+}
+.navigation__button:first-child {
+  margin-top: 2.5rem;
+}
+.navigation__closeNavigation {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: all ease 0.5s;
+}
+.navigation__closeNavigation:hover {
+  opacity: 0.6;
+  transform: rotate(180deg);
+}
+.navigation__closeNavigation::after, .navigation__closeNavigation::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: #000;
+}
+.navigation__closeNavigation::after {
+  transform: rotate(-45deg);
+}
+.navigation__closeNavigation::before {
+  transform: rotate(45deg);
+}
+
+.friends {
+  width: 100%;
+  height: 100%;
+}
+.friends__title {
+  margin-top: 0;
+}
+.friends__content {
+  padding: 2rem 1rem;
+}
+.friends__add-friend input {
+  border: solid 0.1rem rgb(180, 180, 180);
+  border-radius: 0.65rem;
+  outline: none;
+  padding: 0.35rem 0.2rem;
+  margin-right: 0.3rem;
+}
+.friends__add-friend button {
+  text-decoration: none;
+  color: #000;
+  border: solid 0.1rem #4D96FF;
+  background-color: #fff;
+  border-radius: 0.65rem;
+  padding: 0.35rem 0.4rem;
+  margin: 0 0.3rem;
+  transition: all 0.2s;
+}
+.friends__add-friend button:hover {
+  background-color: #4D96FF;
+  color: #fff;
+}
+.friends__add-friend button:active {
+  background-color: #8fbdff;
+  border-color: #8fbdff;
+}
+.friends__friend-content {
+  position: relative;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+.friends__friend-content p {
+  display: inline-block;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  font-size: 0.95rem;
+}
+.friends__friend-content p span {
+  color: rgb(180, 180, 180);
+  font-size: 0.8rem;
+}
+.friends__friend-content button.info {
+  margin-left: 1rem;
+}
+
+.notifications {
+  width: 100%;
+  height: 100%;
+}
+.notifications__title {
+  margin-top: 0;
+}
+.notifications__content {
+  padding: 2rem 1rem;
+}
+.notifications__invite-title {
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+.notifications__invite {
+  margin: 1rem 0;
+}
+.notifications__button {
+  margin: 0.6rem 0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.65rem;
+  transition: all 0.2s;
+}
+.notifications__button:hover {
+  color: #fff;
+}
+.notifications__button.success {
+  border: solid 0.1rem #23a946;
+  background-color: #fff;
+  margin-right: 2rem;
+}
+.notifications__button.success:hover {
+  border: solid 0.1rem #23a946;
+  background-color: #23a946;
+}
+.notifications__button.warning {
+  border: solid 0.1rem #ff4d4f;
+  background-color: #fff;
+}
+.notifications__button.warning:hover {
+  border: solid 0.1rem #ff4d4f;
+  background-color: #ff4d4f;
+}
+
+.auth {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+.auth__button {
+  width: 100%;
+  color: #000;
+  background-color: #fff;
+  border-radius: 0.65rem;
+  border: solid 0.15rem #4D96FF;
+  transition: all 0.2s;
+  padding: 0.5rem 0.2rem;
+  margin: 0.2rem;
+}
+.auth__button:hover {
+  color: #fff;
+  background-color: #4D96FF;
+  border: solid 0.15rem #4D96FF;
+  transition: all 0.2s;
+}
+
+.messenger {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+}
+.messenger__content {
+  flex: 1;
+  background-color: #031426;
+}
+.messenger__add-chat {
+  display: flex;
+  padding: 1rem;
+}
+.messenger__add-chat input {
+  color: #fff;
+  outline: none;
+  background-color: #031426;
+  border: solid 0.05rem rgb(180, 180, 180);
+  border-radius: 0.65rem;
+  padding: 0.35rem 0.6rem;
+  margin-right: 0.3rem;
+}
+.messenger__button {
+  color: #fff;
+  font-size: 0.9rem;
+  background: none;
+  border: none;
+  margin-left: 0.5rem;
+}
+.messenger__button:hover {
+  background-color: #0d2947;
+}
+.messenger__chat {
+  display: flex;
+  align-items: center;
+  transition: background-color 0.5s;
+  padding: 0.5rem 0.5rem;
+}
+.messenger__chat:hover {
+  background-color: #0d2947;
+}
+.messenger__chat.selected {
+  background-color: #103052;
+}
+.messenger__chat-preview {
+  margin: 0 1rem;
+}
+.messenger__chat-preview button {
+  color: white;
+  font-size: 0.95rem;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.messenger__chat-preview p {
+  margin: 0;
+}
+.messenger__chat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(180, 180, 180);
+}
+.messenger__chat-name {
+  font-size: 0.85rem;
+}
+.messenger__chat-message {
+  font-size: 0.7rem;
+}
+.messenger__notice p {
+  margin: 0 1rem;
+}
+.messenger__empty-text {
+  margin-left: 1rem;
+}
+
+.chat#chat-box {
+  color: #000;
+  width: 100%;
+  flex: 2;
+  border-left: solid 0.05rem rgb(180, 180, 180);
+}
+.chat#chat-box__title {
+  border-bottom: solid 0.05rem rgb(180, 180, 180);
+  padding: 0.5rem 1rem;
+}
+.chat#chat-box__title h3 {
+  font-size: 0.8rem;
+  margin: 0;
+}
+.chat#chat-box__title span {
+  color: rgb(180, 180, 180);
+  font-size: 0.55rem;
+}
+.chat#chat-box__input {
+  position: absolute;
+  bottom: 0;
+}
+
+body,
+html {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-size: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+}
+.app__header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-bottom: solid 0.05rem rgb(180, 180, 180);
+  padding: 1rem 0;
+}
+.app__button-menu {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  height: 30px;
+  margin-left: 1rem;
+}
+.app__button-menu button {
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  transition: all 0.3s;
+  padding: 0;
+}
+.app__button-menu button img {
+  width: 30px;
+  height: 30px;
+}
+.app__title {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+}
+.app__title h3 {
+  margin: 0 1rem;
+}

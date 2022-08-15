@@ -1,0 +1,78 @@
+.register {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 100%;
+
+    &__form {
+        width: 45%;
+    }
+
+    &__input {
+        input {
+            width: 100%;
+
+            border: solid .1rem $grey;
+            border-radius: .65rem;
+            outline: none;
+
+            padding: .35rem .2rem;
+            margin: .3rem 0;
+
+            &.error {
+                border: solid .1rem $danger;
+                color: $danger;
+            }
+        }
+    }
+
+    &__btn-submit {
+        button {
+            width: 100%;
+
+            text-decoration: none;
+            color: $black;
+            border: solid .15rem $green-success;
+
+            background-color: $white;
+            border-radius: .65rem;
+
+            padding: .5rem .2rem;
+            margin: .3rem 0;
+
+            &:hover {
+                color: $white;
+                background-color: $green-success;
+            }
+        }
+    }
+
+    &__notice {
+        span {
+            font-size: .75rem;
+        }
+    }
+
+    &__signin-link {}
+
+    @media screen and (max-width: 1920px) {
+        &__form {
+            width: 20%;
+        }
+    }
+
+    @media screen and (max-width: 1440px) {
+        &__form {
+            width: 25%;
+        }
+    }
+
+    @media screen and (max-width: 428px) {
+        &__form {
+            width: 70%;
+        }
+    }
+}

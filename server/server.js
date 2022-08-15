@@ -4,7 +4,6 @@ console.clear();
 
 const router = require('./src/router');
 const { version, proxy } = require('../chat/package.json');
-const { newNotice } = require('./src/socket/socket');
 
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
@@ -32,8 +31,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 
-
 /*  DataBase    */
+
 const db_init = low(adapter)
 const db_package = low(new FileSync('./package.json'))
 
@@ -48,21 +47,17 @@ db_init.defaults(
 db_package.set('version', version).write()
 
 
-
 /*   Server     */
-
 
 console.log(chalk.green('Server started successfully!\n'));
 
 
-/*  Get */
 
 app.get('/', router.homePage)
     .get('/users', router.getUsers)
     .get('/api/invite', router.inviteUser)
 
-/*  Post    */
-app.post('/api/signup', router.SignUp)
+    .post('/api/signup', router.SignUp)
     .post('/api/signin', router.SignIn)
     .post('/api/logout', router.logout)
     .post('/api/refresh', router.refresh)
@@ -115,11 +110,3 @@ server.listen(port, (error) => {
     console.log(`App listening on port: ${chalk.underline(port)}\nVersion: ${version}\n\n${chalk.bold('  URL:    ')}${proxy}\n`);
     console.log('Users socket ID:');
 })
-
-/*
-const chats = db_init.get('chats').value()
-        chats.forEach((value, ID) => {
-            if(value.get)
-        });
-
-*/

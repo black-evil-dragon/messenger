@@ -1,9 +1,10 @@
+@import './settings/colors';
 @import './settings/var';
 @import './settings/font';
 @import './settings/ui';
-@import './settings/media';
 
-@import './components/index';
+@import '../../../components/index';
+
 
 body,
 html {
@@ -23,23 +24,54 @@ html {
     font-weight: 400;
 }
 
-div#root,
-div.app-page,
-div.main-page,
-div.login-page,
-div.profile-page,
-div.notice-page,
-div.contact-page {
+#root {
     width: 100%;
     height: 100%;
 }
 
+.app {
+    width: 100%;
+    height: 100%;
 
-div.app-page {
-    div.app-header {
+    &__header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        width: 100%;
+
+        border-bottom: solid .05rem $grey;
+        padding: 1rem 0;
+    }
+
+    &__button-menu {
+        width: max-content;
+        height: 30px;
+
+        margin-left: 1rem;
+
         button {
+            width: 30px;
+            height: 30px;
+
             background: none;
             border: none;
+            transition: all .3s;
+
+            padding: 0;
+
+            img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    }
+
+    &__title {
+        width: max-content;
+
+        h3 {
+            margin: 0 1rem;
         }
     }
 }
