@@ -12,6 +12,7 @@ const { getUserData } = require('./service/userData');
 const { checkID, setChats } = require('./service/chatData');
 
 
+// Старые участки кода, хочу позже поменять на универсальную функ getUserData --
 const getUserByLogin = (login) => {
     const db = low(adapter)
     const result = db.get('users').find({ userLogin: login }).value()
@@ -23,17 +24,18 @@ const getUserByMail = (mail) => {
     const result = db.get('users').find({ userMail: mail }).value()
     return result
 }
+// --
 
 
 
 
 /* Router */
 
-const homePage = (req, res, socket) => {
+const homePage = (req, res) => {
     res.sendFile(__dirname + '/server.html')
 }
 
-const getUsers = (req, res, next) => {
+const getUsers = (req, res) => {
     const db = low(adapter)
     if (authMiddleware(req, res) === 401) { return res.sendStatus(401) }
 
@@ -255,13 +257,17 @@ const authUser = (req, res) => {
 
 const updateData = (req, res) => {
     if (authMiddleware(req) === 401) {
-        return res.sendStatus(401)
+        return res.send('401C')
     } else {
         const { refreshToken } = req.cookies
-        const userData = getUserData(refreshToken, 'token')
+        const validateData = validateRefreshToken(refreshToken)
 
-        res.send(userData)
-        return
+        if (validateData) {
+            const userData = getUserData(refreshToken, 'token')
+            res.send(userData)
+        } else {
+            res.send('401C')
+        }
     }
 }
 
@@ -278,17 +284,19 @@ const logout = (req, res) => {
 const refresh = (req, res) => {
     const { refreshToken } = req.cookies
 
-    if(!refreshToken) res.send('401C')
-
-    const result = refreshThisToken(refreshToken)
-
-    if (result === 401) {
-        res.send('401C') // custom error
-    } else {
-        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(result.accessToken)
+    if (!refreshToken) {
+        res.send('401C')
         return
+    } else {
+        const result = refreshThisToken(refreshToken)
+
+        if (result === 401) {
+            res.send('401C') // custom error
+            return
+        } else {
+            res.cookie('refreshToken', result.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(result.accessToken) //1000 * 60 * 60 * 24 * 7
+        }
     }
-    res.send()
 }
 
 const createChat = (req, res) => {
@@ -344,7 +352,7 @@ const createChat = (req, res) => {
                 members: chat.members
             }
 
-            setChats(data)
+            //setChats(data)
 
             res.send()
         }

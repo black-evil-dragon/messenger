@@ -27,11 +27,6 @@ export default function Notifications(payload) {
     }
 
 
-    React.useEffect(() => {
-        !isLogin && checkAuth()
-        isLogin && checkData()
-    }, [])
-
     return (
         <div className='notifications'>
             <Header openMenu={openMenu} />

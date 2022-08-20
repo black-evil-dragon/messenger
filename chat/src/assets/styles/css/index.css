@@ -405,7 +405,7 @@ a:visited {
   color: #fff;
 }
 .messenger__content {
-  flex: 1;
+  flex: 0 1;
   background-color: #031426;
 }
 .messenger__add-chat {

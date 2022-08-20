@@ -87,10 +87,6 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
         checkData()
     }
 
-    React.useEffect(() => {
-        checkData()
-    }, [])
-
     /*
     const openMenu = () => {
         const panel = document.querySelector('.chat-list')
@@ -121,7 +117,7 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
                         </div>
 
                         <div className="messenger__chats">
-                            {chats.length ?
+                            {chats && chats.length ?
                                 chats.map(function (chat, id) {
                                     return (
                                         <div className='messenger__chat' chat-id={id} key={id} onClick={() => { selectChat(chat, id) /* Святой код, не трогай */ }}>

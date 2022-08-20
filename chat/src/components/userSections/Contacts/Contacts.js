@@ -52,7 +52,6 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     React.useEffect(() => {
-        checkData()
     }, [])
 
 

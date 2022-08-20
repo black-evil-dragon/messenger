@@ -75,12 +75,16 @@ function App() {
         if (localStorage.getItem('token')) {
             const response = await api.post('/api/auth')
 
-            if (response !== '401C') {
+            if (response !== '401CE') {
                 onLogin(response.data, false)
                 setShowing(true)
-            } else setLogout()
+            } else {
+                setLogout()
+            }
 
-        } else navigate('/auth')
+        } else {
+            navigate('/auth')
+        }
     }
 
     const setData = async (data) => {
@@ -98,7 +102,7 @@ function App() {
     }
 
     const checkData = async () => {
-        const response = await api.post('/api/update/data')
+        const response = await axios.post('/api/update/data')
         if (response.data === '401C') {
             checkAuth()
         } else {
@@ -107,7 +111,7 @@ function App() {
     }
 
     React.useEffect(() => {
-        window.onload = checkAuth()
+        checkData()
 
         socket.on('chat:created', (response) => {
             console.log(`${response.socketID} conntected to this chat`);
@@ -209,17 +213,3 @@ function App() {
 }
 
 export default App
-
-/*
-
-<Route path="/chat_:ChatName/id:id"
-                    element={<Messenger
-                        {...state}
-                        checkAuth={checkAuth}
-                        checkData={checkData}
-
-                        openMenu={openMenu}
-                    />}
-                />
-
-*/

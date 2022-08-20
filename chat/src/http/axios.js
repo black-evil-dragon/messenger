@@ -13,7 +13,6 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use((config) => {
     return config
 }, async (error) => {
-
     const originalRequest = error.config
 
     if (error.response.status === 401) {
@@ -24,7 +23,7 @@ api.interceptors.response.use((config) => {
             localStorage.setItem('token', response.data.accessToken)
             return api.request(originalRequest)
         } else {
-            return '401C'
+            return '401CE'
         }
     }})
 
