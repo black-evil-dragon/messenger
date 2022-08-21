@@ -30,6 +30,7 @@ export default function Navigation({ url, showMenu }) {
                 <button className="navigation__button" onClick={() => nav(url)}>Профиль</button>
                 <div ref={ref} className="navigation__closeNavigation"></div>
             </div>
+            <div className="navigation__background"></div>
         </div>
     );
 }

@@ -8,8 +8,8 @@
 
     text-align: center;
     overflow: hidden;
-    background-color: $grey-dark;
-    z-index: 9999999;
+    background-color: $navy-dark;
+    z-index: 999;
 
     transition: max-width .5s ease-out;
 
@@ -22,10 +22,10 @@
         font-size: .75rem;
         width: 85%;
 
-        background: $grey-dark;
+        background: $navy-dark;
         color: $white;
 
-        border: solid .1rem $grey-dark;
+        border: solid .1rem $navy-dark;
         border-radius: .65rem;
 
 
@@ -69,7 +69,7 @@
             width: 24px;
             height: 3px;
 
-            background: $black;
+            background: $white;
         }
 
         &::after {

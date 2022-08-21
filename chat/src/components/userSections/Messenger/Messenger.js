@@ -3,11 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import api from '../../../http/axios'
 import socket from '../../../socket/socket'
+import { hammer } from './Menu/hammer'
+import reducer from '../../../reducer/reducer'
 
 import ChatBox from './ChatBox/ChatBox'
 import Header from '../../ui/Header/Header'
 
-function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
+function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
 
     const params = useParams()
     const navigate = useNavigate()
@@ -15,15 +17,20 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
     const [checked, setChecked] = React.useState(true);
-    const [chatData, setChatData] = React.useState({})
 
     const [selectedElement, selectThisElement] = React.useState()
 
+    const [state, dispatch] = React.useReducer(reducer, {
+        selectChat: false,
+        chatName: null,
+        chatID: null,
+        members: [],
+        settings: null,
 
-    const setPrivate = (e) => {
-        setChecked(!checked);
-        e.target.checked = checked
-    }
+
+        messages: []
+    })
+
 
     const createChat = async () => { // Код не крутой, осуждаю
         if (contactLogin) {
@@ -37,12 +44,13 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
             if (response.data !== '401C' & response.data !== '404C') {
                 if (response.data === 'e_chat/exist') {
                     setNotice({ text: 'Упс, вы уже создали чат с этим пользователем', type: 'warning' })
-                    console.warn(response.data)
                 } else {
                     socket.emit('chat:create', data)
-                    setChatData(checkData())
+
                     setNotice({})
                     setLogin('')
+
+                    checkData()
                 }
             } else {
                 setNotice({ text: 'Упс, похоже произошла ошибка', type: 'dangers' })
@@ -53,24 +61,8 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
         }
     }
 
-    const checkData = async () => {
-        const response = await api.post('/api/update/data')
-        if (response.data === '401C') {
-            checkAuth()
-        } else {
-            await setChatData(response.data.chats)
-        }
-    }
-
-    const test = () => {
-        socket.emit('chat:create', {
-            userLogin: 'blackevildragon',
-            contactLogin: 'spookymonkey',
-            private: checked
-        })
-    }
-
     const selectChat = (chat, id) => {
+        const messengerMenu = document.querySelector('.messenger__content')
         const chatElements = document.querySelectorAll('.messenger__chat')
 
         chatElements.forEach(element => {
@@ -78,28 +70,35 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
                 element.classList.toggle('selected')
 
                 selectedElement !== element ? selectThisElement(element) : selectThisElement(undefined)
+
             } else {
                 element.classList.remove('selected')
             }
         });
 
-        setChatData(chat)
-        checkData()
+        messengerMenu.classList.add('hidden')
+        const token = localStorage.getItem('token')
+
+        socket.emit('chat:enter', {
+            chat,
+            token
+        })
     }
 
-    /*
-    const openMenu = () => {
-        const panel = document.querySelector('.chat-list')
-        panel.classList.toggle('open')
 
-        if (panel.style.maxWidth) {
-            panel.style.maxWidth = null
-        } else {
-            panel.style.width = '100%'
-            panel.style.maxWidth = `${panel.scrollWidth}px`
-        }
+
+    const setChatData = async (data) => {
+        await dispatch({
+            type: 'CHAT/SET_DATA',
+            payload: data
+        })
     }
-    */
+
+
+    React.useEffect(() => {
+        socket.on('chat:sendData', response => response !== 401 && setChatData(response))
+        //socket.on('chat:created', () => checkData())
+    }, [])
 
     return (
         <>
@@ -134,7 +133,7 @@ function Messenger({ chats, userLogin, checkAuth, isLogin, openMenu }) {
                             }
                         </div>
                     </div>
-                    <ChatBox params={params} checkAuth={checkAuth} />
+                    <ChatBox {...state} />
                 </div>
             }
         </>

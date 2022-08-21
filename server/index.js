@@ -2,7 +2,7 @@ console.clear();
 
 /*   Modules    */
 
-const router = require('./src/router');
+const Routes = require('./src/server');
 const { version, proxy } = require('../chat/package.json');
 
 const low = require('lowdb')
@@ -14,8 +14,9 @@ const cookieParser = require('cookie-parser')
 const express = require('express')
 const socket = require('socket.io')
 const http = require('http');
-const { getUserData } = require('./src/service/userData');
-const { checkID } = require('./src/service/chatData');
+const { getUserData, setStatus } = require('./src/service/userData');
+const { checkID, getChatData } = require('./src/service/chatData');
+const { validateAccessToken } = require('./src/service/token');
 const port = 8000
 const app = express()
 const server = http.createServer(app)
@@ -53,27 +54,33 @@ console.log(chalk.green('Server started successfully!\n'));
 
 
 
-app.get('/', router.homePage)
-    .get('/users', router.getUsers)
-    .get('/api/invite', router.inviteUser)
+app.get('/', Routes.homePage)
+    .get('/users', Routes.getUsers)
+    .get('/api/invite', Routes.inviteUser)
 
-    .post('/api/signup', router.SignUp)
-    .post('/api/signin', router.SignIn)
-    .post('/api/logout', router.logout)
-    .post('/api/refresh', router.refresh)
-    .post('/api/auth', router.authUser)
-    .post('/api/update/data', router.updateData)
-    .post('/api/acceptInvite', router.acceptInvite)
-    .post('/api/delete/notice', router.deleteNotice)
-    .post('/api/delete/contact', router.deleteContact)
-    .post('/api/chat/create', router.createChat)
+    .post('/api/signup', Routes.SignUp)
+    .post('/api/signin', Routes.SignIn)
+    .post('/api/logout', Routes.logout)
 
+    .post('/api/refresh', Routes.refresh)
+    .post('/api/auth', Routes.authUser)
+    .post('/api/update/data', Routes.updateData)
+
+    .post('/api/acceptInvite', Routes.acceptInvite)
+    .post('/api/delete/notice', Routes.deleteNotice)
+
+    .post('/api/delete/contact', Routes.deleteContact)
+
+    .post('/api/chat/create', Routes.createChat)
+    .post('/api/chat/delete', Routes.createChat)
+
+
+const usersOnline = []
 
 io.on('connection', (socket) => {
     console.log(`${chalk.bold(socket.id)} ${chalk.green('connected')}`)
 
-
-    socket.on('chat:create', (response) => {
+    socket.on('chat:create', response => {
         const { userLogin, contactLogin, private } = response
 
         const userData = getUserData(userLogin, 'login')
@@ -96,6 +103,26 @@ io.on('connection', (socket) => {
         }
 
     });
+
+    socket.on('chat:enter', response => {
+        if (validateAccessToken(response.token)) {
+            const chatData = getChatData(response.chat.chatID, 'ID')
+            chatData.chatName = response.chat.chatName
+
+            socket.emit('chat:sendData', chatData)
+        } else {
+            socket.emit('chat:sendData', 401)
+        }
+    })
+
+    socket.on('user:online', response => {
+        setStatus(response.userInfo, true)
+        usersOnline.push(response)
+    })
+
+    socket.on('get:users:online', () => socket.emit('users:online', usersOnline))
+
+    socket.on('debug', response => console.log(response))
 
     socket.on("disconnect", () => {
         console.log(`${chalk.bold(socket.id)} ${chalk.red('disconnected')}`);

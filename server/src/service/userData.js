@@ -1,6 +1,7 @@
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
+const db = low(adapter)
 
 
 /**
@@ -9,9 +10,8 @@ const adapter = new FileSync('./db/db.json')
  * @param {String} type Тип поиска по полю: token, mail, login
  * @returns {String} Все данные необходимые в работе
  */
-const getUserData = (target, type) => {
-    const db = low(adapter)
 
+const getUserData = (target, type) => {
     if (type === 'token') {
         const user = db.get('users').find({ refreshToken: target }).value()
         const users = db.get('users').value()
@@ -59,4 +59,9 @@ const getUserData = (target, type) => {
     }
 }
 
-module.exports = { getUserData }
+
+const setStatus = (target, online) => {
+    db.get('users').find({ userLogin: target }).get('userData').set('status', online).write()
+}
+
+module.exports = { getUserData, setStatus }

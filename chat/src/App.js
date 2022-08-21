@@ -57,6 +57,7 @@ function App() {
             type: 'LOGIN',
             payload: user
         })
+
         isNav && navigate(user.url)
     }
 
@@ -102,20 +103,24 @@ function App() {
     }
 
     const checkData = async () => {
-        const response = await axios.post('/api/update/data')
+        const response = await api.post('/api/update/data')
+
         if (response.data === '401C') {
             checkAuth()
         } else {
             setData(response.data)
+            onLogin(response.data, false)
+            setTimeout(() => {
+                socket.emit('user:online', {
+                    userInfo: response.data.userLogin,
+                    socketID: socket.id
+                })
+            }, 1000)
         }
     }
 
     React.useEffect(() => {
         checkData()
-
-        socket.on('chat:created', (response) => {
-            console.log(`${response.socketID} conntected to this chat`);
-        })
 
         socket.on('response:error', (response) => {
             console.log(response)
@@ -127,7 +132,14 @@ function App() {
 
     const openMenu = () => {
         const panel = document.querySelector('.navigation')
+        const panelBackground = document.querySelector('.blur-dark')
+        const transitionElement = document.querySelector('.app__transition')
+
         panel.classList.toggle('open')
+
+        panelBackground.classList.toggle('show')
+        transitionElement.classList.toggle('show')
+
 
         if (panel.style.maxWidth) {
             panel.style.maxWidth = null
@@ -141,6 +153,9 @@ function App() {
 
     return (
         <div className='app'>
+            <div className="app__transition">
+                <div className="blur-dark"></div>
+            </div>
             {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
             <Routes>
                 <Route path='/auth' element={
@@ -153,7 +168,6 @@ function App() {
                 <Route path="/" element={
                     <Messenger
                         {...state}
-                        checkAuth={checkAuth}
                         checkData={checkData}
 
                         openMenu={openMenu}

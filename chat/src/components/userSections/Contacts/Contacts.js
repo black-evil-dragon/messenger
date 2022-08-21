@@ -1,7 +1,9 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+
 
 import api from '../../../http/axios'
-import { useNavigate } from 'react-router-dom'
+
 
 import Header from '../../ui/Header/Header'
 
@@ -52,6 +54,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     React.useEffect(() => {
+
     }, [])
 
 
@@ -63,7 +66,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
                 <div className="friends__add-friend">
                     <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
-                    <button className='friends__button' onClick={sendInvite}>Добавить</button>
+                    <button className='friends__button info' onClick={sendInvite}>Добавить</button>
 
                     <div className="friends__notice">
                         <p className={notice.type}>{notice.text}</p>
@@ -75,9 +78,8 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
                     {contacts.length ?
                         contacts.map(function (d, idx) {
                             return (
-                                <div className='friends__friend-content' key={idx}>
+                                <div className='friends__friend-content' key={idx} onClick={() => nav(d.userLogin)}>
                                     <p>{d.userName} <span>{d.userLogin}</span></p>
-                                    <button className='friends__button info' onClick={() => nav(d.userLogin)}>Дополнительно</button>
                                 </div>
                             )
                         })

@@ -82,6 +82,7 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
                             <p>{contactInfo.userName}</p>
                         </div>
                         <button className='profile__button info send-message' onClick={createChat}>Написать</button>
+                        <button className='profile__button danger'>Удалить чат</button>
                         <button className='profile__button danger' onClick={deleteContact}>Удалить из друзей</button>
                         {notice &&
                             <div className='profile__notice'>

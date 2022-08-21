@@ -28,8 +28,7 @@ const getUserByMail = (mail) => {
 
 
 
-
-/* Router */
+/* Routes */
 
 const homePage = (req, res) => {
     res.sendFile(__dirname + '/server.html')
@@ -87,7 +86,7 @@ const acceptInvite = (req, res) => {
     if (type === 'accept') {
         if (userNotice.find({ userLogin: contactLogin }).value()) {
             userNotice.remove({ userLogin: contactLogin }).write()
-            contactNotice.get('other').push({ userLogin: userLogin, type: 'acceptInvite' }).write()
+            //contactNotice.get('other').push({ userLogin: userLogin, type: 'acceptInvite' }).write()
 
             const contact_data = getUserData(contactLogin, 'login')
             const user_data = getUserData(userLogin, 'login')
@@ -142,7 +141,6 @@ const deleteContact = (req, res) => {
 
     const userContact = db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts')
     const friendContact = db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts')
-    const contactNotice = db.get('users').find({ userLogin: contactLogin }).get('userData').get('notice')
 
     if (authMiddleware(req, res) !== 401) {
         if (userContact.find({ userLogin: contactLogin }).value()) {
@@ -150,7 +148,6 @@ const deleteContact = (req, res) => {
             if (friendContact.find({ userLogin: userLogin }).value()) {
                 friendContact.remove({ userLogin: userLogin }).write()
             }
-            contactNotice.get('other').push({ userLogin: userLogin, type: 'deleteContact' }).write()
             res.send()
         } else {
             console.log(contactLogin);
@@ -307,18 +304,16 @@ const createChat = (req, res) => {
     const contactData = getUserData(contactLogin, 'login')
 
     const id = `${userData.userID}_${contactData.userID}`
-    const chatExist = db.get('chats').find({ ChatID: id }).value()
 
 
     if (authMiddleware(req, res) !== 401 && userData && contactLogin) {
-        if (chatExist) {
+        if (db.get('chats').find({ ChatID: id }).value()) {
             const data = {
                 id,
                 userLogin,
                 contactLogin,
                 userData,
                 contactData,
-                members: chatExist.members
             }
             const result = setChats(data)
             result ? res.send(result) : res.send()
@@ -342,23 +337,26 @@ const createChat = (req, res) => {
                 ],
                 messages: []
             }).write()
-            const chat = db.get('chats').find({ ChatID: id }).value()
-            const data = {
+
+            const data = { // Ладно
                 id,
                 userLogin,
                 contactLogin,
                 userData,
                 contactData,
-                members: chat.members
             }
 
-            //setChats(data)
+            setChats(data)
 
             res.send()
         }
     } else {
         res.send('401C')
     }
+
+}
+
+const deleteChat = (req, res) => {
 
 }
 
@@ -380,6 +378,7 @@ module.exports = {
     deleteNotice,
     deleteContact,
 
-    createChat
+    createChat,
+    deleteChat
 }
 

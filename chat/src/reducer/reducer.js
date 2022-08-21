@@ -34,6 +34,25 @@ export default (state, action) => {
                 ...state,
                 currentPage: action.payload
             }
+
+        /* New code */
+
+        case 'CHAT/SET_DATA':
+            return {
+                ...state,
+                selectChat: true,
+                chatName: action.payload.chatName,
+                chatID: action.payload.ChatID,
+                members: action.payload.members,
+                settings: action.payload.settings,
+
+                messages: action.payload.messages
+            }
+        case 'CHAT/HIDE':
+            return {
+                ...state,
+                selectChat: action.payload,
+            }
         default:
             return state;
     }

@@ -45,7 +45,7 @@ export default function SignIn({ onLogin }) {
         const response = await axios.post('/api/signin', user)
 
         if (response.data.response) {
-            onLogin(response.data.userData, true)
+            onLogin(response.data.userData, false)
             localStorage.setItem('token', response.data.token)
             homePage()
         }

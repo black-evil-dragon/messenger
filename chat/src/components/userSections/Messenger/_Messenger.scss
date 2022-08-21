@@ -7,15 +7,34 @@
     color: $white;
 
     &__content {
+        position: relative;
+        z-index: 200;
+
         flex: 0 1;
 
         background-color: $blue-dark;
+
+        @media screen and (max-width: 428px) {
+            & {
+                position: absolute;
+
+                width: 100%;
+                height: 100%;
+
+                transition: transform 1s;
+            }
+
+            &.hidden {
+                transform: translateX(-100%);
+            }
+        }
     }
 
     &__add-chat {
         display: flex;
 
         padding: 1rem;
+
         input {
             color: $white;
 
@@ -95,6 +114,7 @@
         &-name {
             font-size: .85rem;
         }
+
         &-message {
             font-size: .7rem;
         }
@@ -111,27 +131,42 @@
     }
 }
 
-.chat#chat-box {
+.chat {
+    position: relative;
+
     color: $black;
 
     width: 100%;
     flex: 2;
 
-    border-left: $border;
 
-    &__title {
-        border-bottom: $border;
+    &__header {
+        display: flex;
+        align-items: center;
 
-        padding: .5rem 1rem;
+        padding: .75rem 1rem;
 
-        h3 {
-            font-size: .8rem;
-            margin: 0;
+        &-icon {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 50%;
+
+            background-color: $grey;
         }
 
-        span {
-            color: $grey;
-            font-size: .55rem;
+        &-info {
+            margin-left: 1rem;
+
+            h3 {
+                font-size: 1rem;
+                margin: 0;
+            }
+
+            span {
+                color: $grey;
+                font-size: .75rem;
+            }
         }
     }
 

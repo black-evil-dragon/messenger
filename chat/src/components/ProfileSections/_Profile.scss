@@ -4,6 +4,9 @@
     width: 100%;
     height: 100%;
 
+    color: $white;
+    background-color: $navy-dark;
+
     &__content {
         width: 100%;
         height: 100%;
@@ -30,12 +33,17 @@
 
     &__button {
         margin: 1rem 0;
+        padding: .35rem .9rem;
 
         &.info {
             margin-right: 1rem;
+            color: $white;
+            background-color: $blue-dark2;
         }
         &.danger {
-
+            margin-right: 1rem;
+            color: $danger;
+            background-color: $blue-dark2;
         }
     }
 
