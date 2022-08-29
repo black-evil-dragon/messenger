@@ -20,7 +20,7 @@ api.interceptors.response.use((config) => {
         if (response.data !== '401C') {
             originalRequest.headers.Authorization = `Bearer ${response.data}`
 
-            localStorage.setItem('token', response.data.accessToken)
+            localStorage.setItem('token', response.data)
             return api.request(originalRequest)
         } else {
             return '401CE'

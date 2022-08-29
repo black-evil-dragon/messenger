@@ -38,8 +38,9 @@
         }
 
         &.success {
+            color: $white;
             border: solid .1rem $green-success;
-            background-color: $white;
+            background: fade-out($green-success, .35);
 
             margin-right: 2rem;
 
@@ -50,8 +51,9 @@
         }
 
         &.warning {
+            color: $white;
             border: solid .1rem $danger;
-            background-color: $white;
+            background: fade-out($danger, .35);
 
             &:hover {
                 border: solid .1rem $danger;

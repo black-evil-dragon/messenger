@@ -1,10 +1,12 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (state, action) => {
     switch (action.type) {
+        //надо переписать
         case 'LOGIN':
             return {
                 ...state,
                 isLogin: true,
+                userID: action.payload.userID,
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
@@ -16,6 +18,7 @@ export default (state, action) => {
         case 'SET_DATA':
             return {
                 ...state,
+                userID: action.payload.userID,
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
@@ -52,6 +55,16 @@ export default (state, action) => {
             return {
                 ...state,
                 selectChat: action.payload,
+            }
+        case 'CHAT/ADD_MESSAGE':
+            return {
+                ...state,
+                messages: [...state.messages, action.payload]
+            }
+        case 'CHAT/LAST_MESSAGE':
+            return {
+                ...state,
+                lastMessage: action.payload
             }
         default:
             return state;

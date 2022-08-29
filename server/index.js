@@ -15,7 +15,7 @@ const express = require('express')
 const socket = require('socket.io')
 const http = require('http');
 const { getUserData, setStatus } = require('./src/service/userData');
-const { checkID, getChatData } = require('./src/service/chatData');
+const { checkID, getChatData, addSocket, removeSocket, setMessages } = require('./src/service/chatData');
 const { validateAccessToken } = require('./src/service/token');
 const port = 8000
 const app = express()
@@ -41,9 +41,10 @@ db_init.defaults(
     {
         users: [],
         chats: [],
-        socket: []
     }
 ).write()
+
+
 
 db_package.set('version', version).write()
 
@@ -75,16 +76,18 @@ app.get('/', Routes.homePage)
     .post('/api/chat/delete', Routes.createChat)
 
 
-const usersOnline = []
+const users = {}
 
-io.on('connection', (socket) => {
+io.on('connection', socket => {
     console.log(`${chalk.bold(socket.id)} ${chalk.green('connected')}`)
 
-    socket.on('chat:create', response => {
+    socket.on('chat:create', response => {//не думаю, что этот код нужен
         const { userLogin, contactLogin, private } = response
 
         const userData = getUserData(userLogin, 'login')
         const contactData = getUserData(contactLogin, 'login')
+
+        if(!contactData || !userData) return
 
         const ChatID = checkID(userData.userID, contactData.userID)
 
@@ -108,24 +111,32 @@ io.on('connection', (socket) => {
         if (validateAccessToken(response.token)) {
             const chatData = getChatData(response.chat.chatID, 'ID')
             chatData.chatName = response.chat.chatName
-
             socket.emit('chat:sendData', chatData)
+
+            //addSocket(response.chat.chatID, socket.id)
+
+            socket.join(response.chat.chatID)
         } else {
             socket.emit('chat:sendData', 401)
         }
     })
 
-    socket.on('user:online', response => {
-        setStatus(response.userInfo, true)
-        usersOnline.push(response)
+    socket.on('chat:send-message', response => {
+        setMessages(response.chatID, response.messageData)
+        socket.broadcast.to(response.chatID).emit('chat:add-message', response)
     })
 
-    socket.on('get:users:online', () => socket.emit('users:online', usersOnline))
+    socket.on('chat:user-typing', response => socket.broadcast.emit('chat:user-typing/res', response))
+
+    socket.on('user:login', response => {
+        io.emit('user:online', socket.id)
+    })
 
     socket.on('debug', response => console.log(response))
 
     socket.on("disconnect", () => {
         console.log(`${chalk.bold(socket.id)} ${chalk.red('disconnected')}`);
+        //removeSocket(socket.id)
     });
 })
 

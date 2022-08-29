@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 
 import api from '../../../http/axios'
+import socket from '../../../socket/socket'
 
 
 import Header from '../../ui/Header/Header'
@@ -54,7 +55,6 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     React.useEffect(() => {
-
     }, [])
 
 

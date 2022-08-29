@@ -9,10 +9,7 @@ import reducer from '../../../reducer/reducer'
 import ChatBox from './ChatBox/ChatBox'
 import Header from '../../ui/Header/Header'
 
-function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
-
-    const params = useParams()
-    const navigate = useNavigate()
+function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, userID }) {
 
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
@@ -21,12 +18,15 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
     const [selectedElement, selectThisElement] = React.useState()
 
     const [state, dispatch] = React.useReducer(reducer, {
+        userID: userID,
+        userName: userName,
+        lastMessage: '',
+
         selectChat: false,
         chatName: null,
         chatID: null,
         members: [],
         settings: null,
-
 
         messages: []
     })
@@ -40,6 +40,10 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
                 private: checked
             }
             const response = await api.post('/api/chat/create', data)
+            if(response.data === '404C/user') {
+                setNotice({ text: 'Упс, такого пользователя нет', type: 'danger' })
+                return
+            }
 
             if (response.data !== '401C' & response.data !== '404C') {
                 if (response.data === 'e_chat/exist') {
@@ -61,7 +65,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
         }
     }
 
-    const selectChat = (chat, id) => {
+    const selectChat = (chat, id) => {//надо переписать
         const messengerMenu = document.querySelector('.messenger__content')
         const chatElements = document.querySelectorAll('.messenger__chat')
 
@@ -77,27 +81,47 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
         });
 
         messengerMenu.classList.add('hidden')
-        const token = localStorage.getItem('token')
 
         socket.emit('chat:enter', {
             chat,
-            token
+            token: localStorage.getItem('token')
         })
     }
 
-
-
-    const setChatData = async (data) => {
+    const setChatData = async data => {
         await dispatch({
             type: 'CHAT/SET_DATA',
             payload: data
         })
     }
 
+    const addMessage = async data => {
+        await dispatch({
+            type: 'CHAT/ADD_MESSAGE',
+            payload: data
+        })
+    }
+
+    const setPreview = async data => {
+        await dispatch({
+            type: 'CHAT/LAST_MESSAGE',
+            payload: data
+        })
+    }
+
 
     React.useEffect(() => {
-        socket.on('chat:sendData', response => response !== 401 && setChatData(response))
-        //socket.on('chat:created', () => checkData())
+        socket.on('chat:sendData', response => {
+            if(response === 401) {
+                console.warn('Error with access token')
+            } else {
+                setChatData(response)
+            }
+        })
+
+        socket.on('chat:add-message', response => {
+            addMessage(response.messageData)
+        })
     }, [])
 
     return (
@@ -123,7 +147,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
                                             <div className="messenger__chat-icon"></div>
                                             <div className="messenger__chat-preview">
                                                 <p className='messenger__chat-name'>{chat.chatName}</p>
-                                                <p className='messenger__chat-message'>Привет, как ты?</p>
+                                                <p className='messenger__chat-message'>{state.lastMessage}</p>
                                             </div>
                                         </div>
                                     )
@@ -133,7 +157,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData }) {
                             }
                         </div>
                     </div>
-                    <ChatBox {...state} />
+                    <ChatBox {...state} addMessage={addMessage} setPreview={setPreview}/>
                 </div>
             }
         </>

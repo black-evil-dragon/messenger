@@ -31,6 +31,7 @@ function App() {
     const [show, setShowing] = React.useState(false)
     const [state, dispatch] = React.useReducer(reducer, {
         isLogin: false,
+        userID: null,
         userMail: null,
         userLogin: null,
         userName: null,
@@ -46,13 +47,15 @@ function App() {
     })
 
     const onLogin = async (user, isNav) => {
-        const socketID = await socket.id
+        socket.connect()
+        setTimeout(() => {
+            socket.emit('user:login', {
+                userLogin: user.userLogin,
+                userName: user.userName,
+                socketID: socket.id
+            })
+        }, 1000)
 
-        socket.emit('user:login', {
-            userLogin: user.userLogin,
-            userName: user.userName,
-            socketID: socketID
-        })
         await dispatch({ // await еще как влияет, спасибо vsc
             type: 'LOGIN',
             payload: user
@@ -63,12 +66,13 @@ function App() {
 
     const setLogout = async () => {
         localStorage.removeItem('token')
-        await axios.post('/api/logout', state.userLogin)
+        await axios.post('/api/logout', { userLogin: state.userLogin })
         await dispatch({
             type: 'LOGOUT'
         })
         navigate('/auth')
         setShowing(true)
+        socket.close()
     }
 
 
@@ -76,7 +80,7 @@ function App() {
         if (localStorage.getItem('token')) {
             const response = await api.post('/api/auth')
 
-            if (response !== '401CE') {
+            if (response !== '401CE' && response.data !== '401C') {
                 onLogin(response.data, false)
                 setShowing(true)
             } else {
@@ -110,23 +114,17 @@ function App() {
         } else {
             setData(response.data)
             onLogin(response.data, false)
-            setTimeout(() => {
-                socket.emit('user:online', {
-                    userInfo: response.data.userLogin,
-                    socketID: socket.id
-                })
-            }, 1000)
         }
     }
 
     React.useEffect(() => {
         checkData()
 
-        socket.on('response:error', (response) => {
-            console.log(response)
-        })
-
+        socket.on('debug', response => console.log(response))
+        //socket.on('user:online', response => console.log('user online:', response))
     }, [])
+
+
 
     window.socket = socket
 
@@ -151,77 +149,102 @@ function App() {
 
 
 
+
     return (
         <div className='app'>
             <div className="app__transition">
                 <div className="blur-dark"></div>
             </div>
             {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
-            <Routes>
-                <Route path='/auth' element={
-                    <Auth
-                        {...state}
-                        show={show}
+            {state.isLogin ?
+                <Routes>
+                    <Route path='/auth' element={
+                        <Auth
+                            {...state}
+                            show={show}
+                        />
+                    } />
+
+                    <Route path="/" element={
+                        <Messenger
+                            {...state}
+                            checkData={checkData}
+
+                            openMenu={openMenu}
+                        />
+                    } />
+                    <Route path='/notice'
+                        element={<Notifications
+                            {...state}
+                            setData={setData}
+                            checkAuth={checkAuth}
+                            addContact={addContact}
+                            checkData={checkData}
+
+                            openMenu={openMenu}
+                        />}
                     />
-                } />
+                    <Route path='/contacts'
+                        element={<Contacts
+                            {...state}
+                            checkAuth={checkAuth}
+                            checkData={checkData}
 
-                <Route path="/" element={
-                    <Messenger
-                        {...state}
-                        checkData={checkData}
-
-                        openMenu={openMenu}
+                            openMenu={openMenu}
+                        />}
                     />
-                } />
-                <Route path='/notice'
-                    element={<Notifications
-                        {...state}
-                        setData={setData}
-                        checkAuth={checkAuth}
-                        addContact={addContact}
-                        checkData={checkData}
+                    <Route path="/signin"
+                        element={<SignIn
+                            onLogin={onLogin}
+                        />}
+                    />
+                    <Route path="/signup"
+                        element={<SignUp />}
+                    />
 
-                        openMenu={openMenu}
-                    />}
-                />
-                <Route path='/contacts'
-                    element={<Contacts
-                        {...state}
-                        checkAuth={checkAuth}
-                        checkData={checkData}
+                    <Route path={'/user/:login'}
+                        element={<ContactProfile
+                            userLogin={state.userLogin}
+                            checkData={checkData}
+                            checkAuth={checkAuth}
+                            contacts={state.contacts}
 
-                        openMenu={openMenu}
-                    />}
-                />
-                <Route path="/signin"
-                    element={<SignIn
-                        onLogin={onLogin}
-                    />}
-                />
-                <Route path="/signup"
-                    element={<SignUp />}
-                />
+                            openMenu={openMenu}
+                        />}
+                    />
+                    <Route path={"/" + state.url}
+                        element={<UserProfile
+                            {...state}
+                            navigate={navigate}
+                            setLogout={setLogout}
 
-                <Route path={'/user/:login'}
-                    element={<ContactProfile
-                        userLogin={state.userLogin}
-                        checkData={checkData}
-                        checkAuth={checkAuth}
-                        contacts={state.contacts}
+                            openMenu={openMenu}
+                        />}
+                    />
+                </Routes> :
+                <>
+                    <Routes>
+                        <Route path='/' element={
+                            <div className='app__loading'><div className="app__loading-spinner"></div></div>
+                        } />
 
-                        openMenu={openMenu}
-                    />}
-                />
-                <Route path={"/" + state.url}
-                    element={<UserProfile
-                        {...state}
-                        navigate={navigate}
-                        setLogout={setLogout}
+                        <Route path='/auth' element={
+                            <Auth
+                                {...state}
+                                show={show}
+                            />
+                        } />
 
-                        openMenu={openMenu}
-                    />}
-                />
-            </Routes>
+                        <Route path="/signin"
+                            element={<SignIn
+                                onLogin={onLogin}
+                            />}
+                        />
+                        <Route path="/signup"
+                            element={<SignUp />}
+                        />
+                    </Routes>
+                </>}
         </div>
     )
 }

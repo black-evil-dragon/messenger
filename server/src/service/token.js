@@ -30,11 +30,9 @@ const saveToken = (userLogin, refreshToken) => {
 const removeToken = (userLogin, refreshToken) => {
     const db = low(adapter)
 
-    const refresh_token = { refreshToken: refreshToken }
-
-    const tokenData = db.get('users').find(refresh_token).value()
+    const tokenData = db.get('users').find({ refreshToken: refreshToken }).value()
     if (tokenData) {
-        db.get('users').find({ userLogin: userLogin }).unset(refresh_token).write()
+        db.get('users').find({ userLogin: userLogin }).unset('refreshToken').write()
     }
 }
 

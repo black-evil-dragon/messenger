@@ -269,7 +269,7 @@ const updateData = (req, res) => {
 }
 
 const logout = (req, res) => {
-    const userLogin = req.body
+    const { userLogin } = req.body
     const { refreshToken } = req.cookies
 
     removeToken(userLogin, refreshToken)
@@ -303,10 +303,13 @@ const createChat = (req, res) => {
     const userData = getUserData(userLogin, 'login')
     const contactData = getUserData(contactLogin, 'login')
 
-    const id = `${userData.userID}_${contactData.userID}`
+    if(!contactData) {
+        res.send('404C/user')
+        return
+    }
 
-
-    if (authMiddleware(req, res) !== 401 && userData && contactLogin) {
+    if (authMiddleware(req, res) !== 401 && userData && contactData) {
+        const id = `${userData.userID}_${contactData.userID}`
         if (db.get('chats').find({ ChatID: id }).value()) {
             const data = {
                 id,
@@ -322,7 +325,6 @@ const createChat = (req, res) => {
                 ChatID: id,
                 settings: {
                     private: private,
-                    chatName: contactData.userName
                 },
 
                 members: [
@@ -335,6 +337,7 @@ const createChat = (req, res) => {
                         userName: contactData.userName
                     }
                 ],
+                connections: [],
                 messages: []
             }).write()
 

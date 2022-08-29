@@ -52,9 +52,10 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
                     console.warn(response.data)
                     navigate('/')
                 } else {
-                    checkData()
                     socket.emit('chat:create', data)
                     setNotice({})
+                    checkData()
+
                     navigate('/')
                 }
             } else {
@@ -81,7 +82,6 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
                             <h3>{contactInfo.userLogin}</h3>
                             <p>{contactInfo.userName}</p>
                         </div>
-                        <button className='profile__button info send-message' onClick={createChat}>Написать</button>
                         <button className='profile__button danger'>Удалить чат</button>
                         <button className='profile__button danger' onClick={deleteContact}>Удалить из друзей</button>
                         {notice &&
@@ -104,3 +104,5 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
         </div>
     )
 }
+
+//<button className='profile__button info send-message' onClick={createChat}>Написать</button>
