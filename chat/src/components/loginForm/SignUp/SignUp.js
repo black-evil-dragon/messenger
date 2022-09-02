@@ -45,14 +45,22 @@ export default function SignUp() {
 
     }
 
-    const registerUser = async (user) => {
+    const registerUser = async user => {
         const response = await axios.post('/api/signup', user)
-        if (!response.data) {
-            setLoading(false)
-            setNotice({ text: 'Упс, такой пользователь уже существует)' })
+
+        if (response.data.status === 200) {
+            if (response.data.error) {
+                setLoading(false)
+                setNotice({ text: response.data.error })
+            } else {
+                setRegister(true)
+                setLoading(true)
+            }
         } else {
-            setRegister(true)
-            setLoading(true)
+            setLoading(false)
+            setNotice({ text: response.data.text })
+
+            console.warn(response.data.error)
         }
     }
 

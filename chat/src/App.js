@@ -51,10 +51,9 @@ function App() {
         setTimeout(() => {
             socket.emit('user:login', {
                 userLogin: user.userLogin,
-                userName: user.userName,
                 socketID: socket.id
             })
-        }, 1000)
+        }, 2000)
 
         await dispatch({ // await еще как влияет, спасибо vsc
             type: 'LOGIN',
@@ -112,6 +111,9 @@ function App() {
         if (response.data === '401C') {
             checkAuth()
         } else {
+            socket.io.opts.query = {
+                userLogin: response.data.userLogin
+            }
             setData(response.data)
             onLogin(response.data, false)
         }
@@ -120,7 +122,7 @@ function App() {
     React.useEffect(() => {
         checkData()
 
-        socket.on('debug', response => console.log(response))
+        //socket.on('debug', response => console.log(response))
         //socket.on('user:online', response => console.log('user online:', response))
     }, [])
 

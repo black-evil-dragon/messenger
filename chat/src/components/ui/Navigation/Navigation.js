@@ -25,7 +25,7 @@ export default function Navigation({ url, showMenu }) {
         <div className="navigation">
             <div className="navigation__content">
                 <button className="navigation__button" onClick={() => nav('/')}>Главная</button>
-                <button className="navigation__button" onClick={() => nav('/notice')}>Уведомление</button>
+                <button className="navigation__button" onClick={() => nav('/notice')}>Уведомления</button>
                 <button className="navigation__button" onClick={() => nav('/contacts')}>Друзья</button>
                 <button className="navigation__button" onClick={() => nav(url)}>Профиль</button>
                 <div ref={ref} className="navigation__closeNavigation"></div>

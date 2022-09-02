@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useFilter } from '../../../hooks/useFilter'
 
 
 import api from '../../../http/axios'
@@ -9,43 +10,19 @@ import socket from '../../../socket/socket'
 import Header from '../../ui/Header/Header'
 
 export default function Contacts({ contacts, userLogin, checkAuth, checkData, openMenu }) {
+    const navigate = useNavigate()
 
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
+    const [allUsers, setUsers] = React.useState([])
 
-    const navigate = useNavigate()
+    const filterUsers = useFilter(allUsers, contactLogin)
 
 
     const sendInvite = async () => {
-        if (contactLogin) {
-            const response = await api.post('/api/auth')
-            if (response.status === 401) {
-                checkAuth(localStorage.getItem('token')) // че? я это писал?
-            } else {
-                setNotice({})
+        if(contactLogin) {
 
-                const response = await api.get('/api/invite', {
-                    params: {
-                        contactLogin: contactLogin,
-                        userLogin: userLogin
-                    }
-                })
-
-                if (response.data === '200C') {
-                    setNotice({ text: 'Вы уже пригласили его)', type: 'danger' })
-                }
-
-                if (response.data === '404C') {
-                    setNotice({ text: 'Такого логина нет', type: 'danger' })
-                }
-
-                setLogin('')
-            }
-        } else {
-            setNotice({ text: 'Введите логин друга!', type: 'danger' })
-        }
-        if (contactLogin === userLogin) {
-            setNotice({ text: 'Это ваш логин)', type: 'warning' })
+            
         }
     }
 
@@ -57,15 +34,33 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
     React.useEffect(() => {
     }, [])
 
+    React.useEffect(() => {
+        socket.on('users:get-users', response => {
+            setUsers(response.data)
+        })
+
+    }, [allUsers])
+
+    React.useMemo(() => {
+        socket.emit('users:get-users', userLogin)
+        if(!contactLogin) {
+            setUsers([])
+        }
+    }, [contactLogin])
 
     return (
         <div className='friends'>
-            <Header openMenu={openMenu}/>
+            <Header openMenu={openMenu} />
             <div className="friends__content">
                 <h3 className='friends__title'>Найти друга</h3>
 
                 <div className="friends__add-friend">
-                    <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
+                    <input className={notice.type} placeholder='Логин друга' type="text" list='filterUsers' value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
+                    <datalist id='filterUsers'>
+                        {contactLogin && filterUsers && filterUsers.map((user, key) =>
+                            <option key={key} value={user.userLogin}>{user.userLogin} - {user.userName}</option>
+                        )}
+                    </datalist>
                     <button className='friends__button info' onClick={sendInvite}>Добавить</button>
 
                     <div className="friends__notice">

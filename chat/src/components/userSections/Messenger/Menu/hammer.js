@@ -12,10 +12,10 @@ onSwipe.on('swipeleft swiperight', function (event) {
     event.preventDefault();
 
     if (event.type === 'swiperight') {
-        document.querySelector('.messenger__content').classList.remove('hidden')
+        document.querySelector('.messenger__content') && document.querySelector('.messenger__content').classList.remove('hidden')
     } else {
         // close/hide menu
-        document.querySelector('.messenger__content').classList.add('hidden')
+        document.querySelector('.messenger__content') && document.querySelector('.messenger__content').classList.add('hidden')
     }
 
 });

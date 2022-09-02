@@ -17,13 +17,9 @@ export default function Notifications(payload) {
         openMenu
     } = payload
 
-    const acceptInvite = async (contactLogin, type) => {
-        const response = await api.post('/api/acceptInvite', { contactLogin, userLogin, type })
 
-        if (response.data !== '200C') {
-            addContact(response.data)
-            checkData()
-        }
+    const replyInvite = (contactLogin, type) => {
+
     }
 
 
@@ -38,8 +34,8 @@ export default function Notifications(payload) {
                             return (
                                 <div className='notifications__invite' key={idx}>
                                     <p className='notifications__invite-title'><span>{d.userLogin}</span> хочет добавить вас в друзья!</p>
-                                    <button className='notifications__button success' onClick={() => acceptInvite(d.userLogin, 'accept')}>Добавить</button>
-                                    <button className='notifications__button warning' onClick={() => acceptInvite(d.userLogin, 'decline')}>Отклонить</button>
+                                    <button className='notifications__button success' onClick={() => replyInvite(d.userLogin, 'accept')}>Добавить</button>
+                                    <button className='notifications__button warning' onClick={() => replyInvite(d.userLogin, 'decline')}>Отклонить</button>
                                 </div>
                             )
                         })

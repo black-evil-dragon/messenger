@@ -1,14 +1,14 @@
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
-const adapter = new FileSync('./db/db.json')
+const adapter = new FileSync('./db/db_test.json')
 const nanoid = require('nanoid').customAlphabet('1234567890', 10);
 
 const bcrypt = require('bcrypt');
+const { slt } = require('./config/config').config;
 
 const { generateTokens, saveToken, removeToken, refreshThisToken, validateRefreshToken } = require('./service/token');
 const { authMiddleware } = require('./middleware/auth');
-const { slt } = require('./config/config').config
-const { getUserData } = require('./service/userData');
+const { getUserData, registerUser, authPassword } = require('./service/userData');
 const { checkID, setChats } = require('./service/chatData');
 
 
@@ -28,7 +28,7 @@ const getUserByMail = (mail) => {
 
 
 
-/* Routes */
+/* Routes func-s */
 
 const homePage = (req, res) => {
     res.sendFile(__dirname + '/server.html')
@@ -159,80 +159,71 @@ const deleteContact = (req, res) => {
 }
 
 const SignUp = (req, res) => {
-    const db = low(adapter)
     const { userMail, userLogin, userName, userPassword } = req.body
 
-    if (getUserByLogin(userLogin) || getUserByMail(userMail)) {
-        const result = false
-        res.send(result)
+    if (getUserData(userMail, 'mail')) {
+        res.json({ status: 200, error: 'Упс, такая почта зарегестрирована' })
+        return
+    }
+    if (getUserData(userLogin, 'login')) {
+        res.json({ status: 200, error: 'Упс, такой логин зарегестрирован' })
+        return
+    }
+
+    const id = nanoid()
+    const hashPassword = bcrypt.hashSync(userPassword, slt)
+
+    const userInfo = {
+        id,
+        userMail,
+        userLogin,
+        userName,
+        hashPassword
+    }
+
+    const userData = registerUser(userInfo)
+
+    if (userData.error) {
+        res.json({ status: 500, text: 'Ошибка с регистрацией пользователя на сервере', error: userData.data })
+        return
     } else {
-        const id = nanoid()
-        const hashPassword = bcrypt.hashSync(userPassword, slt)
-
-        db.get('users').push({
-            ID: id,
-            userMail: userMail,
-            userLogin: userLogin,
-            userPassword: hashPassword,
-            userData: {
-                userName: userName,
-                status: false,
-                url: `/${userLogin}`,
-                notice: {
-                    invites: [],
-                    other: []
-                },
-                contacts: [],
-                chats: [],
-            }
-        }).write()
-
-        const user_data = getUserData(userMail, 'mail')
-
-        const tokens = generateTokens(user_data)
+        const tokens = generateTokens(userData.data)
         saveToken(userLogin, tokens.refreshToken)
 
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 5 }).sendStatus(200)
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).json({ status: 200 })
         return
     }
 }
 
 const SignIn = (req, res) => {
-    const db = low(adapter)
-
     const { userMail, userPassword } = req.body
-    const getUserByMail = db.get('users').find({ userMail: userMail }).value()
-    const contacts = db.get('users').find({ userMail: userMail }).get('userData').get('contacts').value()
 
-    const user_data = getUserData(userMail, 'mail')
+    const userData = getUserData(userMail, 'mail')
 
-    let response
+    if (userData) {
 
-    if (getUserByMail) {
-        const checkPassword = bcrypt.compareSync(userPassword, getUserByMail.userPassword, function (res) { return res })
+        const checkPassword = authPassword(userMail, userPassword)
 
-        if (!checkPassword) {
-            response = false
+        if(!checkPassword.error) {
+            if (!checkPassword.compare) {
+                res.json({ status: 200, textError: 'Упс, Вы похоже неправильно ввели свою почту!'})
+                return
+            }
+        } else {
+            res.json({ status: 500, textError: checkPassword.text})
+            return
         }
+        const tokens = generateTokens(userData)
+        saveToken(userData.userLogin, tokens.refreshToken)
+
+
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).json({ status: 200, token: tokens.accessToken, userData})
+        return
+
     } else {
-        response = false
+        res.json({ status: 200, text: 'Упс, такой пользователь не существует' })
+        return
     }
-
-    const tokens = generateTokens({
-        userMail: user_data.userMail,
-        userLogin: user_data.userLogin,
-    })
-    saveToken(user_data.userLogin, tokens.refreshToken)
-
-    response = true
-    const result = {
-        response: response,
-        userData: user_data,
-        token: tokens.accessToken
-    }
-
-    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(result)
-    return
 
 }
 
@@ -303,7 +294,7 @@ const createChat = (req, res) => {
     const userData = getUserData(userLogin, 'login')
     const contactData = getUserData(contactLogin, 'login')
 
-    if(!contactData) {
+    if (!contactData) {
         res.send('404C/user')
         return
     }

@@ -22,7 +22,7 @@ export default function SignIn({ onLogin }) {
 
         const error = isIntroduce(payload, 'signin')
 
-        if(error) {
+        if (error) {
             setNotice(error)
         } else {
             if (checkEmail(userMail)) {
@@ -44,10 +44,19 @@ export default function SignIn({ onLogin }) {
     const authUser = async (user) => {
         const response = await axios.post('/api/signin', user)
 
-        if (response.data.response) {
-            onLogin(response.data.userData, false)
-            localStorage.setItem('token', response.data.token)
-            homePage()
+        if(response.data.status === 200) {
+            if(response.data.textError) {
+                setLoading(false)
+                setNotice({ text: response.data.textError, mail: 'error' })
+            } else {
+                onLogin(response.data.userData, false)
+                localStorage.setItem('token', response.data.token)
+                homePage()
+            }
+        } else {
+            setLoading(false)
+            setNotice({ text: 'Ошибка авторизации пользователя на сервере', mail: '' })
+            console.warn(response.data.textError)
         }
     }
 
