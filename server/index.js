@@ -53,12 +53,18 @@ const adapter = new FileSync('./db/db.json')
 const db_init = low(adapter)
 const db_package = low(new FileSync('./package.json'))
 
+
 db_init.defaults(
     {
         users: [],
         chats: [],
+        temp: {
+            userOnline: [],
+            noticeTemp: []
+        }
     }
 ).write()
+db_init.get('temp').set('userOnline', []).write()
 
 
 db_package.set('version', version).write()

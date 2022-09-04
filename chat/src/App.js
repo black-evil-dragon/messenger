@@ -47,13 +47,10 @@ function App() {
     })
 
     const onLogin = async (user, isNav) => {
+        socket.io.opts.query = {
+            userLogin: user.userLogin
+        }
         socket.connect()
-        setTimeout(() => {
-            socket.emit('user:login', {
-                userLogin: user.userLogin,
-                socketID: socket.id
-            })
-        }, 2000)
 
         await dispatch({ // await еще как влияет, спасибо vsc
             type: 'LOGIN',
@@ -97,6 +94,12 @@ function App() {
             payload: data
         })
     }
+    const setNotice = async data => {
+        await dispatch({
+            type: 'SET_NOTICE',
+            payload: data
+        })
+    }
 
     const addContact = async (data) => {
         await dispatch({
@@ -121,9 +124,10 @@ function App() {
 
     React.useEffect(() => {
         checkData()
+        socket.on('users:online', response => console.log(response))
+        socket.on('debug', response => console.log(response))
 
-        //socket.on('debug', response => console.log(response))
-        //socket.on('user:online', response => console.log('user online:', response))
+        socket.on('server:error', response => console.log(response, 'error'))
     }, [])
 
 
@@ -182,6 +186,8 @@ function App() {
                             checkAuth={checkAuth}
                             addContact={addContact}
                             checkData={checkData}
+
+                            socket={socket}
 
                             openMenu={openMenu}
                         />}

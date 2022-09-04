@@ -1,14 +1,26 @@
 const chalk = require('chalk');
-const { getUserData, setStatus, getAllUsers } = require('../service/userData');
+const { getUserData, setStatus, getAllUsers, useTemp } = require('../service/userData');
 const { checkID, getChatData, addSocket, removeSocket, setMessages } = require('../service/chatData');
 const { validateAccessToken } = require('../service/token');
 
 module.exports = function (io) {
-    const usersTemp = {}
-
     io.on('connection', socket => {
-        console.log(`${chalk.bold(socket.id)} ${chalk.green('connected')}`)
-        console.log(socket.handshake.query.userLogin);
+        console.log(`${socket.id} ${chalk.bold(socket.handshake.query.userLogin)} ${chalk.green('connected')}`)
+
+        /* Ctrl temp */
+
+        const tempUser = new useTemp('userOnline', socket)
+        const tempNotice = new useTemp('noticeTemp', socket)
+
+        tempUser.saveUser({ userLogin: socket.handshake.query.userLogin, socketID: socket.id })
+        //tempNotice.checkNotice(socket.handshake.query.userLogin)
+        tempNotice.getNotice(socket.handshake.query.userLogin)
+
+        io.emit('users:online', tempUser.getActiveUsers())
+
+
+
+        /*  Chat    */
 
         socket.on('chat:create', response => {//не думаю, что этот код нужен
             const { userLogin, contactLogin, private } = response
@@ -58,22 +70,40 @@ module.exports = function (io) {
 
         socket.on('chat:user-typing', response => socket.broadcast.emit('chat:user-typing/res', response))
 
-        socket.on('user:login', response => {
-            usersTemp[socket.id] = response
-            for (const [key, value] of Object.entries(usersTemp)) {
-                //console.log(key, value)
-            }
+        /*  User    */
+
+        socket.on('user:send-invite', response => {
+            const receiver = tempUser.getUser(response.to)
+
+            if (receiver) socket.to(receiver.socketID).emit('user:send-notice', response)
+            tempNotice.saveNotice(response)
+
         })
+
+        socket.on('user:invite-response', response => {
+            tempNotice.removeNotice(response)
+        })
+
+        socket.on('user:update-notice', () => {
+            tempNotice.getNotice(socket.handshake.query.userLogin)
+        })
+
+
+        /*  Users   */
 
         socket.on('users:get-users', response => {
             const allUsers = getAllUsers(response)
             socket.emit('users:get-users', allUsers)
         })
+
+        /*  Other   */
+
         socket.on('debug', response => console.log(response))
 
         socket.on("disconnect", () => {
-            console.log(`${chalk.bold(socket.id)} ${chalk.red('disconnected')}`);
-            delete usersTemp[socket.id]
+            tempUser.removeUser({ userLogin: socket.handshake.query.userLogin, socketID: socket.id })
+            io.emit('users:online', tempUser.getActiveUsers())
+            console.log(`${socket.id} ${chalk.bold(socket.handshake.query.userLogin)} ${chalk.red('disconnected')}`);
         });
     })
 }

@@ -5,6 +5,85 @@ const adapter = new FileSync('./db/db.json')
 const { slt } = require('../config/config').config
 const bcrypt = require('bcrypt');
 
+// Вообще, я решил взять класс только потому, что мне было необходимо понимать, как он работает
+class useTemp {
+    temp
+
+    socket
+    target
+    constructor(target, socket) {
+        this.temp = low(adapter).get('temp').get(target)
+
+        this.socket = socket
+        this.target = target
+    }
+
+
+    /* user */
+
+    saveUser = payload => {
+        this.temp = low(adapter).get('temp').get(this.target)
+        if (!payload.userLogin) return this.socket.emit('server:error', { status: 404, text: 'Логин пользователя отсутствует' })
+        if (!this.temp.find(payload).value()) {
+            this.temp.push(payload).write()
+        }
+    }
+
+    removeUser = payload => {
+        this.temp = low(adapter).get('temp').get(this.target)
+
+        if (this.temp.find(payload).value()) {
+            this.temp.remove(payload).write()
+        }
+    }
+
+    getActiveUsers = () => this.temp.value()
+
+    getUser = userLogin => {
+        this.temp = low(adapter).get('temp').get(this.target)
+        return this.temp.find({ userLogin }).value()
+    }
+
+
+    /* notice */
+
+    saveNotice = payload => {
+        this.temp = low(adapter).get('temp').get(this.target)
+        if (!this.temp.find(payload).value()) {
+            this.temp.push(payload).write()
+        }
+    }
+
+    removeNotice = payload => {
+        this.temp = low(adapter).get('temp').get(this.target)
+
+        if (this.temp.find({ from: payload.to, to: payload.from }).value()) {
+            this.temp.remove({ from: payload.to, to: payload.from }).write()
+        }
+    }
+
+    checkNotice = userLogin => {
+        this.temp = low(adapter).get('temp').get(this.target)
+
+        const notice = this.temp.find({ to: userLogin }).value()
+
+        if (notice) {
+            this.socket.emit('user:send-notice', notice)
+        }
+    }
+
+    getNotice = userLogin => {
+        this.temp = low(adapter).get('temp').get(this.target)
+        let allNotice = []
+        this.temp.value().forEach(notice => {
+            if( notice.to === userLogin) {
+                allNotice.push(notice)
+            }
+        })
+
+        this.socket.emit('user:update-notice', allNotice)
+    }
+}
 
 
 const registerUser = ({ id, userMail, userLogin, hashPassword, userName }) => {
@@ -31,7 +110,6 @@ const registerUser = ({ id, userMail, userLogin, hashPassword, userName }) => {
 
         return { error: false, data: db.get('users').find({ userLogin: userLogin }).value() }
     } catch (error) {
-
         return { error: true, data: `${error}` }
     }
 }
@@ -140,5 +218,7 @@ module.exports = {
     setStatus,
     registerUser,
     authPassword,
-    getAllUsers
+    getAllUsers,
+
+    useTemp
 }

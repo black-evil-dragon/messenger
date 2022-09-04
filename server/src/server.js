@@ -12,22 +12,6 @@ const { getUserData, registerUser, authPassword } = require('./service/userData'
 const { checkID, setChats } = require('./service/chatData');
 
 
-// Старые участки кода, хочу позже поменять на универсальную функ getUserData --
-const getUserByLogin = (login) => {
-    const db = low(adapter)
-    const result = db.get('users').find({ userLogin: login }).value()
-    return result
-}
-
-const getUserByMail = (mail) => {
-    const db = low(adapter)
-    const result = db.get('users').find({ userMail: mail }).value()
-    return result
-}
-// --
-
-
-
 /* Routes func-s */
 
 const homePage = (req, res) => {
@@ -187,7 +171,7 @@ const SignUp = (req, res) => {
         res.json({ status: 500, text: 'Ошибка с регистрацией пользователя на сервере', error: userData.data })
         return
     } else {
-        const tokens = generateTokens(userData.data)
+        const tokens = generateTokens({ userMail: userData.userMail, userLogin: userData.userLogin })
         saveToken(userLogin, tokens.refreshToken)
 
         res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).json({ status: 200 })
@@ -213,7 +197,7 @@ const SignIn = (req, res) => {
             res.json({ status: 500, textError: checkPassword.text})
             return
         }
-        const tokens = generateTokens(userData)
+        const tokens = generateTokens({ userMail: userData.userMail, userLogin: userData.userLogin })
         saveToken(userData.userLogin, tokens.refreshToken)
 
 

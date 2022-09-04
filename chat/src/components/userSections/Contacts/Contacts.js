@@ -20,10 +20,8 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     const sendInvite = async () => {
-        if(contactLogin) {
-
-            
-        }
+        contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite' })
+        setLogin('')
     }
 
     const nav = (target) => {

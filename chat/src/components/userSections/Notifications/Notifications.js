@@ -5,22 +5,20 @@ import Header from '../../ui/Header/Header'
 
 // На самом деле код говно
 
-export default function Notifications(payload) {
-
-    const {
-        notice,
-        isLogin,
-        checkAuth,
-        userLogin,
-        addContact,
-        checkData,
-        openMenu
-    } = payload
+export default function Notifications({ openMenu, socket, userLogin }) {
+    const [noticeList, setNotice] = React.useState([])
 
 
     const replyInvite = (contactLogin, type) => {
-
+        socket.emit('user:invite-response', { to: contactLogin, from: userLogin, type })
+        socket.emit('user:update-notice')
     }
+
+    React.useEffect(() => {
+        socket.emit('user:update-notice')
+        socket.on('user:update-notice', response => setNotice(response))
+        socket.on('user:send-notice', response => setNotice([...noticeList, response]))
+    }, [])
 
 
     return (
@@ -29,41 +27,26 @@ export default function Notifications(payload) {
             <div className="notifications__content">
                 <h3 className='notifications__title'>Уведомления</h3>
                 <div className="notifications__invites">
-                    {notice.invites &&
-                        notice.invites.map(function (d, idx) {
-                            return (
-                                <div className='notifications__invite' key={idx}>
-                                    <p className='notifications__invite-title'><span>{d.userLogin}</span> хочет добавить вас в друзья!</p>
-                                    <button className='notifications__button success' onClick={() => replyInvite(d.userLogin, 'accept')}>Добавить</button>
-                                    <button className='notifications__button warning' onClick={() => replyInvite(d.userLogin, 'decline')}>Отклонить</button>
+                    {noticeList.length ?
+                        noticeList.map(function (notice, id) {
+
+                            return (notice.type === 'send-invite' ?
+                                <div className='notifications__invite' key={id}>
+                                    <p className='notifications__invite-title'><span>{notice.from}</span> хочет добавить вас в друзья!</p>
+                                    <button className='notifications__button success' onClick={() => replyInvite(notice.from, 'accept')}>Добавить</button>
+                                    <button className='notifications__button warning' onClick={() => replyInvite(notice.from, 'decline')}>Отклонить</button>
+                                </div>
+                                :
+                                notice.type === 'notice' &&
+                                <div className='notifications__invite' key={id}>
+                                    <p className='notifications__invite-title'><span>{notice.from}</span> test</p>
                                 </div>
                             )
-                        })
+                        }) :
+                        <p className="lone-wolf"><span>У вас нет уведомлений</span></p>
                     }
                 </div>
-                {(!notice.invites.length && !notice.other.length) && <p className="lone-wolf"><span>У вас нет уведомлений</span></p>}
             </div>
         </div>
     )
 }
-
-/*
-    const deleteNotice = async (contactLogin) => {
-        await api.post('/api/delete/notice', { userLogin, contactLogin })
-        checkData()
-    }
-
-<div className="other-notice">
-                    {notice.other &&
-                        notice.other.map(function (d, idx) {
-                            return (
-                                <div className='notice' key={idx}>
-                                    <p><span>{d.userLogin}</span> {d.type === 'acceptInvite' ? 'добавил вас в друзья' : d.type === 'declineInvite' ? 'отклонил заявку' : d.type === 'deleteContact' && 'удалил вас из списка друзей'}</p>
-                                    <button className='accept' onClick={() => { deleteNotice(d.userLogin) }}>Хорошо!</button>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-
-*/
