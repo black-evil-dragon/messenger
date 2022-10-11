@@ -12,12 +12,10 @@ module.exports = function (io) {
         const tempUser = new useTemp('userOnline', socket)
         const tempNotice = new useTemp('noticeTemp', socket)
 
-        tempUser.saveUser({ userLogin: socket.handshake.query.userLogin, socketID: socket.id })
-        //tempNotice.checkNotice(socket.handshake.query.userLogin)
+        if(!tempUser.getUser(socket.handshake.query.userLogin)) tempUser.saveUser({ userLogin: socket.handshake.query.userLogin, socketID: socket.id })
         tempNotice.getNotice(socket.handshake.query.userLogin)
 
         io.emit('users:online', tempUser.getActiveUsers())
-
 
 
         /*  Chat    */
@@ -70,30 +68,47 @@ module.exports = function (io) {
 
         socket.on('chat:user-typing', response => socket.broadcast.emit('chat:user-typing/res', response))
 
+
         /*  User    */
 
         socket.on('user:send-invite', response => {
             const receiver = tempUser.getUser(response.to)
 
-            if (receiver) socket.to(receiver.socketID).emit('user:send-notice', response)
-            tempNotice.saveNotice(response)
-
+            if (receiver) {
+                if (!tempNotice.checkFriendList(response)) {
+                    tempNotice.saveNotice(response)
+                    socket.to(receiver.socketID).emit('user:send-notice', response)
+                } else {
+                    socket.emit('user:error', { status: 200, text: 'Упс, этот пользователь ваш друг' })
+                }
+            } else {
+                if (getUserData(response.to, 'login')) {
+                    tempNotice.saveNotice(response)
+                } else {
+                    socket.emit('user:error', { status: 200, text: 'Упс, мы не смогли найти этого пользователя' })
+                }
+            }
         })
 
         socket.on('user:invite-response', response => {
-            tempNotice.removeNotice(response)
+            const receiver = tempUser.getUser(response.to)
+            if(receiver) {
+                let notice = tempNotice.replyNotice(response)
+                socket.to(receiver.socketID).emit('user:send-notice', notice)
+            }
         })
 
         socket.on('user:update-notice', () => {
             tempNotice.getNotice(socket.handshake.query.userLogin)
         })
 
+        socket.on('user:delete-notice', response => tempNotice.removeNotice(response))
+
 
         /*  Users   */
 
         socket.on('users:get-users', response => {
-            const allUsers = getAllUsers(response)
-            socket.emit('users:get-users', allUsers)
+            socket.emit('users:get-users', getAllUsers(response))
         })
 
         /*  Other   */

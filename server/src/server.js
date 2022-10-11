@@ -205,7 +205,7 @@ const SignIn = (req, res) => {
         return
 
     } else {
-        res.json({ status: 200, text: 'Упс, такой пользователь не существует' })
+        res.json({ status: 200, text: 'Упс, такого пользователь не существует', error: 'user-no-exist' })
         return
     }
 

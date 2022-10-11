@@ -2,15 +2,17 @@ const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 
+const {nanoid} = require('nanoid')
+
 const { slt } = require('../config/config').config
 const bcrypt = require('bcrypt');
 
 // Вообще, я решил взять класс только потому, что мне было необходимо понимать, как он работает
 class useTemp {
     temp
-
     socket
     target
+
     constructor(target, socket) {
         this.temp = low(adapter).get('temp').get(target)
 
@@ -49,42 +51,136 @@ class useTemp {
 
     saveNotice = payload => {
         this.temp = low(adapter).get('temp').get(this.target)
-        if (!this.temp.find(payload).value()) {
-            this.temp.push(payload).write()
-        }
+
+        if (!this.temp.find(payload).value()) this.temp.push(payload).write()
     }
 
     removeNotice = payload => {
         this.temp = low(adapter).get('temp').get(this.target)
 
-        if (this.temp.find({ from: payload.to, to: payload.from }).value()) {
-            this.temp.remove({ from: payload.to, to: payload.from }).write()
+        if (this.temp.find(payload).value()) {
+            this.temp.remove(payload).write()
         }
     }
 
     checkNotice = userLogin => {
         this.temp = low(adapter).get('temp').get(this.target)
 
-        const notice = this.temp.find({ to: userLogin }).value()
+        try {
+            const notice = this.temp.find({ to: userLogin }).value()
+            if (notice) this.socket.emit('user:send-notice', notice)
 
-        if (notice) {
-            this.socket.emit('user:send-notice', notice)
+        } catch (error) {
+            this.socket.emit('server:error', { status: 500, text: `${error}` })
         }
     }
 
     getNotice = userLogin => {
         this.temp = low(adapter).get('temp').get(this.target)
         let allNotice = []
-        this.temp.value().forEach(notice => {
-            if( notice.to === userLogin) {
-                allNotice.push(notice)
-            }
-        })
 
-        this.socket.emit('user:update-notice', allNotice)
+        try {
+            this.temp.value().forEach(notice => {
+                if (notice.to === userLogin) {
+                    allNotice.push(notice)
+                }
+            })
+
+            this.socket.emit('user:update-notice', allNotice)
+        } catch (error) {
+            this.socket.emit('server:error', { status: 500, text: `${error}` })
+        }
+    }
+
+    replyNotice = payload => {
+        this.temp = low(adapter).get('temp').get(this.target)
+        try {
+            if (payload.type === 'accept') {
+                this.removeNotice(payload)
+                this.setFriend({ userLogin: payload.from, contactLogin: payload.to })
+
+                let notice = {
+                    id: `${nanoid()}`,
+                    from: payload.from,
+                    to: payload.to,
+                    type: 'notice',
+                    text: `принял(-a) заявку`,
+                }
+
+                this.saveNotice(notice)
+
+                return notice
+            } else {
+                this.removeNotice({
+                    from: payload.to,
+                    to: payload.from,
+                    type: 'send-invite',
+                    id: payload.id
+                })
+
+                let notice = {
+                    id: `${nanoid()}`,
+                    from: payload.from,
+                    to: payload.to,
+                    type: 'notice',
+                    text: `не принял(-a) заявку`,
+                }
+
+                this.saveNotice(notice)
+
+                return notice
+            }
+        } catch (error) {
+            this.socket.emit('server:error', { status: 500, text: `${error}` })
+        }
+    }
+
+    setFriend = ({ userLogin, contactLogin }) => {
+        const db = low(adapter)
+        try {
+            const userData = getUserData(userLogin, 'login')
+            const contactData = getUserData(contactLogin, 'login')
+
+            if (!userData.contacts.find(contact => contact.userLogin === contactLogin)) {
+                db.get('users').find({ userLogin: userLogin }).get('userData').get('contacts').push({
+                    userID: contactData.userID,
+                    userLogin: contactData.userLogin,
+                    userName: contactData.userName
+                }).write()
+
+            }
+            if (!contactData.contacts.find(contact => contact.userLogin === userLogin)) {
+                db.get('users').find({ userLogin: contactLogin }).get('userData').get('contacts').push({
+                    userID: userData.userID,
+                    userLogin: userData.userLogin,
+                    userName: userData.userName
+                }).write()
+            }
+
+            this.socket.to(this.getUser(userLogin).socketID).emit('update:data')
+            this.socket.to(this.getUser(contactLogin).socketID).emit('update:data')
+
+            this.socket.to(this.getUser(userLogin).socketID).emit('debug')
+            this.socket.to(this.getUser(contactLogin).socketID).emit('debug')
+        } catch (error) {
+            return { status: 500, error: true, text: `${error}` }
+        }
+    }
+
+    checkFriendList = payload => {
+        const db = low(adapter)
+
+        try {
+            const userData = getUserData(payload.from, 'login')
+            if (userData.contacts.find(contact => contact.userLogin === payload.to)) {
+                this.socket.emit('debug', 'exist')
+                return 'exist'
+            }
+        } catch (error) {
+            this.socket.emit('server:error', { status: 500, error: true, text: `${error}` })
+        }
     }
 }
-
 
 const registerUser = ({ id, userMail, userLogin, hashPassword, userName }) => {
     const db = low(adapter)

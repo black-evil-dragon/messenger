@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import axios from 'axios'
 import { Routes, Route, useNavigate } from "react-router-dom";
@@ -25,6 +25,8 @@ import Notifications from './components/userSections/Notifications/Notifications
 import Messenger from './components/userSections/Messenger/Messenger'
 
 
+import { Reducer } from './hooks/useReduce';
+
 
 function App() {
     const navigate = useNavigate()
@@ -45,6 +47,9 @@ function App() {
 
         currentPage: '/'
     })
+
+
+    const useReduce = new Reducer(reducer, dispatch)
 
     const onLogin = async (user, isNav) => {
         socket.io.opts.query = {
@@ -76,7 +81,7 @@ function App() {
         if (localStorage.getItem('token')) {
             const response = await api.post('/api/auth')
 
-            if (response !== '401CE' && response.data !== '401C') {
+            if (response !== '401CE' && response.data !== '401C' && response.data) {
                 onLogin(response.data, false)
                 setShowing(true)
             } else {
@@ -88,7 +93,7 @@ function App() {
         }
     }
 
-    const setData = async (data) => {
+    const setData = async data => {
         await dispatch({
             type: 'SET_DATA',
             payload: data
@@ -101,7 +106,7 @@ function App() {
         })
     }
 
-    const addContact = async (data) => {
+    const addContact = async data => {
         await dispatch({
             type: 'ADD_CONTACT',
             payload: data
@@ -111,7 +116,7 @@ function App() {
     const checkData = async () => {
         const response = await api.post('/api/update/data')
 
-        if (response.data === '401C') {
+        if (response.data === '401C' || !response.data) {
             checkAuth()
         } else {
             socket.io.opts.query = {
@@ -124,10 +129,14 @@ function App() {
 
     React.useEffect(() => {
         checkData()
-        socket.on('users:online', response => console.log(response))
+        //socket.on('users:online', response => console.log(response))
         socket.on('debug', response => console.log(response))
+        socket.on('update:data', response => checkData())
 
-        socket.on('server:error', response => console.log(response, 'error'))
+        socket.on('server:error', response => console.warn(response))
+
+
+        //useReduce.setState({ type: 'CHANGE_URL', data: 'lol'})
     }, [])
 
 

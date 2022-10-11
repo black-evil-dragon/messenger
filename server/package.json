@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.0.3.10.1",
+  "version": "0.0.3.11",
   "description": "Сервер для мессенджера",
   "main": "server.js",
   "scripts": {

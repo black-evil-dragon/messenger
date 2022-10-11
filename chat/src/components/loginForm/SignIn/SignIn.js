@@ -45,9 +45,11 @@ export default function SignIn({ onLogin }) {
         const response = await axios.post('/api/signin', user)
 
         if(response.data.status === 200) {
-            if(response.data.textError) {
+            if(response.data.error) {
                 setLoading(false)
-                setNotice({ text: response.data.textError, mail: 'error' })
+                setNotice({ text: response.data.text, mail: 'error' })
+
+                console.warn(response.data);
             } else {
                 onLogin(response.data.userData, false)
                 localStorage.setItem('token', response.data.token)
@@ -59,8 +61,6 @@ export default function SignIn({ onLogin }) {
             console.warn(response.data.textError)
         }
     }
-
-
 
     return (
         <div className='login'>

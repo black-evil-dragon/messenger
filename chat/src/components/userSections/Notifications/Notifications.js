@@ -9,13 +9,24 @@ export default function Notifications({ openMenu, socket, userLogin }) {
     const [noticeList, setNotice] = React.useState([])
 
 
-    const replyInvite = (contactLogin, type) => {
-        socket.emit('user:invite-response', { to: contactLogin, from: userLogin, type })
+    const replyInvite = (id, contactLogin, type) => {
+        socket.emit('user:invite-response', { to: contactLogin, from: userLogin, type, id })
         socket.emit('user:update-notice')
+    }
+
+    const deleteNotice = notice => {
+        socket.emit('user:delete-notice', notice)
+
+        let index = noticeList.findIndex(value => value === notice)
+        setNotice(noticeList.splice(index, 1))
+        socket.emit('user:update-notice')
+
+        console.log(noticeList.length, index);
     }
 
     React.useEffect(() => {
         socket.emit('user:update-notice')
+
         socket.on('user:update-notice', response => setNotice(response))
         socket.on('user:send-notice', response => setNotice([...noticeList, response]))
     }, [])
@@ -33,13 +44,13 @@ export default function Notifications({ openMenu, socket, userLogin }) {
                             return (notice.type === 'send-invite' ?
                                 <div className='notifications__invite' key={id}>
                                     <p className='notifications__invite-title'><span>{notice.from}</span> хочет добавить вас в друзья!</p>
-                                    <button className='notifications__button success' onClick={() => replyInvite(notice.from, 'accept')}>Добавить</button>
-                                    <button className='notifications__button warning' onClick={() => replyInvite(notice.from, 'decline')}>Отклонить</button>
+                                    <button className='notifications__button success' onClick={() => replyInvite(notice.id, notice.from, 'accept')}>Добавить</button>
+                                    <button className='notifications__button warning' onClick={() => replyInvite(notice.id, notice.from, 'decline')}>Отклонить</button>
                                 </div>
                                 :
                                 notice.type === 'notice' &&
-                                <div className='notifications__invite' key={id}>
-                                    <p className='notifications__invite-title'><span>{notice.from}</span> test</p>
+                                <div className='notifications__invite' key={id} onClick={() => deleteNotice(notice)}>
+                                    <p className='notifications__invite-title'><span>{notice.from}</span> {notice.text}</p>
                                 </div>
                             )
                         }) :

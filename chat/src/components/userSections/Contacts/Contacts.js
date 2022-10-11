@@ -2,10 +2,10 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFilter } from '../../../hooks/useFilter'
 
+import { nanoid } from 'nanoid'
 
 import api from '../../../http/axios'
 import socket from '../../../socket/socket'
-
 
 import Header from '../../ui/Header/Header'
 
@@ -20,7 +20,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     const sendInvite = async () => {
-        contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite' })
+        contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite', id: `${nanoid()}`})
         setLogin('')
     }
 
@@ -30,6 +30,9 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     React.useEffect(() => {
+        socket.on('user:error', response => {
+            console.log(response);
+        })
     }, [])
 
     React.useEffect(() => {
