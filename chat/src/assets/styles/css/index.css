@@ -409,19 +409,17 @@ a:visited {
 }
 .auth__button {
   width: 100%;
-  color: #000;
-  background-color: #fff;
+  color: #fff;
+  background-color: #031426;
   border-radius: 0.65rem;
-  border: solid 0.15rem #4D96FF;
-  transition: all 0.2s;
+  border: solid 0.15rem #031426;
   padding: 0.5rem 0.2rem;
   margin: 0.2rem;
 }
 .auth__button:hover {
-  color: #fff;
-  background-color: #4D96FF;
-  border: solid 0.15rem #4D96FF;
-  transition: all 0.2s;
+  color: #000;
+  background-color: #fff;
+  transition: all 0.5s ease;
 }
 
 .messenger {

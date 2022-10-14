@@ -5,20 +5,24 @@ const { validateAccessToken } = require('../service/token');
 
 module.exports = function (io) {
     io.on('connection', socket => {
-        console.log(`${socket.id} ${chalk.bold(socket.handshake.query.userLogin)} ${chalk.green('connected')}`)
-
-        /* Ctrl temp */
-
         const tempUser = new useTemp('userOnline', socket)
         const tempNotice = new useTemp('noticeTemp', socket)
 
-        if(!tempUser.getUser(socket.handshake.query.userLogin)) tempUser.saveUser({ userLogin: socket.handshake.query.userLogin, socketID: socket.id })
-        tempNotice.getNotice(socket.handshake.query.userLogin)
+        const socketUser = socket.handshake.query
 
-        io.emit('users:online', tempUser.getActiveUsers())
+        if (!tempUser.getUser(socketUser.userLogin)) {
+            tempNotice.getNotice(socketUser.userLogin)
+
+            io.emit('users:online', tempUser.getActiveUsers())
+            tempUser.saveUser({ userLogin: socketUser.userLogin, socketID: socket.id })
+
+            console.log(`${socket.id} ${chalk.bold(socketUser.userLogin)} ${chalk.green('connected')}`)
+        } else {
+            socket.disconnect(true)
+        }
 
 
-        /*  Chat    */
+        /*  Chat  */
 
         socket.on('chat:create', response => {//не думаю, что этот код нужен
             const { userLogin, contactLogin, private } = response
@@ -92,7 +96,7 @@ module.exports = function (io) {
 
         socket.on('user:invite-response', response => {
             const receiver = tempUser.getUser(response.to)
-            if(receiver) {
+            if (receiver) {
                 let notice = tempNotice.replyNotice(response)
                 socket.to(receiver.socketID).emit('user:send-notice', notice)
             }

@@ -38,7 +38,13 @@ const io = socket(server, {
     cors: {
         origin: '*',
         credential: true
-    }
+    },
+    cookie: {
+        name: "authToken",
+        httpOnly: true,
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24
+      }
 })
 
 require('./src/socket/socket')(io);

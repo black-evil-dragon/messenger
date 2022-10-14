@@ -10,7 +10,9 @@ const socket = io(proxy.proxy, {
     query: {}
 });
 
-const ErrorHandle = error => console.warn(error)
+const ErrorHandle = error => {
+    console.warn(error)
+}
 
 socket.on('connect_error', reason => ErrorHandle({
     status: 500,
@@ -26,9 +28,14 @@ socket.on('disconnect', reason => ErrorHandle({
 
 socket.on('connect_failed', reason => ErrorHandle({
     status: 500,
-    code: 'error',
+    code: 'connect_failed',
     reason
 }))
 
+socket.on('auth_error', reason => ErrorHandle({
+    status: 500,
+    code: 'auth_error',
+    reason
+}))
 
 export default socket

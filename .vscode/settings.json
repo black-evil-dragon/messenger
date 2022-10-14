@@ -1,0 +1,14 @@
+{
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "./chat/src/assets/styles/css/"
+        },
+        {
+            "format": "compressed",
+            "extensionName": ".min.css",
+            "savePath": "./chat/src/assets/styles/css/",
+        }
+    ]
+}

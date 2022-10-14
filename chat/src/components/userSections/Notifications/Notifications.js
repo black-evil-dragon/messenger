@@ -20,8 +20,6 @@ export default function Notifications({ openMenu, socket, userLogin }) {
         let index = noticeList.findIndex(value => value === notice)
         setNotice(noticeList.splice(index, 1))
         socket.emit('user:update-notice')
-
-        console.log(noticeList.length, index);
     }
 
     React.useEffect(() => {
