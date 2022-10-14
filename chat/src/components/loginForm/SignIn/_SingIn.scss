@@ -29,29 +29,12 @@
         }
     }
 
-    &__btn-submit {
+    &__button {
         button {
             width: 100%;
 
-            text-decoration: none;
-            color: $black;
-
-            border: solid .15rem $blue;
-            background-color: $white;
-            border-radius: .65rem;
-
             padding: .5rem .2rem;
-            margin: .3rem 0;
-
-            &:hover {
-                color: $white;
-                background-color: $blue;
-            }
-
-            &:disabled {
-                background-color: $blue-light;
-                border: solid .15rem $blue-light;
-            }
+            margin: .2rem 0;
         }
     }
 

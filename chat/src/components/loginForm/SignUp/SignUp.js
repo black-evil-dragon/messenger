@@ -71,14 +71,14 @@ export default function SignUp() {
                 <div className='register__form'>
                     <h3>Регистрация</h3>
                     <div className='register__input'>
-                        <input className={notice.mail} placeholder='E-mail' type="text" value={userMail} onChange={(e) => { setMail(e.target.value) }} /><br></br>
-                        <input className={notice.login} placeholder='Логин' type="text" value={userLogin} onChange={(e) => { setLogin(e.target.value) }} /><br></br>
-                        <input className={notice.name} placeholder='Имя' type="text" value={userName} onChange={(e) => { setName(e.target.value) }} /><br></br>
-                        <input className={notice.password} placeholder='Пароль' type="password" value={userPassword} onChange={(e) => { setPassword(e.target.value) }} />
+                        <input className={notice.mail} placeholder='E-mail' type="email" autoComplete="off" value={userMail} onChange={(e) => { setMail(e.target.value) }} /><br></br>
+                        <input className={notice.login} placeholder='Логин' type="text" autoComplete="off" value={userLogin} onChange={(e) => { setLogin(e.target.value) }} /><br></br>
+                        <input className={notice.name} placeholder='Имя' type="text" autoComplete="off" value={userName} onChange={(e) => { setName(e.target.value) }} /><br></br>
+                        <input className={notice.password} placeholder='Пароль' type="password" autoComplete="off" value={userPassword} onChange={(e) => { setPassword(e.target.value) }} />
                     </div>
 
-                    <div className='register__btn-submit'>
-                        <button onClick={onRegister} disabled={isLoading}>Зарегестрироваться</button>
+                    <div className='register__button'>
+                        <button className='button-dark' onClick={onRegister} disabled={isLoading}>Зарегестрироваться</button>
                     </div>
 
                     <div className="register__notice">

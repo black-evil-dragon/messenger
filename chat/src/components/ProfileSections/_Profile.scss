@@ -33,17 +33,20 @@
 
     &__button {
         margin: 1rem 0;
-        padding: .35rem .9rem;
+        padding: .35rem 0;
 
-        &.info {
-            margin-right: 1rem;
-            color: $white;
-            background-color: $blue-dark2;
-        }
-        &.danger {
-            margin-right: 1rem;
-            color: $danger;
-            background-color: $blue-dark2;
+        button {
+            padding: .35rem .9rem;
+            &.danger {
+                margin-right: 1rem;
+                color: $danger;
+                background-color: $blue-dark2;
+
+                &:hover {
+                    color: $white;
+                    background-color: $danger;
+                }
+            }
         }
     }
 

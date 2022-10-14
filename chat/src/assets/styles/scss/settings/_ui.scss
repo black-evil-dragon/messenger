@@ -33,6 +33,37 @@ button {
             color: white;
         }
     }
+
+    &.button {
+        border-radius: .65rem;
+        &-dark {
+            color: $white;
+
+            background-color: $blue-dark;
+            border: solid .1rem $blue-dark;
+
+            &:hover {
+                color: $black;
+                background-color: $white;
+
+                transition: all .5s ease;
+            }
+        }
+
+        &-light {
+            color: $black;
+
+            background-color: $white;
+            border: solid .05rem $white;
+
+            &:hover {
+                color: $white;
+                background-color: $blue-dark;
+
+                transition: all .5s ease;
+            }
+        }
+    }
 }
 
 

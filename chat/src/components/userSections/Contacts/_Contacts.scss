@@ -4,7 +4,7 @@
     height: 100%;
 
     color: $white;
-    background-color: $blue-dark;
+    background-color: $navy-dark;
 
     &__title {
         margin-top: 0;
@@ -16,6 +16,10 @@
     }
 
     &__add-friend {
+        display: flex;
+
+        padding: .5rem 0 1.5rem;
+
         input {
             color: $white;
 
@@ -28,34 +32,11 @@
             padding: 0.35rem 0.6rem;
             margin-right: 0.3rem;
         }
-
-        button {
-            margin: 1rem 0;
-            padding: .35rem .9rem;
-
-            color: $white;
-            background-color: $blue-dark2;
-
-            &:hover {
-                background-color: $blue;
-                color: $white;
-            }
-
-            &:active {
-                background-color: $blue-light;
-                border-color: $blue-light;
-            }
-
-        }
     }
 
-    &__list {
-    }
+    &__list {}
 
     &__button {
-        margin: 1rem 0;
-        padding: .35rem .9rem;
-
         &.info {
             margin-left: 1rem;
 

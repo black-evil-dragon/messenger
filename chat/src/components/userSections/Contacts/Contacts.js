@@ -20,7 +20,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     const sendInvite = async () => {
-        contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite', id: `${nanoid()}`})
+        contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite', id: `${nanoid()}` })
         setLogin('')
     }
 
@@ -30,6 +30,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
 
     React.useEffect(() => {
+        checkData()
         socket.on('user:error', response => {
             console.log(response);
         })
@@ -44,7 +45,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
 
     React.useMemo(() => {
         socket.emit('users:get-users', userLogin)
-        if(!contactLogin) {
+        if (!contactLogin) {
             setUsers([])
         }
     }, [contactLogin])
@@ -62,7 +63,10 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
                             <option key={key} value={user.userLogin}>{user.userLogin} - {user.userName}</option>
                         )}
                     </datalist>
-                    <button className='friends__button info' onClick={sendInvite}>Добавить</button>
+
+                    <div className="friends__button">
+                        <button className='button-light' onClick={sendInvite}>Добавить</button>
+                    </div>
 
                     <div className="friends__notice">
                         <p className={notice.type}>{notice.text}</p>

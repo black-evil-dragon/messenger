@@ -1,7 +1,67 @@
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
+const { getUserData } = require('./userData')
 const adapter = new FileSync('./db/db.json')
 
+
+const createChatData = ({ userLogin, contactLogin, private }) => {
+    const db = low(adapter)
+
+    try {
+        const userData = getUserData(userLogin, 'login')
+        const contactData = getUserData(contactLogin, 'login')
+
+        if (!contactData) return { text: 'Упс, такого пользователя не существует..' }
+
+        const id = `${userData.userID}_${contactData.userID}`
+        const chatID = checkID(userData.userID, contactData.userID)
+
+        if (checkID(userData.userID, contactData.userID)) {
+            setChats({
+                id: chatID,
+                userLogin,
+                contactLogin,
+                userData,
+                contactData,
+            })
+
+            return { status: 200, remark: 'Chat was already exist' }
+        }
+
+        db.get('chats').push({
+            ChatID: id,
+            settings: {
+                private: private,
+            },
+
+            members: [
+                {
+                    userLogin: userLogin,
+                    userName: userData.userName
+                },
+                {
+                    userLogin: contactLogin,
+                    userName: contactData.userName
+                }
+            ],
+            connections: [],
+            messages: []
+        }).write()
+
+        setChats({
+            id,
+            userLogin,
+            contactLogin,
+            userData,
+            contactData,
+        })
+
+        return { status: 200, text: '' }
+    } catch (error) {
+        return { status: 500, error: true, text: `${error}`, code: error }
+    }
+
+}
 const checkID = (id1, id2) => {
     const db = low(adapter)
 
@@ -42,7 +102,7 @@ const getChatData = (target, type) => {
 const addSocket = (chatID, socketID) => {
     const db = low(adapter)
     if (!db.get('chats').find({ ChatID: chatID }).get('connections').find({ socketID: socketID }).value()) {
-        db.get('chats').find({ ChatID: chatID }).get('connections').push({ socketID: socketID}).write()
+        db.get('chats').find({ ChatID: chatID }).get('connections').push({ socketID: socketID }).write()
     }
 
 }
@@ -51,8 +111,8 @@ const removeSocket = (socketID) => {
     const db = low(adapter)
 
     db.get('chats').value().forEach((chat) => {
-        if(chat.connections.find(connection => connection.socketID === socketID)) {
-            db.get('chats').find({ ChatID: chat.ChatID }).get('connections').remove({ socketID: socketID}).write()
+        if (chat.connections.find(connection => connection.socketID === socketID)) {
+            db.get('chats').find({ ChatID: chat.ChatID }).get('connections').remove({ socketID: socketID }).write()
         }
     })
 }
@@ -66,6 +126,8 @@ module.exports = {
     checkID,
     setChats,
     getChatData,
+
+    createChatData,
 
     addSocket,
     removeSocket,

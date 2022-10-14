@@ -12,7 +12,10 @@ export default function UserProfile({ userLogin, userMail, userName, setLogout, 
                     <h3>{userMail}</h3>
                     <p>{userLogin} <span>{userName}</span></p>
                 </div>
-                <button className='profile__button danger' onClick={setLogout}>Выйти</button>
+
+                <div className="profile__button">
+                    <button className='danger' onClick={setLogout}>Выйти</button>
+                </div>
             </div>
         </div>
     )

@@ -10,8 +10,16 @@ export default function Home() {
         <div className='auth'>
             <div className='auth__menu'>
                 <h3 className='auth__title'>Добро пожаловать!</h3>
-                <button className='auth__button' onClick={() => navigate('/signin')} id='signin'>Войти</button>
-                <button className='auth__button' onClick={() => navigate('/signup')} id='signup'>Зарегестрироваться</button>
+                <div className="auth__button">
+                    <button className='button-dark' onClick={() => navigate('/signin')} id='signin'>Войти</button>
+                </div>
+                <div className="auth__button">
+                    <button className='button-dark' onClick={() => navigate('/signup')} id='signup'>Зарегестрироваться</button>
+                </div>
+            </div>
+
+            <div className="auth__version">
+                <p>v. 0.0.3.11</p>
             </div>
         </div>
     )

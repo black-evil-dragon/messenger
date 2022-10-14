@@ -8,18 +8,18 @@ import Header from '../../ui/Header/Header'
 export default function Notifications({ openMenu, socket, userLogin }) {
     const [noticeList, setNotice] = React.useState([])
 
-
-    const replyInvite = (id, contactLogin, type) => {
-        socket.emit('user:invite-response', { to: contactLogin, from: userLogin, type, id })
-        socket.emit('user:update-notice')
-    }
-
     const deleteNotice = notice => {
         socket.emit('user:delete-notice', notice)
 
         let index = noticeList.findIndex(value => value === notice)
         setNotice(noticeList.splice(index, 1))
         socket.emit('user:update-notice')
+    }
+
+    const replyInvite = (notice, type) => {
+        socket.emit('user:invite-response', { to: notice.from, from: userLogin, type, id: notice.id })
+
+        deleteNotice(notice)
     }
 
     React.useEffect(() => {
@@ -42,8 +42,8 @@ export default function Notifications({ openMenu, socket, userLogin }) {
                             return (notice.type === 'send-invite' ?
                                 <div className='notifications__invite' key={id}>
                                     <p className='notifications__invite-title'><span>{notice.from}</span> хочет добавить вас в друзья!</p>
-                                    <button className='notifications__button success' onClick={() => replyInvite(notice.id, notice.from, 'accept')}>Добавить</button>
-                                    <button className='notifications__button warning' onClick={() => replyInvite(notice.id, notice.from, 'decline')}>Отклонить</button>
+                                    <button className='notifications__button success' onClick={() => replyInvite(notice, 'accept')}>Добавить</button>
+                                    <button className='notifications__button warning' onClick={() => replyInvite(notice, 'decline')}>Отклонить</button>
                                 </div>
                                 :
                                 notice.type === 'notice' &&

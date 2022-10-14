@@ -2,7 +2,7 @@ const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('./db/db.json')
 
-const {nanoid} = require('nanoid')
+const { nanoid } = require('nanoid')
 
 const { slt } = require('../config/config').config
 const bcrypt = require('bcrypt');
@@ -94,6 +94,7 @@ class useTemp {
 
     replyNotice = payload => {
         this.temp = low(adapter).get('temp').get(this.target)
+
         try {
             if (payload.type === 'accept') {
                 this.removeNotice(payload)
@@ -104,6 +105,7 @@ class useTemp {
                     from: payload.from,
                     to: payload.to,
                     type: 'notice',
+                    code: 'accept',
                     text: `принял(-a) заявку`,
                 }
 
@@ -243,6 +245,30 @@ const authPassword = (userMail, userPassword) => {
     }
 }
 
+const deleteFriend = (req) => {
+    const { userLogin, contactLogin } = req.body
+    const db = low(adapter)
+    try {
+        db.get('users')
+            .find({ userLogin: contactLogin })
+            .get('userData').get('contacts')
+            .remove({ userLogin: userLogin })
+            .write()
+        db.get('users')
+            .find({ userLogin: userLogin })
+            .get('userData').get('contacts')
+            .remove({ userLogin: contactLogin })
+            .write()
+
+        return req
+    } catch (error) {
+        req.error = { text: `${error}`, error }
+        return req
+    }
+}
+
+
+
 /**
  * Функция для доступа к данным через разные ключи
  * @param {String} target Значение поля: token, mail, login
@@ -315,6 +341,7 @@ module.exports = {
     registerUser,
     authPassword,
     getAllUsers,
+    deleteFriend,
 
     useTemp
 }

@@ -12,21 +12,16 @@
     &__title {}
 
     &__button {
-        width: 100%;
-        color: $white;
+        button {
+            width: 100%;
 
-        background-color: $blue-dark;
-        border-radius: .65rem;
-        border: solid .15rem $blue-dark;
-
-        padding: .5rem .2rem;
-        margin: .2rem;
-
-        &:hover {
-            color: $black;
-            background-color: $white;
-
-            transition: all .5s ease;
+            padding: .5rem .2rem;
+            margin: .2rem 0;
         }
+    }
+
+    &__version {
+        position: absolute;
+        bottom: 0;
     }
 }

@@ -71,8 +71,8 @@ export default function SignIn({ onLogin }) {
                     <input className={notice.password} placeholder='Пароль' type="password" value={userPassword} onChange={(e) => { setPassword(e.target.value) }} />
                 </div>
 
-                <div className='login__btn-submit'>
-                    <button onClick={onAuth} disabled={isLoading}>Войти</button>
+                <div className='login__button'>
+                    <button className='button-dark' onClick={onAuth} disabled={isLoading}>Войти</button>
                 </div>
 
                 <div className='login__notice'>

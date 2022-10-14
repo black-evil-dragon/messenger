@@ -18,6 +18,8 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
 
     const deleteContact = async () => {
         await api.post('/api/delete/contact', { userLogin, contactLogin })
+        checkAuth()
+
         navigate('/contacts')
     }
 
@@ -46,15 +48,13 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
             }
             const response = await api.post('/api/chat/create', data)
 
-            if (response.data !== '401C' & response.data !== '404C') {
-                if (response.data === 'e_chat/exist') {
-                    setNotice({ text: 'Упс, вы уже создали чат с этим пользователем' })
+            if (response.status === 200) {
+                if (response.data.text) {
+                    setNotice({ text: `${response.data.text}` })
                     console.warn(response.data)
-                    navigate('/')
                 } else {
-                    socket.emit('chat:create', data)
                     setNotice({})
-                    checkData()
+                    checkAuth()
 
                     navigate('/')
                 }
@@ -63,7 +63,7 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
                 console.warn(response.data)
             }
         } else {
-            setNotice({ text: 'Упс, введите логин друга!', type: 'warning' })
+            console.warn('Error: ContactLogin is undefined');
         }
     }
 
@@ -82,8 +82,14 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
                             <h3>{contactInfo.userLogin}</h3>
                             <p>{contactInfo.userName}</p>
                         </div>
-                        <button className='profile__button danger'>Удалить чат</button>
-                        <button className='profile__button danger' onClick={deleteContact}>Удалить из друзей</button>
+                        <div className="profile__button">
+                            <button className='button-light' onClick={createChat}>Написать</button>
+                        </div>
+
+                        <div className="profile__button">
+                            <button className='danger'>Удалить чат</button>
+                            <button className='danger' onClick={deleteContact}>Удалить из друзей</button>
+                        </div>
                         {notice &&
                             <div className='profile__notice'>
                                 <p className={notice.type}>{notice.text}</p>

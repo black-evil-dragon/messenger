@@ -40,7 +40,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
                 private: checked
             }
             const response = await api.post('/api/chat/create', data)
-            if(response.data === '404C/user') {
+            if (response.data === '404C/user') {
                 setNotice({ text: 'Упс, такого пользователя нет', type: 'danger' })
                 return
             }
@@ -112,7 +112,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
 
     React.useEffect(() => {
         socket.on('chat:sendData', response => {
-            if(response === 401) {
+            if (response === 401) {
                 console.warn('Error with access token')
             } else {
                 setChatData(response)
@@ -130,14 +130,6 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
                 <div className="messenger">
                     <div className="messenger__content">
                         <Header openMenu={openMenu} />
-                        <div className='messenger__add-chat'>
-                            <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
-                            <button className='messenger__button' onClick={createChat}>+</button> <br></br>
-                        </div>
-
-                        <div className="messenger__notice">
-                            <p className={notice.type}>{notice.text}</p>
-                        </div>
 
                         <div className="messenger__chats">
                             {chats && chats.length ?
@@ -157,7 +149,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
                             }
                         </div>
                     </div>
-                    <ChatBox {...state} addMessage={addMessage} setPreview={setPreview}/>
+                    <ChatBox {...state} addMessage={addMessage} setPreview={setPreview} />
                 </div>
             }
         </>
@@ -170,4 +162,13 @@ export default Messenger
 /*
 <input type="radio" onClick={setPrivate} />
 <span title='Создать беседу'>Беседа</span>
+
+<div className='messenger__add-chat'>
+                            <input className={notice.type} placeholder='Логин друга' type="text" value={contactLogin} onChange={(e) => { setLogin(e.target.value) }} />
+                            <button className='messenger__button' onClick={createChat}>+</button> <br></br>
+                        </div>
+
+                        <div className="messenger__notice">
+                            <p className={notice.type}>{notice.text}</p>
+                        </div>
 */

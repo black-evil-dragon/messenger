@@ -12,9 +12,9 @@
 
         flex: 0 1;
 
-        background-color: $blue-dark;
+        background-color: $navy-dark;
 
-        @media screen and (max-width: 1024px) {
+        @media screen and (max-width: 720px) {
             & {
                 position: absolute;
 
@@ -127,7 +127,7 @@
     }
 
     &__empty-text {
-        margin-left: 1rem;
+        margin: 1.5rem 1rem;
     }
 }
 

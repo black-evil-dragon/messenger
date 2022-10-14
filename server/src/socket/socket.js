@@ -24,33 +24,6 @@ module.exports = function (io) {
 
         /*  Chat  */
 
-        socket.on('chat:create', response => {//не думаю, что этот код нужен
-            const { userLogin, contactLogin, private } = response
-
-            const userData = getUserData(userLogin, 'login')
-            const contactData = getUserData(contactLogin, 'login')
-
-            if (!contactData || !userData) return
-
-            const ChatID = checkID(userData.userID, contactData.userID)
-
-            if (ChatID) {
-                socket.join(ChatID)
-
-                const members = db_init.get('chats').find({ ChatID: ChatID }).get('members').value()
-
-                socket.broadcast.to(ChatID).emit('chat:created', {
-                    members,
-                    socketID: socket.id
-                })
-
-            } else {
-                socket.emit('response:error', 'e_chat/not-exist')
-            }
-
-        });
-
-
         socket.on('chat:enter', response => {
             if (validateAccessToken(response.token)) {
                 const chatData = getChatData(response.chat.chatID, 'ID')
@@ -99,6 +72,11 @@ module.exports = function (io) {
             if (receiver) {
                 let notice = tempNotice.replyNotice(response)
                 socket.to(receiver.socketID).emit('user:send-notice', notice)
+
+                if (notice.code === 'accept') {
+                    socket.to(receiver.socketID).emit('update:data')
+                    socket.emit('update:data')
+                }
             }
         })
 

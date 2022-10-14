@@ -30,6 +30,29 @@ button.danger:hover {
   background-color: #ff4d4f;
   color: white;
 }
+button.button {
+  border-radius: 0.65rem;
+}
+button.button-dark {
+  color: #fff;
+  background-color: #031426;
+  border: solid 0.1rem #031426;
+}
+button.button-dark:hover {
+  color: #000;
+  background-color: #fff;
+  transition: all 0.5s ease;
+}
+button.button-light {
+  color: #000;
+  background-color: #fff;
+  border: solid 0.05rem #fff;
+}
+button.button-light:hover {
+  color: #fff;
+  background-color: #031426;
+  transition: all 0.5s ease;
+}
 
 p.lone-wolf span {
   color: rgb(180, 180, 180);
@@ -63,6 +86,9 @@ a:visited {
   text-decoration: none;
 }
 
+/*--    UI    --*/
+/*--    Fonts    --*/
+/*--    Components    --*/
 .login {
   display: flex;
   justify-content: center;
@@ -83,23 +109,10 @@ a:visited {
   border: solid 0.1rem #ff4d4f;
   color: #ff4d4f;
 }
-.login__btn-submit button {
+.login__button button {
   width: 100%;
-  text-decoration: none;
-  color: #000;
-  border: solid 0.15rem #4D96FF;
-  background-color: #fff;
-  border-radius: 0.65rem;
   padding: 0.5rem 0.2rem;
-  margin: 0.3rem 0;
-}
-.login__btn-submit button:hover {
-  color: #fff;
-  background-color: #4D96FF;
-}
-.login__btn-submit button:disabled {
-  background-color: #8fbdff;
-  border: solid 0.15rem #8fbdff;
+  margin: 0.2rem 0;
 }
 .login__notice span {
   font-size: 0.75rem;
@@ -132,6 +145,24 @@ a:visited {
   text-align: center;
   width: 100%;
   height: 100%;
+  /*&__button {
+      width: 100%;
+
+      text-decoration: none;
+      color: $black;
+      border: solid .15rem $green-success;
+
+      background-color: $white;
+      border-radius: .65rem;
+
+      padding: .5rem .2rem;
+      margin: .3rem 0;
+
+      &:hover {
+          color: $white;
+          background-color: $green-success;
+      }
+  }*/
 }
 .register__form {
   width: 45%;
@@ -148,19 +179,10 @@ a:visited {
   border: solid 0.1rem #ff4d4f;
   color: #ff4d4f;
 }
-.register__btn-submit button {
+.register__button button {
   width: 100%;
-  text-decoration: none;
-  color: #000;
-  border: solid 0.15rem #23a946;
-  background-color: #fff;
-  border-radius: 0.65rem;
   padding: 0.5rem 0.2rem;
-  margin: 0.3rem 0;
-}
-.register__btn-submit button:hover {
-  color: #fff;
-  background-color: #23a946;
+  margin: 0.2rem 0;
 }
 .register__notice span {
   font-size: 0.75rem;
@@ -209,17 +231,19 @@ a:visited {
 }
 .profile__button {
   margin: 1rem 0;
+  padding: 0.35rem 0;
+}
+.profile__button button {
   padding: 0.35rem 0.9rem;
 }
-.profile__button.info {
-  margin-right: 1rem;
-  color: #fff;
-  background-color: #0d2947;
-}
-.profile__button.danger {
+.profile__button button.danger {
   margin-right: 1rem;
   color: #ff4d4f;
   background-color: #0d2947;
+}
+.profile__button button.danger:hover {
+  color: #fff;
+  background-color: #ff4d4f;
 }
 .navigation {
   position: absolute;
@@ -287,7 +311,7 @@ a:visited {
   width: 100%;
   height: 100%;
   color: #fff;
-  background-color: #031426;
+  background-color: #020e1b;
 }
 .friends__title {
   margin-top: 0;
@@ -298,6 +322,10 @@ a:visited {
   width: max-content;
   padding: 2rem 1rem;
 }
+.friends__add-friend {
+  display: flex;
+  padding: 0.5rem 0 1.5rem;
+}
 .friends__add-friend input {
   color: #fff;
   outline: none;
@@ -306,24 +334,6 @@ a:visited {
   border-radius: 0.65rem;
   padding: 0.35rem 0.6rem;
   margin-right: 0.3rem;
-}
-.friends__add-friend button {
-  margin: 1rem 0;
-  padding: 0.35rem 0.9rem;
-  color: #fff;
-  background-color: #0d2947;
-}
-.friends__add-friend button:hover {
-  background-color: #4D96FF;
-  color: #fff;
-}
-.friends__add-friend button:active {
-  background-color: #8fbdff;
-  border-color: #8fbdff;
-}
-.friends__button {
-  margin: 1rem 0;
-  padding: 0.35rem 0.9rem;
 }
 .friends__button.info {
   margin-left: 1rem;
@@ -355,7 +365,7 @@ a:visited {
   width: 100%;
   height: 100%;
   color: #fff;
-  background-color: #031426;
+  background-color: #020e1b;
 }
 .notifications__title {
   margin-top: 0;
@@ -407,19 +417,14 @@ a:visited {
   width: 100%;
   height: 100%;
 }
-.auth__button {
+.auth__button button {
   width: 100%;
-  color: #fff;
-  background-color: #031426;
-  border-radius: 0.65rem;
-  border: solid 0.15rem #031426;
   padding: 0.5rem 0.2rem;
-  margin: 0.2rem;
+  margin: 0.2rem 0;
 }
-.auth__button:hover {
-  color: #000;
-  background-color: #fff;
-  transition: all 0.5s ease;
+.auth__version {
+  position: absolute;
+  bottom: 0;
 }
 
 .messenger {
@@ -432,9 +437,9 @@ a:visited {
   position: relative;
   z-index: 200;
   flex: 0 1;
-  background-color: #031426;
+  background-color: #020e1b;
 }
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 720px) {
   .messenger__content {
     position: absolute;
     width: 100%;
@@ -512,7 +517,7 @@ a:visited {
   margin: 0 1rem;
 }
 .messenger__empty-text {
-  margin-left: 1rem;
+  margin: 1.5rem 1rem;
 }
 
 .chat {
