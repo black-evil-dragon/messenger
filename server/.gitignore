@@ -6,6 +6,10 @@
 
 /config.json
 
+messenger.code-workspace.json
+.vscode
+settings.json
+
 # dependencies
 /node_modules
 /.pnp
