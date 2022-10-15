@@ -1,0 +1,17 @@
+@mixin media-breakpoint-min($name) {
+    @media (min-width: #{map-get($breakpoints, $name)}px) {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-max($name) {
+    @media (max-width: #{map-get($breakpoints, $name)}px) {
+        @content;
+    }
+}
+
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

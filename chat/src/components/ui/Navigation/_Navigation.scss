@@ -1,0 +1,84 @@
+.navigation {
+    position: absolute;
+    top: 0;
+
+    display: inline-block;
+    max-width: 0;
+    height: 100%;
+
+    text-align: center;
+    overflow: hidden;
+    background-color: $navy-dark;
+    z-index: 999;
+
+    transition: max-width .5s ease-out;
+
+    &__content {
+        width: 10rem;
+        padding: 0 .2rem;
+    }
+
+    &__button {
+        font-size: .75rem;
+        width: 85%;
+
+        background: $navy-dark;
+        color: $white;
+
+        border: solid .1rem $navy-dark;
+        border-radius: .65rem;
+
+
+        padding: .3rem .2rem;
+        margin: .3rem 0;
+
+        &:hover {
+            border: solid .1rem $grey;
+        }
+
+        &:first-child {
+            margin-top: 2.5rem
+        }
+    }
+
+    &__closeNavigation {
+        position: absolute;
+        top: 15px;
+        left: 20px;
+        width: 24px;
+        height: 24px;
+
+        opacity: .2;
+
+        cursor: pointer;
+        transition: all ease 0.5s;
+
+        &:hover {
+            opacity: .6;
+            transform: rotate(180deg);
+        }
+
+        &::after,
+        &::before {
+            content: '';
+
+            position: absolute;
+            top: 10px;
+
+            display: block;
+            width: 24px;
+            height: 3px;
+
+            background: $white;
+        }
+
+        &::after {
+            transform: rotate(-45deg);
+        }
+
+        &::before {
+            transform: rotate(45deg);
+        }
+
+    }
+}

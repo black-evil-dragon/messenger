@@ -1,7 +1,11 @@
+@import './settings/colors';
 @import './settings/var';
+@import './settings/mixins';
 @import './settings/font';
-@import './components/Chat';
-@import './components/JoinBlock';
+@import './settings/ui';
+@import './settings/variables';
+
+@import '../../../components/index';
 
 
 body,
@@ -12,17 +16,132 @@ html {
     width: 100%;
 
     overflow: hidden;
+    font-size: 20px;
 }
 
 * {
+    box-sizing: border-box;
     font-family: 'Montserrat', sans-serif;
     font-style: normal;
     font-weight: 400;
 }
 
-div#root,
-div.app,
-div.join-block,
-div.chat-block {
+#root {
+    width: 100%;
     height: 100%;
+}
+
+.app {
+    width: 100%;
+    height: 100%;
+
+    &__loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height: 100%;
+
+        &-spinner {
+            border: .5rem solid $white;
+            border-top: .5rem solid $grey;
+            border-left: .5rem solid $grey;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            animation: spin 1s linear infinite;
+        }
+    }
+
+    &__header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        width: 100%;
+
+        border-bottom: solid .05rem $navy-dark;
+        background-color: $blue-dark;
+
+        padding: 1rem 0;
+    }
+
+    &__button-menu {
+        width: max-content;
+        height: 30px;
+
+        margin-left: 1rem;
+
+        button {
+            width: 30px;
+            height: 30px;
+
+            background: none;
+            border: none;
+            transition: all .3s;
+
+            padding: 0;
+
+            img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    }
+
+    &__title {
+        width: max-content;
+
+        h3 {
+            color: $white;
+
+            margin: 0 1rem;
+        }
+    }
+
+    &__transition {
+        position: absolute;
+        z-index: -1;
+
+        width: 100%;
+        height: 100%;
+
+        transition: all .5s;
+
+        .blur {
+            &-dark {
+                position: absolute;
+                top: 0;
+                opacity: 0;
+
+                width: 100%;
+                height: 100%;
+
+                transition: all .85s;
+
+
+                &.show {
+                    opacity: .5;
+                    background-color: $black;
+                }
+            }
+        }
+
+        &.show {
+            transition: all .5s;
+            z-index: 998;
+        }
+    }
+}
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

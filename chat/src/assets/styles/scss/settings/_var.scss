@@ -1,8 +1,13 @@
-$grey: #202730;
-$dark-grey: #1d1e20;
-$black: #191919;
+$border: solid .05rem $grey;
 
-$red: #C84B31;
-$beige: #ECDBBA;
-
-$green-success: #23a946;
+$breakpoints: (
+    xs: 412,
+    s: 480,
+    sm: 640,
+    md: 960,
+    lg: 1024,
+    xl: 1280,
+    xxl: 1440,
+    xxxl: 1600,
+    fhd: 1920,
+);

@@ -1,0 +1,113 @@
+button {
+    border-radius: .65rem;
+    transition: all .35s;
+
+    padding: .3rem .5rem;
+
+    &.info {
+        color: $black;
+        background-color: $white;
+
+        border: solid .1rem $blue;
+        border-radius: .65rem;
+
+        transition: all .25s;
+
+        padding: .3rem .5rem;
+        margin: 1rem 0;
+
+        &:hover {
+            background-color: $blue;
+            color: $white;
+        }
+    }
+
+    &.danger {
+        border: solid .1rem $danger;
+        background-color: $white;
+
+        &:hover {
+            border: solid .1rem $danger;
+            background-color: $danger;
+
+            color: white;
+        }
+    }
+
+    &.button {
+        border-radius: .65rem;
+        &-dark {
+            color: $white;
+
+            background-color: $blue-dark;
+            border: solid .1rem $blue-dark;
+
+            &:hover {
+                color: $black;
+                background-color: $white;
+
+                transition: all .5s ease;
+            }
+        }
+
+        &-light {
+            color: $black;
+
+            background-color: $white;
+            border: solid .05rem $white;
+
+            &:hover {
+                color: $white;
+                background-color: $blue-dark;
+
+                transition: all .5s ease;
+            }
+        }
+    }
+}
+
+
+p {
+    &.lone-wolf {
+        span {
+            color: $grey;
+        }
+    }
+
+    &.warning {
+        color: $warning;
+    }
+
+    &.danger {
+        color: $danger;
+    }
+}
+
+div.notice {
+    p {
+        margin: .5rem 0;
+    }
+}
+
+input {
+    &.danger {
+        border-color: $danger !important;
+        color: $danger;
+    }
+
+    &.warning {
+        border-color: $warning !important;
+        color: $warning;
+    }
+}
+
+
+a {
+    color: $blue;
+    text-decoration: none;
+
+    &:visited {
+        color: $blue;
+        text-decoration: none;
+    }
+}

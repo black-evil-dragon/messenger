@@ -1,0 +1,271 @@
+.messenger {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+
+    color: $white;
+
+    &__content {
+        position: relative;
+        z-index: 200;
+
+        flex: 0 1;
+
+        background-color: $navy-dark;
+
+        @media screen and (max-width: 720px) {
+            & {
+                position: absolute;
+
+                width: 100%;
+                height: 100%;
+
+                transition: transform .45s;
+            }
+
+            &.hidden {
+                transform: translateX(-100%);
+            }
+        }
+    }
+
+    &__add-chat {
+        display: flex;
+
+        padding: 1rem;
+
+        input {
+            color: $white;
+
+            outline: none;
+            background-color: $blue-dark;
+
+            border: $border;
+            border-radius: .65rem;
+
+            padding: .35rem .6rem;
+            margin-right: .3rem;
+        }
+    }
+
+    &__button {
+        color: $white;
+        font-size: .9rem;
+
+        background: none;
+        border: none;
+
+        margin-left: .5rem;
+
+        &:hover {
+            background-color: $blue-dark2;
+        }
+    }
+
+    &__chats {}
+
+    &__chat {
+        display: flex;
+        align-items: center;
+
+        transition: background-color .5s;
+
+        padding: .5rem .5rem;
+
+        &:hover {
+            background-color: $blue-dark2;
+        }
+
+        &.selected {
+            background-color: $blue-dark3;
+        }
+
+        &-preview {
+            margin: 0 1rem;
+
+            button {
+                color: white;
+                font-size: .95rem;
+
+                width: 100%;
+                text-align: left;
+                background: none;
+                border: 0;
+                border-radius: 0;
+
+                padding: 0;
+            }
+
+            p {
+                margin: 0;
+            }
+        }
+
+        &-icon {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 50%;
+
+            background-color: $grey;
+        }
+
+        &-name {
+            font-size: .85rem;
+        }
+
+        &-message {
+            font-size: .7rem;
+        }
+    }
+
+    &__notice {
+        p {
+            margin: 0 1rem;
+        }
+    }
+
+    &__empty-text {
+        margin: 1.5rem 1rem;
+    }
+}
+
+.chat {
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+
+    color: $black;
+
+    width: 100%;
+
+    &__header {
+        display: flex;
+        align-items: center;
+
+        padding: .75rem 1rem;
+
+        &-icon {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 50%;
+
+            background-color: $grey;
+        }
+
+        &-info {
+            margin-left: 1rem;
+
+            h3 {
+                font-size: 1rem;
+                margin: 0;
+            }
+
+            span {
+                color: $grey;
+                font-size: .75rem;
+            }
+        }
+    }
+
+    &__messages {
+        flex: 1;
+        overflow: auto;
+        scrollbar-width: thin;
+
+        padding: .9rem;
+    }
+
+    &__message {
+
+        margin-left: .45rem;
+
+        &-icon {
+            width: 25px;
+            min-width: 25px;
+            height: 25px;
+
+            border-radius: 50%;
+
+            background-color: $grey;
+
+            &.my {
+                display: none;
+            }
+        }
+
+        &-content {
+            display: flex;
+            margin-bottom: .75rem;
+
+            &.my {
+                display: flex;
+                justify-content: end;
+            }
+        }
+
+        &-text {
+            //width: max-content;
+
+            border-radius: .5rem;
+            background-color: $navy-dark;
+
+            p {
+                overflow-wrap: anywhere;
+                color: $white;
+
+                margin: 0;
+                padding: .75rem;
+            }
+        }
+
+        &-sender {
+            width: max-content;
+            height: max-content;
+
+            &.my {
+                display: none;
+            }
+
+            span {
+                font-size: .75rem;
+                color: $grey;
+            }
+        }
+
+    }
+
+    &__input {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        padding-bottom: 1rem;
+
+        &-text {
+            input {
+                border: $border;
+                outline: none;
+                border-radius: .75rem;
+
+                padding: .65rem 1rem;
+            }
+        }
+
+        &-sender {
+            button {
+                color: $white;
+
+                border: none;
+                background-color: $navy-dark;
+
+                padding: .45rem .75rem;
+            }
+        }
+    }
+}

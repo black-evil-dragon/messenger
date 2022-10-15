@@ -1,22 +1,23 @@
 {
   "name": "server",
-  "version": "0.0.1",
-  "description": "server",
+  "version": "0.0.3.11",
+  "description": "Сервер для мессенджера",
   "main": "server.js",
-  "proxy": "http://localhost:8000/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server.js",
-    "server-test": "nodemon server_test.js"
+    "start": "nodemon index.js"
   },
-  "author": "Golgan Semyon",
+  "author": "Semyon Golgan",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "chalk": "^4.1.2",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "lowdb": "^1.0.0",
+    "nanoid": "^3.1.20",
     "nodemon": "^2.0.19",
-    "socket.io": "^4.5.1",
-    "uniqid": "^5.4.0"
+    "socket.io": "^4.5.1"
   }
 }
