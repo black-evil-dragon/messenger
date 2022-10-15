@@ -114,6 +114,7 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
         socket.on('chat:sendData', response => {
             if (response === 401) {
                 console.warn('Error with access token')
+                checkData()
             } else {
                 setChatData(response)
             }

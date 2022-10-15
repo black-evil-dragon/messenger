@@ -16,6 +16,11 @@ export default function UserProfile({ userLogin, userMail, userName, setLogout, 
                 <div className="profile__button">
                     <button className='danger' onClick={setLogout}>Выйти</button>
                 </div>
+
+                <div className="profile__text">
+                    <p>Подробнее о мессенджере</p>
+                    <a href='https://github.com/black-evil-dragon/messenger'>https://github.com/black-evil-dragon/messenger</a>
+                </div>
             </div>
         </div>
     )

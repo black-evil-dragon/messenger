@@ -79,7 +79,11 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
                         contacts.map(function (d, idx) {
                             return (
                                 <div className='friends__friend-content' key={idx} onClick={() => nav(d.userLogin)}>
-                                    <p>{d.userName} <span>{d.userLogin}</span></p>
+                                    <div className="friends__avatar">
+                                    </div>
+                                    <div className="friends__friend">
+                                        <p>{d.userName} <span>{d.userLogin}</span></p>
+                                    </div>
                                 </div>
                             )
                         })

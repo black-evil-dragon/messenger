@@ -115,6 +115,11 @@ function App() {
 
     const checkData = async () => {
         const response = await api.post('/api/update/data')
+        if (!response) {
+            alert('Сервер недоступен');
+            console.error('Сервер недоступен');
+            return
+        }
 
         if (response.data === '401C' || !response.data) {
             checkAuth()

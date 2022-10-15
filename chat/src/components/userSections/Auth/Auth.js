@@ -19,7 +19,7 @@ export default function Home() {
             </div>
 
             <div className="auth__version">
-                <p>v. 0.0.3.11</p>
+                <p>Версия сборки: v. 0.0.3.12</p>
             </div>
         </div>
     )

@@ -53,4 +53,18 @@
     &__notice {}
 
     &__link {}
+
+    &__text {
+        position: absolute;
+        bottom: 0;
+
+        padding: 1rem 0;
+
+        p {
+            margin: .1rem 0;
+        }
+        a {
+            font-size: .85rem;
+        }
+    }
 }
