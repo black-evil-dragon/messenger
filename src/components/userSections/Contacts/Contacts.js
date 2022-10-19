@@ -4,7 +4,6 @@ import { useFilter } from '../../../hooks/useFilter'
 
 import { nanoid } from 'nanoid'
 
-import api from '../../../http/axios'
 import socket from '../../../socket/socket'
 
 import Header from '../../ui/Header/Header'

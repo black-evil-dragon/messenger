@@ -1,9 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router';
 
-import axios from 'axios';
+import axiosAPI from '../../../http/axios'
 import { checkEmail, isIntroduce } from '../service/checkValid';
-
 
 export default function SignIn({ onLogin }) {
     const [userMail, setMail] = React.useState('')
@@ -42,7 +41,7 @@ export default function SignIn({ onLogin }) {
     }
 
     const authUser = async (user) => {
-        const response = await axios.post('/api/signin', user)
+        const response = await axiosAPI.post('/signin', user)
 
         if(response.data.status === 200) {
             if(response.data.error) {

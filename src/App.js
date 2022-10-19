@@ -1,12 +1,10 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import axios from 'axios'
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 import reducer from './reducer/reducer'
 import socket from './socket/socket'
-import api from './http/axios';
-
+import api from './http/api';
 
 import './assets/styles/css/index.css'
 
@@ -23,10 +21,6 @@ import Auth from './components/userSections/Auth/Auth'
 import Contacts from './components/userSections/Contacts/Contacts';
 import Notifications from './components/userSections/Notifications/Notifications';
 import Messenger from './components/userSections/Messenger/Messenger'
-
-
-import { Reducer } from './hooks/useReduce';
-
 
 function App() {
     const navigate = useNavigate()
@@ -48,9 +42,6 @@ function App() {
         currentPage: '/'
     })
 
-
-    const useReduce = new Reducer(reducer, dispatch)
-
     const onLogin = async (user, isNav) => {
         socket.io.opts.query = {
             userLogin: user.userLogin
@@ -65,21 +56,44 @@ function App() {
         isNav && navigate(user.url)
     }
 
-    const setLogout = async () => {
-        localStorage.removeItem('token')
-        await axios.post('/api/logout', { userLogin: state.userLogin })
+
+    const setData = async data => {
         await dispatch({
-            type: 'LOGOUT'
+            type: 'SET_DATA',
+            payload: data
         })
-        navigate('/auth')
-        setShowing(true)
-        socket.close()
     }
 
+    const addContact = async data => {
+        await dispatch({
+            type: 'ADD_CONTACT',
+            payload: data
+        })
+    }
+
+    const checkData = async () => {
+        const response = await api.post('http://localhost:8000/api/update/data')
+
+        if (!response) {
+            alert('Сервер недоступен');
+            console.error('Сервер недоступен', response);
+            return
+        }
+
+        if (response.data === '401C' || !response.data) {
+            checkAuth()
+        } else {
+            socket.io.opts.query = {
+                userLogin: response.data.userLogin
+            }
+            setData(response.data)
+            onLogin(response.data, false)
+        }
+    }
 
     const checkAuth = async () => {
         if (localStorage.getItem('token')) {
-            const response = await api.post('/api/auth')
+            const response = await api.post('/auth')
 
             if (response !== '401CE' && response.data !== '401C' && response.data) {
                 onLogin(response.data, false)
@@ -93,43 +107,15 @@ function App() {
         }
     }
 
-    const setData = async data => {
+    const setLogout = async () => {
+        localStorage.removeItem('token')
+        await api.post('/logout', { userLogin: state.userLogin })
         await dispatch({
-            type: 'SET_DATA',
-            payload: data
+            type: 'LOGOUT'
         })
-    }
-    const setNotice = async data => {
-        await dispatch({
-            type: 'SET_NOTICE',
-            payload: data
-        })
-    }
-
-    const addContact = async data => {
-        await dispatch({
-            type: 'ADD_CONTACT',
-            payload: data
-        })
-    }
-
-    const checkData = async () => {
-        const response = await api.post('/api/update/data')
-        if (!response) {
-            alert('Сервер недоступен');
-            console.error('Сервер недоступен');
-            return
-        }
-
-        if (response.data === '401C' || !response.data) {
-            checkAuth()
-        } else {
-            socket.io.opts.query = {
-                userLogin: response.data.userLogin
-            }
-            setData(response.data)
-            onLogin(response.data, false)
-        }
+        navigate('/auth')
+        setShowing(true)
+        socket.close()
     }
 
     React.useEffect(() => {

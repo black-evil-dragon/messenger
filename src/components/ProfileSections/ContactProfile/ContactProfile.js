@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
-import api from '../../../http/axios'
-import socket from '../../../socket/socket'
+import api from '../../../http/api'
+
 import Header from '../../ui/Header/Header'
+
 
 
 export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
@@ -17,7 +18,7 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
     })
 
     const deleteContact = async () => {
-        await api.post('/api/delete/contact', { userLogin, contactLogin })
+        await api.post('/delete/contact', { userLogin, contactLogin })
         checkAuth()
 
         navigate('/contacts')

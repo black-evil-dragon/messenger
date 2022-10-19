@@ -1,13 +1,12 @@
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 
-import api from '../../../http/axios'
 import socket from '../../../socket/socket'
-import { hammer } from './Menu/hammer'
 import reducer from '../../../reducer/reducer'
 
 import ChatBox from './ChatBox/ChatBox'
 import Header from '../../ui/Header/Header'
+
+import api from '../../../http/api'
 
 function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, userID }) {
 

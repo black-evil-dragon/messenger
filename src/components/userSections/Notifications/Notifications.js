@@ -1,6 +1,5 @@
 import React from 'react'
 
-import api from '../../../http/axios'
 import Header from '../../ui/Header/Header'
 
 // На самом деле код говно

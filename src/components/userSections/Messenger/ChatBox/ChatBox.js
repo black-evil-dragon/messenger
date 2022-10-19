@@ -1,8 +1,6 @@
 import React from 'react'
 
-import api from '../../../../http/axios'
 import socket from '../../../../socket/socket'
-
 
 function ChatBox({ addMessage, setPreview, userID, userName, selectChat, chatName, members, messages, chatID }) {
 

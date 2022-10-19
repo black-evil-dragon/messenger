@@ -1,10 +1,8 @@
 import React from 'react'
-
-
-import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 import { checkEmail, isIntroduce } from '../service/checkValid'
+import axiosAPI from '../../../http/axios'
 
 export default function SignUp() {
     const [userMail, setMail] = React.useState('')
@@ -46,7 +44,7 @@ export default function SignUp() {
     }
 
     const registerUser = async user => {
-        const response = await axios.post('/api/signup', user)
+        const response = await axiosAPI.post('/signup', user)
 
         if (response.data.status === 200) {
             if (response.data.error) {

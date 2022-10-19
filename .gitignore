@@ -3,6 +3,9 @@
 messenger.code-workspace.json
 .vscode
 settings.json
+/.firebase
+firebase-debug.log
+.env
 
 # dependencies
 /node_modules
