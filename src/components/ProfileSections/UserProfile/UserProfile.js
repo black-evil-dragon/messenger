@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Header from '../../ui/Header/Header'
+import Header from '../../ui/Header'
 
 export default function UserProfile({ userLogin, userMail, userName, setLogout, openMenu }) {
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Header from '../../ui/Header/Header'
+import Header from '../../ui/Header'
 
 // На самом деле код говно
 

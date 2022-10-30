@@ -1,0 +1,65 @@
+.message {
+
+    margin-left: .45rem;
+
+    &__icon {
+        width: 25px;
+        min-width: 25px;
+        height: 25px;
+
+        border-radius: 50%;
+
+        background-color: $grey;
+
+        &._my {
+            display: none;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+
+        margin-bottom: .75rem;
+
+        &._my {
+            display: flex;
+            align-items: end;
+        }
+    }
+
+    &__text {
+        width: max-content;
+        max-width: 90%;
+
+        border-radius: .5rem;
+        background-color: $navy-dark;
+
+        &._my {
+            background-color: $blue-dark3;
+        }
+
+        p {
+            overflow-wrap: anywhere;
+            color: $white;
+
+            margin: 0;
+            padding: .75rem;
+        }
+    }
+
+    &__sender {
+        width: max-content;
+        height: max-content;
+
+        &._my {
+            display: none;
+        }
+
+        span {
+            font-size: .75rem;
+            color: $grey;
+        }
+    }
+
+}

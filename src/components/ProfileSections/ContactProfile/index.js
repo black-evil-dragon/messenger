@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Context } from '../../..'
 
 import api from '../../../http/api'
 
-import Header from '../../ui/Header/Header'
+import Header from '../../ui/Header'
 
 
 
@@ -16,9 +17,10 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
     const [contactInfo, setInfo] = React.useState({
         error: 'Загрузка'
     })
+    const variablesContext = React.useContext(Context)
 
     const deleteContact = async () => {
-        await api.post('/delete/contact', { userLogin, contactLogin })
+        await api.post(`${variablesContext.API_URL}/api/delete/contact`, { userLogin, contactLogin })
         checkAuth()
 
         navigate('/contacts')
@@ -32,7 +34,7 @@ export default function ContactProfile({ userLogin, checkAuth, openMenu }) {
         })
     }
     const checkData = async () => {
-        const response = await api.post('/api/update/data')
+        const response = await api.post(`${variablesContext.API_URL}/api/update/data`)
         if (response.data === '401C') {
             checkAuth()
         } else {

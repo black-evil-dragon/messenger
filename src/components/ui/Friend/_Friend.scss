@@ -1,0 +1,41 @@
+.friend {
+    display: flex;
+    align-items: center;
+
+    width: min-content;
+
+    transition: background-color .5s;
+
+    padding: 0 .65rem;
+    margin: .5rem 0;
+
+    &:hover {
+        background-color: $blue-dark2;
+    }
+
+    &__username {
+        padding: .5rem 1rem;
+
+        p {
+            display: inline-block;
+            width: max-content;
+            font-size: .95rem;
+
+            span {
+                color: $grey;
+                font-size: .8rem;
+
+                margin-left: .5rem;
+            }
+        }
+    }
+
+    &__avatar {
+        width: 50px;
+        height: 50px;
+
+        border-radius: 50%;
+
+        background-color: $grey;
+    }
+}

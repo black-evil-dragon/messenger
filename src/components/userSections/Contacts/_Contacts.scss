@@ -7,11 +7,15 @@
     background-color: $navy-dark;
 
     &__title {
-        margin-top: 0;
+        h3 {
+            margin-top: 0;
+        }
     }
 
     &__content {
-        width: max-content;
+        width: 100%;
+        height: 100%;
+
         padding: 2rem 1rem;
     }
 
@@ -34,7 +38,13 @@
         }
     }
 
-    &__list {}
+    &__list {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        height: 100%;
+        scrollbar-width: thin;
+    }
 
     &__button {
         &.info {
@@ -46,45 +56,4 @@
     }
 
     &__notice {}
-
-    &__avatar {
-        width: 50px;
-        height: 50px;
-
-        border-radius: 50%;
-
-        background-color: $grey;
-    }
-
-    &__friend-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        position: relative;
-        width: 100%;
-
-        padding: 0 1rem;
-        margin: 1rem 0;
-
-        transition: background-color .5s;
-
-        &:hover {
-            background-color: $blue-dark2;
-        }
-    }
-
-    &__friend {
-        p {
-            display: inline-block;
-            width: max-content;
-            font-size: .95rem;
-
-            span {
-                color: $grey;
-                font-size: .8rem;
-            }
-        }
-    }
-
 }

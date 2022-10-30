@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import { checkEmail, isIntroduce } from '../service/checkValid'
-import axiosAPI from '../../../http/axios'
+import { instance } from '../../../http/axios'
+import { Context } from '../../..'
 
 export default function SignUp() {
     const [userMail, setMail] = React.useState('')
@@ -12,6 +13,7 @@ export default function SignUp() {
     const [isLoading, setLoading] = React.useState(false)
     const [isRegister, setRegister] = React.useState(false)
     const [notice, setNotice] = React.useState({})
+    const variablesContext = useContext(Context)
 
     const onRegister = () => {
         const payload = {
@@ -44,7 +46,7 @@ export default function SignUp() {
     }
 
     const registerUser = async user => {
-        const response = await axiosAPI.post('/signup', user)
+        const response = await instance.post(`${variablesContext.API_URL}/api/signup`, user)
 
         if (response.data.status === 200) {
             if (response.data.error) {

@@ -1,8 +1,9 @@
 import React from 'react'
 
 import socket from '../../../../socket/socket'
+import Message from '../../../ui/Message'
 
-function ChatBox({ addMessage, setPreview, userID, userName, selectChat, chatName, members, messages, chatID }) {
+function ChatBox({ addMessage, setPreview, userID, userName, selectChat, chatName, chatMembers, messages, chatID }) {
 
     const [messageText, setMessage] = React.useState('')
     const [typingStatus, setTypingStatus] = React.useState('')
@@ -12,6 +13,7 @@ function ChatBox({ addMessage, setPreview, userID, userName, selectChat, chatNam
     let timeout
 
     const sendMessage = () => {
+        if (!messageText) return
         setMessage('')
 
         const messageData = {
@@ -57,23 +59,13 @@ function ChatBox({ addMessage, setPreview, userID, userName, selectChat, chatNam
                         <div className="chat__header-icon"></div>
                         <div className='chat__header-info'>
                             <h3>{chatName}</h3>
-                            <span>{typingStatus ? `${typingStatus} печатает...` : `Участников: ${members.length}`}</span>
+                            <span>{typingStatus ? `${typingStatus} печатает...` : `Участников: ${chatMembers.length}`}</span>
                         </div>
                     </div>
                     <div className="chat__messages">
-                        {messages.length ? messages.map((message, id) => (
-                            <div ref={lastMessage} key={id} className={`chat__message-content ${userID === message.userID ? 'my' : ''}`}>
-                                <div className={`chat__message-icon ${userID === message.userID ? 'my' : ''}`}></div>
-                                <div className="chat__message">
-                                    <div className="chat__message-text">
-                                        <p>{message.messageText}</p>
-                                    </div>
-                                    <div className={`chat__message-sender ${userID === message.userID ? 'my' : ''}`}>
-                                        <span>{message.userName}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )) : <></>}
+                        {messages.length && messages.map((message, id) => (
+                            <Message message={message} key={id} userID={userID} />
+                        ))}
                     </div>
                     <div className="chat__input">
                         <div className="chat__input-text">

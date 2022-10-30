@@ -3,8 +3,13 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 
 
-export default function Home() {
+export default function Home({ checkData, isLogin }) {
     const navigate = useNavigate()
+
+    React.useEffect(() => {
+        //checkData()
+        isLogin && navigate('/')
+    }, [isLogin])
 
     return (
         <div className='auth'>

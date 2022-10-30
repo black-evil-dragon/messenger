@@ -1,7 +1,5 @@
-// eslint-disable-next-line import/no-anonymous-default-export
-export default (state, action) => {
+export const reducer = (state, action) => {
     switch (action.type) {
-        //надо переписать
         case 'LOGIN':
             return {
                 ...state,
@@ -10,10 +8,9 @@ export default (state, action) => {
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
-                chats: action.payload.chats,
-                url: action.payload.url,
-                contacts: action.payload.contacts,
-                notice: action.payload.notice
+                userChats: action.payload.userChats,
+                userURL: action.payload.userURL,
+                userContacts: action.payload.userContacts,
             }
         case 'SET_DATA':
             return {
@@ -22,20 +19,28 @@ export default (state, action) => {
                 userMail: action.payload.userMail,
                 userLogin: action.payload.userLogin,
                 userName: action.payload.userName,
-                chats: action.payload.chats,
-                url: action.payload.url,
-                contacts: action.payload.contacts,
-                notice: action.payload.notice
+                userChats: action.payload.userChats,
+                userURL: action.payload.userURL,
+                userContacts: action.payload.userContacts,
             }
         case 'ADD_CONTACT':
             return {
                 ...state,
-                contacts: [...state.contacts, action.payload]
+                userContacts: [...state.userContacts, action.payload]
             }
-        case 'CHANGE_URL':
+
+
+        case 'LOGOUT':
             return {
                 ...state,
-                currentPage: action.payload
+                isLogin: false,
+                userID: null,
+                userMail: null,
+                userLogin: null,
+                userName: null,
+                userChats: [],
+                userURL: null,
+                userContacts: [],
             }
 
         /* New code */
@@ -46,8 +51,8 @@ export default (state, action) => {
                 selectChat: true,
                 chatName: action.payload.chatName,
                 chatID: action.payload.ChatID,
-                members: action.payload.members,
-                settings: action.payload.settings,
+                chatMembers: action.payload.members,
+                chatSettings: action.payload.settings,
 
                 messages: action.payload.messages
             }

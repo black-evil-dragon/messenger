@@ -1,26 +1,32 @@
 import React from 'react'
+import { useContext } from 'react';
+
 
 import { Routes, Route, useNavigate } from "react-router-dom";
 
-import reducer from './reducer/reducer'
+import { reducer } from './reducer'
 import socket from './socket/socket'
 import api from './http/api';
+
+import { Context } from '.';
+import { Reducer } from './hooks/useDispatch'
 
 import './assets/styles/css/index.css'
 
 
-import SignIn from './components/loginForm/SignIn/SignIn'
-import SignUp from './components/loginForm/SignUp/SignUp'
+import SignIn from './components/loginForm/SignIn'
+import SignUp from './components/loginForm/SignUp'
 
 import UserProfile from './components/ProfileSections/UserProfile/UserProfile';
-import ContactProfile from './components/ProfileSections/ContactProfile/ContactProfile'
+import ContactProfile from './components/ProfileSections/ContactProfile'
 
 import Navigation from './components/ui/Navigation/Navigation';
 
-import Auth from './components/userSections/Auth/Auth'
-import Contacts from './components/userSections/Contacts/Contacts';
-import Notifications from './components/userSections/Notifications/Notifications';
-import Messenger from './components/userSections/Messenger/Messenger'
+import Auth from './components/userSections/Auth'
+import Contacts from './components/userSections/Contacts';
+import Notifications from './components/userSections/Notifications';
+import Messenger from './components/userSections/Messenger'
+
 
 function App() {
     const navigate = useNavigate()
@@ -31,48 +37,28 @@ function App() {
         userMail: null,
         userLogin: null,
         userName: null,
-        notice: {
-            invites: [],
-            other: []
-        },
-        chats: [],
-        url: '',
-        contacts: [],
-
-        currentPage: '/'
+        userChats: [],
+        userURL: '',
+        userContacts: [],
     })
+    const useDispatch = new Reducer(reducer, dispatch)
+    const variablesContext = useContext(Context)
+
 
     const onLogin = async (user, isNav) => {
         socket.io.opts.query = {
-            userLogin: user.userLogin
+            userLogin: user.userLogin,
+            userToken: localStorage.getItem('token')
         }
         socket.connect()
 
-        await dispatch({ // await еще как влияет, спасибо vsc
-            type: 'LOGIN',
-            payload: user
-        })
+        useDispatch.setState('LOGIN', user)
 
         isNav && navigate(user.url)
     }
 
-
-    const setData = async data => {
-        await dispatch({
-            type: 'SET_DATA',
-            payload: data
-        })
-    }
-
-    const addContact = async data => {
-        await dispatch({
-            type: 'ADD_CONTACT',
-            payload: data
-        })
-    }
-
     const checkData = async () => {
-        const response = await api.post('http://localhost:8000/api/update/data')
+        const response = await api.post(`${variablesContext.API_URL}/api/update/data`)
 
         if (!response) {
             alert('Сервер недоступен');
@@ -93,7 +79,7 @@ function App() {
 
     const checkAuth = async () => {
         if (localStorage.getItem('token')) {
-            const response = await api.post('/auth')
+            const response = await api.post(`${variablesContext.API_URL}/api/auth`)
 
             if (response !== '401CE' && response.data !== '401C' && response.data) {
                 onLogin(response.data, false)
@@ -109,25 +95,25 @@ function App() {
 
     const setLogout = async () => {
         localStorage.removeItem('token')
-        await api.post('/logout', { userLogin: state.userLogin })
-        await dispatch({
-            type: 'LOGOUT'
-        })
+        await api.post(`${variablesContext.API_URL}/api/logout`, { userLogin: state.userLogin })
+
+        useDispatch.setState('LOGOUT', {})
+
         navigate('/auth')
         setShowing(true)
         socket.close()
     }
 
+    const setData = async data => useDispatch.setState('SET_DATA', data)
+    const addContact = async data => useDispatch.setState('ADD_CONTACT', data)
+
     React.useEffect(() => {
         checkData()
-        //socket.on('users:online', response => console.log(response))
+
         socket.on('debug', response => console.log(response))
         socket.on('update:data', response => checkData())
 
         socket.on('server:error', response => console.warn(response))
-
-
-        //useReduce.setState({ type: 'CHANGE_URL', data: 'lol'})
     }, [])
 
 
@@ -161,16 +147,16 @@ function App() {
             <div className="app__transition">
                 <div className="blur-dark"></div>
             </div>
-            {state.isLogin && <Navigation url={state.url} showMenu={openMenu} />}
+            {state.isLogin && <Navigation url={state.userURL} showMenu={openMenu} />}
             {state.isLogin ?
                 <Routes>
                     <Route path='/auth' element={
                         <Auth
                             {...state}
                             show={show}
+                            checkData={checkData}
                         />
                     } />
-
                     <Route path="/" element={
                         <Messenger
                             {...state}
@@ -220,7 +206,7 @@ function App() {
                             openMenu={openMenu}
                         />}
                     />
-                    <Route path={"/" + state.url}
+                    <Route path={"/" + state.userURL}
                         element={<UserProfile
                             {...state}
                             navigate={navigate}
@@ -240,6 +226,7 @@ function App() {
                             <Auth
                                 {...state}
                                 show={show}
+                                checkData={checkData}
                             />
                         } />
 

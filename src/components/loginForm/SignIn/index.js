@@ -1,7 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router';
+import { Context } from '../../..';
 
-import axiosAPI from '../../../http/axios'
+import { instance } from '../../../http/axios'
 import { checkEmail, isIntroduce } from '../service/checkValid';
 
 export default function SignIn({ onLogin }) {
@@ -9,6 +10,7 @@ export default function SignIn({ onLogin }) {
     const [userPassword, setPassword] = React.useState('')
     const [isLoading, setLoading] = React.useState(false)
     const [notice, setNotice] = React.useState({})
+    const variablesContext = React.useContext(Context)
 
     let navigate = useNavigate()
     const homePage = () => navigate('/')
@@ -41,12 +43,12 @@ export default function SignIn({ onLogin }) {
     }
 
     const authUser = async (user) => {
-        const response = await axiosAPI.post('/signin', user)
+        const response = await instance.post(`${variablesContext.API_URL}/api/signin`, user)
 
         if(response.data.status === 200) {
-            if(response.data.error) {
+            if(response.data.textError) {
                 setLoading(false)
-                setNotice({ text: response.data.text, mail: 'error' })
+                setNotice({ text: response.data.textError, mail: 'error' })
 
                 console.warn(response.data);
             } else {

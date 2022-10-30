@@ -6,11 +6,10 @@ import { nanoid } from 'nanoid'
 
 import socket from '../../../socket/socket'
 
-import Header from '../../ui/Header/Header'
+import Header from '../../ui/Header'
+import Friend from '../../ui/Friend'
 
-export default function Contacts({ contacts, userLogin, checkAuth, checkData, openMenu }) {
-    const navigate = useNavigate()
-
+export default function Contacts({ userContacts, userLogin, checkData, openMenu }) {
     const [contactLogin, setLogin] = React.useState('')
     const [notice, setNotice] = React.useState({})
     const [allUsers, setUsers] = React.useState([])
@@ -21,10 +20,6 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
     const sendInvite = async () => {
         contactLogin && socket.emit('user:send-invite', { from: userLogin, to: contactLogin, type: 'send-invite', id: `${nanoid()}` })
         setLogin('')
-    }
-
-    const nav = (target) => {
-        navigate(`/user/${target}`)
     }
 
 
@@ -47,7 +42,7 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
         if (!contactLogin) {
             setUsers([])
         }
-    }, [contactLogin])
+    }, [contactLogin, userLogin])
 
     return (
         <div className='friends'>
@@ -72,18 +67,15 @@ export default function Contacts({ contacts, userLogin, checkAuth, checkData, op
                     </div>
                 </div>
 
+                <div className="friends__title">
+                    <h3>Друзья</h3>
+                </div>
                 <div className="friends__list">
-                    <h3 className='friends__title'>Друзья</h3>
-                    {contacts.length ?
-                        contacts.map(function (d, idx) {
+
+                    {userContacts.length ?
+                        userContacts.map(function (friend, id) {
                             return (
-                                <div className='friends__friend-content' key={idx} onClick={() => nav(d.userLogin)}>
-                                    <div className="friends__avatar">
-                                    </div>
-                                    <div className="friends__friend">
-                                        <p>{d.userName} <span>{d.userLogin}</span></p>
-                                    </div>
-                                </div>
+                                <Friend key={id} friend={friend} />
                             )
                         })
                         :

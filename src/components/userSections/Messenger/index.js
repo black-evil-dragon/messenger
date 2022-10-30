@@ -1,68 +1,31 @@
 import React from 'react'
 
 import socket from '../../../socket/socket'
-import reducer from '../../../reducer/reducer'
+import { reducer } from '../../../reducer'
 
-import ChatBox from './ChatBox/ChatBox'
-import Header from '../../ui/Header/Header'
+import ChatBox from './ChatBox'
+import Header from '../../ui/Header'
 
-import api from '../../../http/api'
+import { Reducer } from '../../../hooks/useDispatch'
 
 function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, userID }) {
-
-    const [contactLogin, setLogin] = React.useState('')
-    const [notice, setNotice] = React.useState({})
-    const [checked, setChecked] = React.useState(true);
-
     const [selectedElement, selectThisElement] = React.useState()
 
     const [state, dispatch] = React.useReducer(reducer, {
+        lastMessage: '',
+        selectChat: false,
+
         userID: userID,
         userName: userName,
-        lastMessage: '',
 
-        selectChat: false,
         chatName: null,
         chatID: null,
-        members: [],
-        settings: null,
+        chatMembers: [],
+        chatSettings: null,
 
         messages: []
     })
-
-
-    const createChat = async () => { // Код не крутой, осуждаю
-        if (contactLogin) {
-            const data = {
-                userLogin,
-                contactLogin,
-                private: checked
-            }
-            const response = await api.post('/api/chat/create', data)
-            if (response.data === '404C/user') {
-                setNotice({ text: 'Упс, такого пользователя нет', type: 'danger' })
-                return
-            }
-
-            if (response.data !== '401C' & response.data !== '404C') {
-                if (response.data === 'e_chat/exist') {
-                    setNotice({ text: 'Упс, вы уже создали чат с этим пользователем', type: 'warning' })
-                } else {
-                    socket.emit('chat:create', data)
-
-                    setNotice({})
-                    setLogin('')
-
-                    checkData()
-                }
-            } else {
-                setNotice({ text: 'Упс, похоже произошла ошибка', type: 'dangers' })
-                console.warn(response.data)
-            }
-        } else {
-            setNotice({ text: 'Упс, введите логин друга!', type: 'warning' })
-        }
-    }
+    const useDispatch = new Reducer(reducer, dispatch)
 
     const selectChat = (chat, id) => {//надо переписать
         const messengerMenu = document.querySelector('.messenger__content')
@@ -87,26 +50,9 @@ function Messenger({ chats, userLogin, isLogin, openMenu, checkData, userName, u
         })
     }
 
-    const setChatData = async data => {
-        await dispatch({
-            type: 'CHAT/SET_DATA',
-            payload: data
-        })
-    }
-
-    const addMessage = async data => {
-        await dispatch({
-            type: 'CHAT/ADD_MESSAGE',
-            payload: data
-        })
-    }
-
-    const setPreview = async data => {
-        await dispatch({
-            type: 'CHAT/LAST_MESSAGE',
-            payload: data
-        })
-    }
+    const setChatData = async data => useDispatch.setState('CHAT/SET_DATA', data)
+    const addMessage = async data => useDispatch.setState('CHAT/ADD_MESSAGE', data)
+    const setPreview = async data => useDispatch.setState('CHAT/LAST_MESSAGE', data)
 
 
     React.useEffect(() => {

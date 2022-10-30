@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 
@@ -32,8 +32,16 @@ const analytics = getAnalytics(app);
 // Initialize App
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+export const Context = createContext({})
+const variables = {
+    API_URL: process.env.REACT_APP_PRODUCTION === 'true' ? process.env.REACT_APP_API_KEY : ''
+}
+
 root.render(
     <BrowserRouter>
-        <App />
+        <Context.Provider value={variables}>
+            <App />
+        </Context.Provider>
     </BrowserRouter>
 );

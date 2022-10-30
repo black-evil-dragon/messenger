@@ -319,19 +319,108 @@ a:visited {
   transform: rotate(45deg);
 }
 
+.message {
+  margin-left: 0.45rem;
+}
+.message__icon {
+  width: 25px;
+  min-width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: rgb(180, 180, 180);
+}
+.message__icon._my {
+  display: none;
+}
+.message__content {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+}
+.message__content._my {
+  display: flex;
+  align-items: end;
+}
+.message__text {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 90%;
+  border-radius: 0.5rem;
+  background-color: #020e1b;
+}
+.message__text._my {
+  background-color: #103052;
+}
+.message__text p {
+  overflow-wrap: anywhere;
+  color: #fff;
+  margin: 0;
+  padding: 0.75rem;
+}
+.message__sender {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+}
+.message__sender._my {
+  display: none;
+}
+.message__sender span {
+  font-size: 0.75rem;
+  color: rgb(180, 180, 180);
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+  transition: background-color 0.5s;
+  padding: 0 0.65rem;
+  margin: 0.5rem 0;
+}
+.friend:hover {
+  background-color: #0d2947;
+}
+.friend__username {
+  padding: 0.5rem 1rem;
+}
+.friend__username p {
+  display: inline-block;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  font-size: 0.95rem;
+}
+.friend__username p span {
+  color: rgb(180, 180, 180);
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+.friend__avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: rgb(180, 180, 180);
+}
+
 .friends {
   width: 100%;
   height: 100%;
   color: #fff;
   background-color: #020e1b;
 }
-.friends__title {
+.friends__title h3 {
   margin-top: 0;
 }
 .friends__content {
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
+  width: 100%;
+  height: 100%;
   padding: 2rem 1rem;
 }
 .friends__add-friend {
@@ -347,42 +436,18 @@ a:visited {
   padding: 0.35rem 0.6rem;
   margin-right: 0.3rem;
 }
+.friends__list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin;
+}
 .friends__button.info {
   margin-left: 1rem;
   color: #fff;
   background-color: #0d2947;
 }
-.friends__avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: rgb(180, 180, 180);
-}
-.friends__friend-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  padding: 0 1rem;
-  margin: 1rem 0;
-  transition: background-color 0.5s;
-}
-.friends__friend-content:hover {
-  background-color: #0d2947;
-}
-.friends__friend p {
-  display: inline-block;
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-  font-size: 0.95rem;
-}
-.friends__friend p span {
-  color: rgb(180, 180, 180);
-  font-size: 0.8rem;
-}
-
 .notifications {
   width: 100%;
   height: 100%;
@@ -552,8 +617,13 @@ a:visited {
   width: 100%;
 }
 .chat__header {
+  position: absolute;
   display: flex;
   align-items: center;
+  width: 100%;
+  -webkit-backdrop-filter: blur(0.5rem);
+          backdrop-filter: blur(0.5rem);
+  background: linear-gradient(180deg, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0.6446778541) 85%);
   padding: 0.75rem 1rem;
 }
 .chat__header-icon {
@@ -578,52 +648,6 @@ a:visited {
   overflow: auto;
   scrollbar-width: thin;
   padding: 0.9rem;
-}
-.chat__message {
-  margin-left: 0.45rem;
-}
-.chat__message-icon {
-  width: 25px;
-  min-width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background-color: rgb(180, 180, 180);
-}
-.chat__message-icon.my {
-  display: none;
-}
-.chat__message-content {
-  display: flex;
-  margin-bottom: 0.75rem;
-}
-.chat__message-content.my {
-  display: flex;
-  justify-content: end;
-}
-.chat__message-text {
-  border-radius: 0.5rem;
-  background-color: #020e1b;
-}
-.chat__message-text p {
-  overflow-wrap: anywhere;
-  color: #fff;
-  margin: 0;
-  padding: 0.75rem;
-}
-.chat__message-sender {
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-  height: -webkit-max-content;
-  height: -moz-max-content;
-  height: max-content;
-}
-.chat__message-sender.my {
-  display: none;
-}
-.chat__message-sender span {
-  font-size: 0.75rem;
-  color: rgb(180, 180, 180);
 }
 .chat__input {
   display: flex;

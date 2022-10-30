@@ -1,8 +1,5 @@
 import axios from 'axios'
 
-const axiosAPI = axios.create({
+export const instance = axios.create({
     withCredentials: true,
 })
-
-
-export default axiosAPI
