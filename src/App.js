@@ -120,7 +120,7 @@ function App() {
 
     window.socket = socket
 
-    const openMenu = () => {
+    const openMenu = () => { //надо переписать
         const panel = document.querySelector('.navigation')
         const panelBackground = document.querySelector('.blur-dark')
         const transitionElement = document.querySelector('.app__transition')
